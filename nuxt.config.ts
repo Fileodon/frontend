@@ -7,5 +7,12 @@ export default defineNuxtConfig({
     plugins: [tailwindcss() as any],
   },
   css: ['~/assets/css/main.css'],
-   modules: ['@pinia/nuxt'],
+  modules: ['@pinia/nuxt', '@nuxt/icon/module'],
+  appConfig:{
+    icon: {
+        mode: 'css',
+        cssLayer: 'base',
+        size: '24px'
+    }
+  }
 })
