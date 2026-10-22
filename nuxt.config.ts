@@ -8,11 +8,4 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/css/main.css'],
   modules: ['@pinia/nuxt', '@nuxt/icon/module'],
-  appConfig:{
-    icon: {
-        mode: 'css',
-        cssLayer: 'base',
-        size: '24px'
-    }
-  }
 })

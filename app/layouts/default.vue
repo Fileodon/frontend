@@ -1,7 +1,7 @@
 <template>
     <div class="">
         <AppAuthenticatedHeader/>
-        <div class="flex flex-row">
+        <div class="flex flex-row ">
             <AppAuthenticatedSideBar/>
             <slot/>
         </div>
