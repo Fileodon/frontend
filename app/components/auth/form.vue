@@ -8,7 +8,8 @@
                 </p>
             </header>
 
-            <div class="relative isolate grid grid-cols-2 rounded-xl bg-base-200 p-1" aria-label="Choose an account action">
+            <div class="relative isolate grid grid-cols-2 rounded-xl bg-base-200 p-1"
+                aria-label="Choose an account action">
                 <span class="auth-indicator" :class="{ 'is-register': !view }" aria-hidden="true"></span>
                 <button type="button" class="auth-tab login-tab" :class="{ 'is-active': view }" :aria-pressed="view"
                     @click="view = true">
