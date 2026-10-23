@@ -1,8 +1,8 @@
 <template>
-    <div class="">
-        <AppAuthenticatedHeader/>
-        <div class="flex flex-row ">
-            <AppAuthenticatedSideBar/>
+    <div class="w-full h-full flex flex-row">
+        <AppAuthenticatedSideBar/>
+        <div class="flex flex-col grow">
+            <AppAuthenticatedHeader/>
             <slot/>
         </div>
     </div>

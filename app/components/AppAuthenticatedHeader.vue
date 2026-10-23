@@ -1,13 +1,15 @@
 <template>
     <header class="navbar bg-base-50 border-b border-b-neutral-200">
         <div class="flex-1">
-
+            <div>
+                
+            </div>
         </div>
         <div class="flex flex-row items-center gap-2">
 
             <label class="swap swap-rotate">
                 <!-- this hidden checkbox controls the state -->
-                <input type="checkbox" class="theme-controller" value="synthwave" />
+                <input type="checkbox" class="theme-controller" value="light" />
                 <!-- sun icon -->
                 <Icon name="material-symbols-light:light-mode-outline" class="swap-on size-5" />
                 <!-- moon icon -->
@@ -21,7 +23,7 @@
                         <span class="text-sm">JE</span>
                     </div>
                 </div>
-                <button popovertarget="avatar-popover" style="anchor-name:--avatar-anchor-1">
+                <button popovertarget="avatar-popover" style="anchor-name:--avatar-anchor-1" class="flex items-center justify-center">
                     <Icon name="material-symbols-light:keyboard-arrow-down"/>
                 </button>
                 <ul class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm mt-1"
