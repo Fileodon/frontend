@@ -34,12 +34,10 @@
             </ul>
         </div>
         <div class="mt-auto p-2">
-            <p>Selected: {{ currentSelected }}</p>
             <select class="select" v-model="currentSelected">
                 <option disabled value="">Your organizations</option>
                 <option v-for="org in mockOrgs" :key="org" :value="org">{{ org }}</option>
             </select>
-            <input type="text" v-model="currentSelected"/>
         </div>
     </div>
 </template>
@@ -50,7 +48,7 @@ import type { RouteRecordNameGeneric } from 'vue-router';
 const route = useRoute()
 const mockOrgs = ref<string[]>([
     'Cool',
-    'Praktikantdd'
+    'Ikke ligeså cool'
 ])
 const currentSelected = ref(mockOrgs.value[0])
 

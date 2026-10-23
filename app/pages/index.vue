@@ -8,6 +8,14 @@
 definePageMeta({
     title: 'Home'
 })
+
+const mockOrgs = ref<string[]>([
+    'Cool',
+    'Praktikantdd'
+])
+const currentSelected = ref(mockOrgs.value[0])
+const textTypeShit = ref("")
+
 </script>
 
 <style scoped>

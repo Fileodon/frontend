@@ -18,6 +18,9 @@ export default defineNuxtConfig({
             prefix: 'custom-icons',
             dir: resolve('./app/assets/icons'),
         }
-    ]
+    ],
+    mode: 'css',
+    cssLayer: 'base',
+    size: '24px',
   }
 })
