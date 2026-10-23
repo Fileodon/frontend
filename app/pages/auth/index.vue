@@ -5,6 +5,8 @@
 </template>
 
 <script lang="ts" setup>
+import { passwordValidation } from '~/utils/auth/password';
+
 
 definePageMeta({ layout: "un-authenticated" })
 let errors = ref<Record<string, string>>();
@@ -21,7 +23,7 @@ function handleRegister(registerForm: { username: string; email: string; passwor
     return;
   }
 
-  const passwordError = validatePassword(registerForm.password);
+  const passwordError = passwordValidation(registerForm.password);
   if (passwordError) {
     errors.value = { password: passwordError };
     return;
@@ -45,7 +47,7 @@ function handleLogin(loginForm: { email: string; password: string }) {
     return;
   }
 
-  const passwordError = validatePassword(loginForm.password);
+  const passwordError = passwordValidation(loginForm.password);
   if (passwordError) {
     errors.value = { password: passwordError };
     return;
@@ -67,25 +69,6 @@ function validateEmail(email: string): (string | null | undefined) {
   }
 }
 
-function validatePassword(password: string): (string | null | undefined) {
-  if (!password) {
-    return "Password must not be empty!";
-  }
-
-  if (password.trim().length < 8) {
-    return "The required length of the password must be greater or equal to 8";
-  }
-
-  if (password.search("\d") === -1) {
-    console.log("Not valid number: ", password, password.search("\d") === -1);
-    return "The password must contain a number!";
-  }
-
-  if (password.search("[a-z]") === -1 || password.search("[A-Z]") === -1) {
-    console.log("Not valid char: ", password, password.search("[a-z]") === -1, password.search("[A-Z]") === -1)
-    return "The password must contain a upper- & lower case letter!";
-  }
-}
 </script>
 
 <style scoped></style>
