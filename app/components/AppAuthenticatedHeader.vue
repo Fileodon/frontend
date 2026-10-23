@@ -2,7 +2,7 @@
     <header class="navbar bg-base-50 border-b border-b-neutral-200">
         <div class="flex-1">
             <div>
-                
+                <BreadCrumbs :previous-pages="['home', 'connections']" />
             </div>
         </div>
         <div class="flex flex-row items-center gap-2">
@@ -39,6 +39,8 @@
 </template>
 
 <script setup lang="ts">
+import BreadCrumbs from './BreadCrumbs.vue';
+
 // TODO implement loading states and skeleton loaders
 
 function logout(){
