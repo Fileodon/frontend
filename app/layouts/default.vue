@@ -1,15 +1,14 @@
 <template>
     <div class="w-full h-full flex flex-row">
-        <AppAuthenticatedSideBar/>
+        <LayoutAppAuthenticatedSideBar/>
         <div class="flex flex-col grow">
-            <AppAuthenticatedHeader/>
+            <LayoutAppAuthenticatedHeader/>
             <slot/>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import AppAuthenticatedHeader from '~/components/AppAuthenticatedHeader.vue';
 
 
 </script>

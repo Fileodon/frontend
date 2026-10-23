@@ -39,7 +39,6 @@
 </template>
 
 <script setup lang="ts">
-import BreadCrumbs from './BreadCrumbs.vue';
 
 // TODO implement loading states and skeleton loaders
 
