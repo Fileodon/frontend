@@ -1,13 +1,12 @@
 <template>
-    <div class="card w-full max-w-md rounded-2xl border border-base-300 bg-base-100 shadow-xl">
-        <section class="card-body gap-6">
-            <header class="space-y-1 text-center">
-                <h1 class="text-3xl font-bold">{{ view ? 'Welcome back' : 'Create your account' }}</h1>
-                <p class="text-sm text-base-content/70">
-                    {{ view ? 'Sign in to continue to Fileodon.' : 'Get started with your Fileodon account.' }}
-                </p>
-            </header>
-
+    <card-form>
+        <template #header>
+            <h1 class="text-3xl font-bold">{{ view ? 'Welcome back' : 'Create your account' }}</h1>
+            <p class="text-sm text-base-content/70">
+                {{ view ? 'Sign in to continue to Fileodon.' : 'Get started with your Fileodon account.' }}
+            </p>
+        </template>
+        <template #body>
             <div class="relative isolate grid grid-cols-2 rounded-xl bg-base-200 p-1"
                 aria-label="Choose an account action">
                 <span class="auth-indicator" :class="{ 'is-register': !view }" aria-hidden="true"></span>
@@ -21,7 +20,7 @@
                 </button>
             </div>
 
-            <section class="auth-panel flex flex-col" aria-live="polite">
+            <section class="min-h-68 flex flex-col" aria-live="polite">
                 <div v-if="view" class="flex flex-col gap-4">
                     <input v-model="loginForm.email" type="email" autocomplete="email" placeholder="Email"
                         aria-label="Email" class="input input-bordered w-full" />
@@ -45,6 +44,9 @@
                     @click="emits('register', registerForm)">
                     Register
                 </button>
+                <section id="actions" class="card-actions mt-2.5">
+                    <NuxtLink to="/auth/resetPassword">Reset password</NuxtLink>
+                </section>
             </section>
 
             <section v-if="errors && Object.keys(errors).length > 0"
@@ -53,8 +55,8 @@
                     <li v-for="(error, field) in errors" :key="field">{{ field }}: {{ error }}</li>
                 </ul>
             </section>
-        </section>
-    </div>
+        </template>
+    </card-form>
 </template>
 
 <script setup lang="ts">
@@ -88,6 +90,7 @@ defineProps<{ errors: Record<string, string> | null | undefined }>();
 
 <style scoped>
 .auth-tab {
+    /* AAAAADDDDD brug tailwind please <3 */
     position: relative;
     isolation: isolate;
     overflow: hidden;
