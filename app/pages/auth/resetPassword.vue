@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { emailValidation } from '~/utils/auth/email';
+import { emailValidation } from '~/utils/validation/email';
 
 definePageMeta({ layout: "un-authenticated" })
 let email = ref<string>();

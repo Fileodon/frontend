@@ -9,13 +9,19 @@
         <template #body>
             <div class="relative isolate grid grid-cols-2 rounded-xl bg-base-200 p-1"
                 aria-label="Choose an account action">
-                <span class="auth-indicator" :class="{ 'is-register': !view }" aria-hidden="true"></span>
-                <button type="button" class="auth-tab login-tab" :class="{ 'is-active': view }" :aria-pressed="view"
+                <span
+                    class="pointer-events-none absolute inset-y-1 left-1 z-0 w-[calc(50%-0.25rem)] rounded-[0.625rem] bg-primary transition-transform duration-250 ease-[ease]"
+                    :class="{ 'translate-x-full': !view }" aria-hidden="true"></span>
+                <button type="button"
+                    class="relative isolate min-h-11 overflow-hidden rounded-[0.625rem] bg-transparent font-semibold transition-colors duration-200 ease-[ease] motion-reduce:transition-none"
+                    :class="view ? 'text-primary-content' : 'text-base-content/75'" :aria-pressed="view"
                     @click="view = true">
                     Login
                 </button>
-                <button type="button" class="auth-tab register-tab" :class="{ 'is-active': !view }"
-                    :aria-pressed="!view" @click="view = false">
+                <button type="button"
+                    class="relative isolate min-h-11 overflow-hidden rounded-[0.625rem] bg-transparent font-semibold transition-colors duration-200 ease-[ease] motion-reduce:transition-none"
+                    :class="!view ? 'text-primary-content' : 'text-base-content/75'" :aria-pressed="!view"
+                    @click="view = false">
                     Register
                 </button>
             </div>
@@ -87,63 +93,3 @@ const registerForm = ref<RegisterForm>({
 const emits = defineEmits(['register', 'login']);
 defineProps<{ errors: Record<string, string> | null | undefined }>();
 </script>
-
-<style scoped>
-.auth-tab {
-    /* AAAAADDDDD brug tailwind please <3 */
-    position: relative;
-    isolation: isolate;
-    overflow: hidden;
-    min-height: 2.75rem;
-    border-radius: 0.625rem;
-    background: transparent;
-    color: color-mix(in srgb, var(--color-base-content) 75%, transparent);
-    font-weight: 600;
-    transition: color 200ms ease;
-}
-
-.auth-indicator {
-    position: absolute;
-    top: 0.25rem;
-    bottom: 0.25rem;
-    left: 0.25rem;
-    width: calc(50% - 0.25rem);
-    z-index: 0;
-    border-radius: 0.625rem;
-    background: var(--color-primary);
-    pointer-events: none;
-    transition: transform 250ms ease;
-}
-
-.auth-indicator.is-register {
-    transform: translateX(100%);
-}
-
-.login-tab::before {
-    transform-origin: left;
-}
-
-.register-tab::before {
-    transform-origin: right;
-}
-
-.auth-tab.is-active {
-    color: var(--color-primary-content);
-}
-
-.auth-tab.is-active::before {
-    transform: scaleX(1);
-}
-
-.auth-panel {
-    min-height: 17rem;
-}
-
-@media (prefers-reduced-motion: reduce) {
-
-    .auth-tab,
-    .auth-tab::before {
-        transition: none;
-    }
-}
-</style>

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { passwordValidation } from '~/utils/auth/password';
+import { passwordValidation } from '~/utils/validation/password';
 
 
 definePageMeta({ layout: "un-authenticated" })
