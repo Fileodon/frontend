@@ -3,7 +3,9 @@
         <LayoutAppAuthenticatedSideBar/>
         <div class="flex flex-col grow">
             <LayoutAppAuthenticatedHeader/>
-            <slot/>
+            <div class=" p-1 sm:p-2">
+                <slot/>
+            </div>
         </div>
     </div>
 </template>

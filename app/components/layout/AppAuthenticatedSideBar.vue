@@ -1,5 +1,5 @@
 <template>
-    <div class="side-bar w-64 h-full border-r border-r-neutral-200 flex flex-col">
+    <div class="side-bar hidden sm:flex sm:w-52 h-full border-r border-r-neutral-200 flex-col">
         <div class="flex items-center justify-center h-24">
             <NuxtLink :to="'/'">
                 <Icon name="custom-icons:fileodon-haj" size="2rem"/>
@@ -59,9 +59,5 @@ function isActive(name: RouteRecordNameGeneric):boolean{
 </script>
 
 <style scoped>
-.side-bar{
-    /* @apply  */
-}
-
 
 </style>
