@@ -7,6 +7,7 @@
         </div>
         <div>
             <ul class="menu rounded-box w-full">
+                <P class="mb-2 text-gray-400">ORGANIZATION</P>
                 <li>
                     <NuxtLink :class="isActive('connections') ? 'menu-active': ''" :to="'/connections'">
                         <Icon  name="material-symbols-light:cable"/>
