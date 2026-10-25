@@ -21,6 +21,12 @@
                    </NuxtLink> 
                 </li>
                 <li>
+                   <NuxtLink :class="isActive('audit-logs') ? 'menu-active': ''" :to="'/auditLogs'">
+                        <Icon  name="material-symbols-light:quick-reference-all-outline-rounded"/>
+                        Audit
+                   </NuxtLink> 
+                </li>
+                <li>
                     <NuxtLink :class="isActive('settings') ? 'menu-active': ''" :to="'/settings'">
                         <Icon  name="material-symbols-light:settings-outline-rounded"/>
                         Settings
@@ -34,7 +40,11 @@
                 </li> -->
             </ul>
         </div>
-        <div class="mt-auto p-2">
+        <div class="mt-auto px-2 mb-4">
+            <div>
+                <!-- TODO: tilføj noget info her måske? -->
+            </div>
+            <div class="divider -mx-2"></div>
             <select class="select" v-model="currentSelected">
                 <option disabled value="">Your organizations</option>
                 <option v-for="org in mockOrgs" :key="org" :value="org">{{ org }}</option>
