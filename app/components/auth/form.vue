@@ -50,8 +50,9 @@
                     @click="emits('register', registerForm)">
                     Register
                 </button>
-                <section id="actions" class="card-actions mt-2.5">
-                    <NuxtLink to="/auth/resetPassword">Reset password</NuxtLink>
+                <section id="actions"  class="card-actions mt-2">
+                    <p v-if="view">Forgot your password? <NuxtLink to="/auth/resetPassword" class="underline text-primary">Reset password</NuxtLink></p>
+                    <p v-else>Already registered? <NuxtLink to="/auth" @click="setView(true)" class="underline text-primary">Login</NuxtLink></p>
                 </section>
             </section>
 
@@ -78,7 +79,9 @@ interface RegisterForm {
     email: string;
     password: string;
 }
-
+defineProps<{ errors: Record<string, string> | null | undefined }>();
+const emits = defineEmits(['register', 'login']);
+defineExpose({setView})
 const loginForm = ref<LoginForm>({
     email: '',
     password: '',
@@ -90,6 +93,9 @@ const registerForm = ref<RegisterForm>({
     password: '',
 });
 
-const emits = defineEmits(['register', 'login']);
-defineProps<{ errors: Record<string, string> | null | undefined }>();
+function setView(value: boolean){
+    if(view.value === value)return;
+    view.value = value
+}
+
 </script>

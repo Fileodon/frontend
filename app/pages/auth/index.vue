@@ -1,15 +1,29 @@
 <template>
   <div class="flex min-h-screen flex-1 flex-col items-center justify-center p-4">
-    <auth-form @register="handleRegister" :errors="errors" @login="handleLogin" />
+    <auth-form ref="auth-form" @register="handleRegister" :errors="errors" @login="handleLogin" />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { passwordValidation } from '~/utils/validation/password';
-
+import {AuthForm} from '#components'
 
 definePageMeta({ layout: "un-authenticated" })
-let errors = ref<Record<string, string>>();
+const route = useRoute()
+
+const errors = ref<Record<string, string>>();
+const form = useTemplateRef('auth-form')
+
+watch([() => route.query, form], ([newQuery,newForm]) => {
+    if(!newForm)return;
+    const register = newQuery.register === 'true'
+    if(register){
+        newForm.setView(false)
+    }else{
+        newForm.setView(true)
+    }
+},{deep: true})
+
 function handleRegister(registerForm: { username: string; email: string; password: string }) {
   console.log('Register form submitted:', registerForm);
   if (!registerForm) {

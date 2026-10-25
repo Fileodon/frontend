@@ -21,8 +21,8 @@
                         <button type="button" class="btn btn-primary mt-auto w-full">
                             Reset
                         </button>
-                        <section id="actions" class="card-actions mt-2.5">
-                            <NuxtLink to="/auth">Login</NuxtLink>
+                        <section id="actions" class="card-actions mt-2">
+                            <NuxtLink class="underline text-primary" to="/auth">Back to Login</NuxtLink>
                         </section>
                     </section>
 
