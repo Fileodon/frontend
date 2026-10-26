@@ -18,28 +18,20 @@ import type { RouteRecordNameGeneric } from 'vue-router';
 
 const route= useRoute()
 const router = useRouter()
-
+const routes = computed(() => router.getRoutes())
 interface IBreadcrumb {
     label: string,
     route: string,
     icon?: string
 }
 
-const previousPages = computed<RouteRecordNameGeneric[]>(() => {
-    // when adding a new page, add what should be displayed as previous pages based on their name. You find this name in the devtools or by console.log(router.getRoutes())
-    switch(route.name){
-        case 'index':
-            return []
-        case 'test':
-            return ['index']
-        default:
-            return []
-    }
-})
+// To generate Breadcrumbs
+// Find route names in the nuxt dev tools
+// set the routes in order from their metadata breadcrumbs
 const resolvedBreadCrumbs = computed<IBreadcrumb[]>(() =>{
-    const routes = router.getRoutes()
-    const filtered = routes.filter(r => previousPages.value.includes(r.name))
-    
+    const route = router.currentRoute; 
+    if(!route.value.meta.breadcrumbs || !routes.value)return [];
+    const filtered = routes.value.filter(r => (route.value.meta.breadcrumbs as RouteRecordNameGeneric[])?.includes(r.name))
     return filtered.map(f => ({
         label: f.meta.title ?? f.name, // fallbacks to unique name - set title in page meta
         route: f.path

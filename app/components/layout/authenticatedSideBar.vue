@@ -37,6 +37,12 @@
                         <Icon  name="material-symbols-light:settings-outline-rounded"/>
                         Test
                    </NuxtLink> 
+                </li>
+                <li>
+                    <NuxtLink :class="isActive('test') ? 'menu-active': ''" :to="'/test/Foo'">
+                        <Icon  name="material-symbols-light:settings-outline-rounded"/>
+                        Foo
+                   </NuxtLink> 
                 </li> -->
             </ul>
         </div>

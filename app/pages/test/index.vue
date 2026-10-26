@@ -7,6 +7,7 @@
 <script setup lang="ts">
 definePageMeta({
     title: "Test",
+    breadcrumbs: ['index']
 })
 </script>
 
