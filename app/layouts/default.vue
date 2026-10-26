@@ -11,6 +11,11 @@
 </template>
 
 <script setup lang="ts">
+// const {$auth} = useNuxtApp()
+// onMounted(() => {
+//     const response = $auth('/auth/register',)
+//     console.log(response)    
+// })
 
 
 </script>
