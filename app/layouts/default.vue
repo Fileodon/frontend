@@ -1,8 +1,8 @@
 <template>
     <div class="w-full h-full flex flex-row">
-        <LayoutAppAuthenticatedSideBar/>
+        <LayoutAuthenticatedSideBar/>
         <div class="flex flex-col grow">
-            <LayoutAppAuthenticatedHeader/>
+            <LayoutAuthenticatedHeader/>
             <div class=" p-1 sm:p-2">
                 <slot/>
             </div>

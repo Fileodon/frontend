@@ -26,6 +26,7 @@ interface IBreadcrumb {
 }
 
 const previousPages = computed<RouteRecordNameGeneric[]>(() => {
+    // when adding a new page, add what should be displayed as previous pages based on their name. You find this name in the devtools or by console.log(router.getRoutes())
     switch(route.name){
         case 'index':
             return []
