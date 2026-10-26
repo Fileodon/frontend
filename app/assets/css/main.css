@@ -12,3 +12,11 @@
 h1{
     @apply text-4xl 
 }
+
+h5{
+    @apply text-lg
+}
+/* 
+@utility menu-active {
+    @apply bg-primary-content text-primary
+} */
