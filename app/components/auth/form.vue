@@ -52,7 +52,7 @@
                 </button>
                 <section id="actions"  class="card-actions mt-2">
                     <p v-if="view">Forgot your password? <NuxtLink to="/auth/resetPassword" class="underline text-primary">Reset password</NuxtLink></p>
-                    <p v-else>Already registered? <NuxtLink to="/auth" @click="setView(true)" class="underline text-primary">Login</NuxtLink></p>
+                    <p v-else>Already registered? <NuxtLink to="/auth" @click="view = true" class="underline text-primary">Login</NuxtLink></p>
                 </section>
             </section>
 
