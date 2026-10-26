@@ -6,7 +6,8 @@
 
 <script setup lang="ts">
 definePageMeta({
-    title: 'Home'
+    title: 'Home',
+    layout: 'un-authenticated'
 })
 
 const mockOrgs = ref<string[]>([
