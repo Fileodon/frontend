@@ -6,7 +6,7 @@
       <div class="stats m-2.5 bg-black/35 border rounded border-gray-600">
         <div class="stat">
           <div class="stat-title">Total connections</div>
-          <div class="stat-value font-normal">06</div>
+          <div class="stat-value font-normal">03</div>
           <div class="stat-desc">Across your organisation</div>
         </div>
       </div>
