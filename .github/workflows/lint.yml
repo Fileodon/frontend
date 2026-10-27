@@ -13,8 +13,8 @@ jobs:
       - name: Check Node
         run: node -v && npm -v
 
-      -name: Install and run
-      - run: | 
+      - name: Install and run
+        run: | 
           npm ci
           npx nuxt prepare
           npx eslint .
