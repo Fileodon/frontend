@@ -34,7 +34,7 @@ export default defineNuxtConfig({
 	openFetch: {
 		clients: {
 			api: {
-				baseURL: process.env.API_BASE_URL || 'https://api.fileodon.dev',
+				baseURL: process.env.API_BASE_URL ? process.env.API_BASE_URL : 'https://api.fileodon.dev',
 				schema: process.env.API_OPENAPI_PATH ? process.env.API_OPENAPI_PATH : 'https://api.filodon.dev/swagger/v1/swagger.json',
 			},
 		},
