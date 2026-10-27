@@ -59,6 +59,7 @@
                 <div class="flex-1">
                   <!-- <Icon name="material-symbols-light:dns-outline" class="bg-green-300 pr-5"></Icon> -->
                   Contabo server
+                  <p class="text-gray-500 italic">root</p>
                 </div>
               </td>
               <td>
@@ -82,7 +83,10 @@
               </td>
             </tr>
             <tr class="hover:bg-gray-600/50"> <!--Man skal manuelt skrive det her på hvert tr tag...-->
-              <td>Hetzner server</td>
+              <td>
+                Hetzner server
+                <p class="text-gray-500 italic">Jakob</p>
+              </td>
               <td>
                 <div class="badge badge-soft badge-warning">
                   <div aria-label="warning" class="status status-warning"></div>
@@ -91,7 +95,9 @@
               </td>
               <td>155.163.181.218:22</td>
               <td>
-                <div class="dropdown">
+                <button class="btn btn-sm btn-outline btn-error mr-2">Reject</button>
+                <button class="btn btn-sm btn-success">Accept</button>
+                <!-- <div class="dropdown">
                   <div tabindex="0" role="button" class="btn-ghost hover:cursor-pointer m-1">
                     <Icon name="material-symbols-light:more-vert"></Icon>
                   </div>
@@ -100,11 +106,14 @@
                     <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 1</a></li>
                     <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 2</a></li>
                   </ul>
-                </div>
+                </div> -->
               </td>
             </tr>
             <tr class="hover:bg-gray-600/50"> <!--Man skal manuelt skrive det her på hvert tr tag...-->
-              <td>Hetzner server</td>
+              <td>
+                Hetzner server
+                <p class="text-gray-500 italic">seb</p>
+              </td>
               <td>
                 <div class="badge badge-soft badge-error">
                   <div aria-label="error" class="status status-error"></div>
@@ -113,16 +122,7 @@
               </td>
               <td>155.163.181.218:22</td>
               <td>
-                <div class="dropdown">
-                  <div tabindex="0" role="button" class="btn-ghost hover:cursor-pointer m-1">
-                    <Icon name="material-symbols-light:more-vert"></Icon>
-                  </div>
-                  <ul tabindex="-1"
-                    class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 border-gray-600 border shadow-sm">
-                    <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 1</a></li>
-                    <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 2</a></li>
-                  </ul>
-                </div>
+                <button class="btn btn-sm btn-outline btn-warning">Reconnect</button>
               </td>
             </tr>
           </tbody>
