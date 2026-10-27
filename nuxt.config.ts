@@ -25,9 +25,9 @@ export default defineNuxtConfig({
     },
     openFetch: {
         clients: {
-            auth: {
-                baseURL: process.env.API_BASE_URL || "https://api.sftptogo.snipertools.me",
-                schema: process.env.API_BASE_URL ? process.env.API_BASE_URL + "/openapi/v1.json" : "https://api.sftptogo.snipertools.me/openapi/v1.json",
+            api: {
+                baseURL: process.env.API_BASE_URL || "https://fileodon.dev",
+                schema: process.env.API_BASE_URL ? process.env.API_BASE_URL + "/openapi/v1.json" : "https://filodon.dev/swagger/v1/swagger.json",
             },
         },  
     },

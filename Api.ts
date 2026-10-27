@@ -51,6 +51,14 @@ export interface LoginRequest {
   twoFactorRecoveryCode?: string | null;
 }
 
+export interface Permission {
+  /** @format int32 */
+  id?: number;
+  navn?: string | null;
+  /** @format int64 */
+  bitValue?: number;
+}
+
 export interface RefreshRequest {
   refreshToken: string | null;
 }
@@ -68,6 +76,14 @@ export interface ResetPasswordRequest {
   email: string | null;
   resetCode: string | null;
   newPassword: string | null;
+}
+
+export interface RoleDTO {
+  name?: string | null;
+  /** @format int32 */
+  organizationId?: number;
+  /** @format int32 */
+  permissionMask?: number;
 }
 
 export interface TwoFactorRequest {
@@ -553,6 +569,129 @@ export class Api<
         secure: true,
         type: ContentType.Json,
         format: "json",
+        ...params,
+      }),
+  };
+  api = {
+    /**
+     * No description
+     *
+     * @tags Permission
+     * @name PermissionsList
+     * @request GET:/api/permissions
+     * @secure
+     */
+    permissionsList: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/permissions`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Permission
+     * @name PermissionsDetail
+     * @request GET:/api/permissions/{id}
+     * @secure
+     */
+    permissionsDetail: (
+      id: string,
+      data: Permission,
+      params: RequestParams = {},
+    ) =>
+      this.request<void, any>({
+        path: `/api/permissions/${id}`,
+        method: "GET",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Role
+     * @name RolesList
+     * @request GET:/api/roles
+     * @secure
+     */
+    rolesList: (params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/roles`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Role
+     * @name RolesCreate
+     * @request POST:/api/roles
+     * @secure
+     */
+    rolesCreate: (data: RoleDTO, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/roles`,
+        method: "POST",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Role
+     * @name RolesDetail
+     * @request GET:/api/roles/{id}
+     * @secure
+     */
+    rolesDetail: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/roles/${id}`,
+        method: "GET",
+        secure: true,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Role
+     * @name RolesUpdate
+     * @request PUT:/api/roles/{id}
+     * @secure
+     */
+    rolesUpdate: (id: string, data: RoleDTO, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/roles/${id}`,
+        method: "PUT",
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags Role
+     * @name RolesDelete
+     * @request DELETE:/api/roles/{id}
+     * @secure
+     */
+    rolesDelete: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/api/roles/${id}`,
+        method: "DELETE",
+        secure: true,
         ...params,
       }),
   };
