@@ -9,10 +9,11 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v7
-      
-      - name: Check Node
-        run: node-v && npm -v
 
+      - name: Check Node
+        run: node -v && npm -v
+
+      -name: Install and run
       - run: | 
           npm ci
           npx nuxt prepare
