@@ -15,9 +15,7 @@ jobs:
           node-version: 24
           cache: npm
 
-      - run: npm ci
-
-      # Generates .nuxt/eslint.config.mjs, which your eslint.config.mjs imports
-      - run: npx nuxt prepare
-
-      - run: npx eslint .
+      - run: | 
+          npm ci
+          npx nuxt prepare
+          npx eslint .
