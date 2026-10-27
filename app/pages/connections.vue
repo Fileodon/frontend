@@ -55,7 +55,6 @@
           </thead>
           <tbody>
             <tr v-for="item in mockData" :key="item.name" class="hover:bg-gray-600/50">
-              <!--Man skal manuelt skrive det her på hvert tr tag...-->
               <td>
                 <div class="flex-1">
                   <!-- <Icon name="material-symbols-light:dns-outline" class="bg-green-300 pr-5"></Icon> -->
