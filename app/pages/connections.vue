@@ -54,75 +54,42 @@
             </tr>
           </thead>
           <tbody>
-            <tr class="hover:bg-gray-600/50"> <!--Man skal manuelt skrive det her på hvert tr tag...-->
+            <tr v-for="item in mockData" :key="item.name" class="hover:bg-gray-600/50">
+              <!--Man skal manuelt skrive det her på hvert tr tag...-->
               <td>
                 <div class="flex-1">
                   <!-- <Icon name="material-symbols-light:dns-outline" class="bg-green-300 pr-5"></Icon> -->
-                  Contabo server
-                  <p class="text-gray-500 italic">root</p>
+                  {{ item.name }}
+                  <p class="text-gray-500 italic">{{ item.username }}</p>
                 </div>
               </td>
               <td>
-                <div class="badge badge-soft badge-success">
-                  <div aria-label="success" class="status status-success"></div>
-                  Active
+                <div class="badge badge-soft" :class="statusClasses[item.status].badge">
+                  <div :aria-label="item.status" class="status" :class="statusClasses[item.status].indicator"></div>
+                  {{ item.status }}
                 </div>
               </td>
-              <td>158.220.124.100:22</td>
+              <td>{{ item.ip }}</td>
               <td>
-                <div class="dropdown">
-                  <div tabindex="0" role="button" class="btn-ghost hover:cursor-pointer m-1">
-                    <Icon name="material-symbols-light:more-vert"></Icon>
+                <div v-if="item.status == StatusType.ACTIVE">
+                  <div class="dropdown">
+                    <div tabindex="0" role="button" class="btn-ghost hover:cursor-pointer m-1">
+                      <Icon name="material-symbols-light:more-vert"></Icon>
+                    </div>
+                    <ul tabindex="-1"
+                      class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 border-gray-600 border shadow-sm">
+                      <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 1</a></li>
+                      <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 2</a></li>
+                    </ul>
                   </div>
-                  <ul tabindex="-1"
-                    class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 border-gray-600 border shadow-sm">
-                    <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 1</a></li>
-                    <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 2</a></li>
-                  </ul>
                 </div>
-              </td>
-            </tr>
-            <tr class="hover:bg-gray-600/50"> <!--Man skal manuelt skrive det her på hvert tr tag...-->
-              <td>
-                Hetzner server
-                <p class="text-gray-500 italic">Jakob</p>
-              </td>
-              <td>
-                <div class="badge badge-soft badge-warning">
-                  <div aria-label="warning" class="status status-warning"></div>
-                  Pending
+                <div v-else-if="item.status == StatusType.PENDING">
+                  <button class="btn btn-sm btn-outline btn-error mr-2">Reject</button>
+                  <button class="btn btn-sm btn-success">Accept</button>
                 </div>
-              </td>
-              <td>155.163.181.218:22</td>
-              <td>
-                <button class="btn btn-sm btn-outline btn-error mr-2">Reject</button>
-                <button class="btn btn-sm btn-success">Accept</button>
-                <!-- <div class="dropdown">
-                  <div tabindex="0" role="button" class="btn-ghost hover:cursor-pointer m-1">
-                    <Icon name="material-symbols-light:more-vert"></Icon>
-                  </div>
-                  <ul tabindex="-1"
-                    class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 border-gray-600 border shadow-sm">
-                    <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 1</a></li>
-                    <li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35"><a>Item 2</a></li>
-                  </ul>
-                </div> -->
-              </td>
-            </tr>
-            <tr class="hover:bg-gray-600/50"> <!--Man skal manuelt skrive det her på hvert tr tag...-->
-              <td>
-                Hetzner server
-                <p class="text-gray-500 italic">seb</p>
-              </td>
-              <td>
-                <div class="badge badge-soft badge-error">
-                  <div aria-label="error" class="status status-error"></div>
-                  Offline
+                <div v-else>
+                  <button class="btn btn-sm btn-outline btn-warning">Reconnect</button>
                 </div>
-              </td>
-              <td>155.163.181.218:22</td>
-              <td>
-                <button class="btn btn-sm btn-outline btn-warning">Reconnect</button>
               </td>
             </tr>
           </tbody>
@@ -139,7 +106,31 @@ definePageMeta({
   breadcrumbs: ['index'],
 })
 
+enum StatusType {
+  ACTIVE = 'ACTIVE',
+  PENDING = 'PENDING',
+  OFFLINE = 'OFFLINE'
+}
 
+const statusClasses: Record<StatusType, { badge: string; indicator: string }> = {
+  [StatusType.ACTIVE]: { badge: 'badge-success', indicator: 'status-success' },
+  [StatusType.PENDING]: { badge: 'badge-warning', indicator: 'status-warning' },
+  [StatusType.OFFLINE]: { badge: 'badge-error', indicator: 'status-error' },
+}
+
+interface MockType {
+  name: string,
+  status: StatusType,
+  username: string,
+  ip: string,
+  port: number
+}
+
+const mockData: MockType[] = [
+  { name: "Contabo server", status: StatusType.ACTIVE, username: "root", ip: "158.220.124.100", port: 22 },
+  { name: "Hetzner server", status: StatusType.PENDING, username: "Jakob", ip: "155.163.181.218", port: 22 },
+  { name: "seb wsl laptop", status: StatusType.OFFLINE, username: "seb", ip: "118.184.121.243", port: 20 }
+]
 </script>
 
 <style scoped></style>
