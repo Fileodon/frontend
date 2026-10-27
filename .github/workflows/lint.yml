@@ -8,12 +8,10 @@ jobs:
   eslint:
     runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
+      - uses: actions/checkout@v7
+      
+      - name: Check Node
+        run: node-v && npm -v
 
       - run: | 
           npm ci
