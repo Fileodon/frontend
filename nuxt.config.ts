@@ -8,10 +8,10 @@ export default defineNuxtConfig({
     compatibilityDate: '2025-07-15',
     devtools: { enabled: true },
     vite: {
-        plugins: [tailwindcss() as any],
+        plugins: [tailwindcss() as Plugin[]],
     },
     css: ['~/assets/css/main.css'],
-    modules: ['@pinia/nuxt', '@nuxt/icon/module', 'nuxt-open-fetch'],
+    modules: ['@pinia/nuxt', '@nuxt/icon/module', 'nuxt-open-fetch', '@nuxt/eslint'],
     icon:{
         customCollections:[
             {
@@ -31,4 +31,12 @@ export default defineNuxtConfig({
             },
         },  
     },
+    eslint:{
+        config:{
+            stylistic: {
+                indent: 'tab'
+            },
+            typescript: true,
+        }
+    }
 })

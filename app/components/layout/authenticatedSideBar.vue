@@ -50,8 +50,8 @@
             <div>
                 <!-- TODO: tilføj noget info her måske? -->
             </div>
-            <div class="divider -mx-2"></div>
-            <select class="select" v-model="currentSelected">
+            <div class="divider -mx-2"/>
+            <select v-model="currentSelected" class="select">
                 <option disabled value="">Your organizations</option>
                 <option v-for="org in mockOrgs" :key="org" :value="org">{{ org }}</option>
             </select>

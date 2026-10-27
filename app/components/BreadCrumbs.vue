@@ -1,7 +1,7 @@
 <template>
     <div class="breadcrumbs text-sm">
         <ul>
-            <li v-for="(breadcrumb, index) in resolvedBreadCrumbs">
+            <li v-for="(breadcrumb, index) in resolvedBreadCrumbs" :key="index">
                 <NuxtLink :to="breadcrumb.route" >
                     {{ breadcrumb.label }}
                 </NuxtLink>

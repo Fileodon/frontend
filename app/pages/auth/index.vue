@@ -1,6 +1,6 @@
 <template>
   <div class="flex min-h-screen flex-1 flex-col items-center justify-center p-4">
-    <auth-form ref="auth-form" @register="handleRegister" :errors="errors" @login="handleLogin" />
+    <auth-form ref="auth-form" :errors="errors" @register="handleRegister" @login="handleLogin" />
   </div>
 </template>
 
