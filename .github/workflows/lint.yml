@@ -1,0 +1,23 @@
+name: Lint
+
+on:
+  pull_request:
+    branches: [main, dev]
+
+jobs:
+  eslint:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      # Generates .nuxt/eslint.config.mjs, which your eslint.config.mjs imports
+      - run: npx nuxt prepare
+
+      - run: npx eslint .
