@@ -7,13 +7,11 @@ export function passwordValidation(password: string): (string | null | undefined
     return "The required length of the password must be greater or equal to 8";
   }
 
-  if (password.search("\d") === -1) {
-    console.log("Not valid number: ", password, password.search("\d") === -1);
+  if (!/\d/.test(password)) {
     return "The password must contain a number!";
   }
 
-  if (password.search("[a-z]") === -1 || password.search("[A-Z]") === -1) {
-    console.log("Not valid char: ", password, password.search("[a-z]") === -1, password.search("[A-Z]") === -1)
+  if (!/[a-z]/.test(password) || !/[A-Z]/.test(password)) {
     return "The password must contain a upper- & lower case letter!";
   }
 }
