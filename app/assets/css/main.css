@@ -16,6 +16,10 @@ h1{
 h5{
     @apply text-lg
 }
+@utility connection-stat {
+  @apply m-2.5 rounded border border-gray-600 bg-black/35;
+}
+
 /* 
 @utility menu-active {
     @apply bg-primary-content text-primary

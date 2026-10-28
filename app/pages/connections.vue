@@ -3,14 +3,14 @@
     <h3>Connections</h3>
     <p class="text-gray-500 italic">Manage your SFTP servers and review incoming connection requests</p>
     <section id="cards" class="w-full pt-5 h-fit flex flex-row">
-      <div class="stats m-2.5 bg-black/35 border rounded border-gray-600">
+      <div class="stats connection-stat">
         <div class="stat">
           <div class="stat-title">Total connections</div>
           <div class="stat-value font-normal">03</div>
           <div class="stat-desc">Across your organisation</div>
         </div>
       </div>
-      <div class="stats m-2.5 bg-black/35 border rounded border-gray-600">
+      <div class="stats connection-stat">
         <div class="stat">
           <div class="stat-title">Active</div>
           <div class="stat-value text-success font-normal">01</div>
@@ -18,14 +18,14 @@
         </div>
 
       </div>
-      <div class="stats m-2.5 bg-black/35 border rounded border-gray-600">
+      <div class="stats connection-stat">
         <div class="stat">
           <div class="stat-title">Pending approval</div>
           <div class="stat-value text-warning font-normal">01</div>
           <div class="stat-desc">Review incoming requests</div>
         </div>
       </div>
-      <div class="stats m-2.5 bg-black/35 border rounded border-gray-600">
+      <div class="stats connection-stat">
         <div class="stat">
           <div class="stat-title">Offline</div>
           <div class="stat-value text-error font-normal">01</div>
