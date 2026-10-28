@@ -11,7 +11,7 @@ export default defineNuxtConfig({
         plugins: [tailwindcss() as any],
     },
     css: ['~/assets/css/main.css'],
-    modules: ['@pinia/nuxt', '@nuxt/icon/module', 'nuxt-open-fetch'],
+    modules: ['@pinia/nuxt', '@nuxt/icon/module', 'nuxt-open-fetch',  '@nuxt/test-utils/module'],
     icon:{
         customCollections:[
             {
