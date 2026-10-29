@@ -6,9 +6,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 		context.options.headers.set('Authorization', `Bearer ${authStore.accessJWT}`)
 	})
 	nuxtApp.hook('openFetch:onResponseError', async (context) => {
-		// TODO handle try refresh if available
-		console.log(context.error)
 		const authStore = useAuthStore()
-		authStore.refresh()
+		if (context.response.status === 401) {
+			authStore.refresh()
+			// If refresh is successfull, should we call the thing that failed?
+		}
 	})
 })

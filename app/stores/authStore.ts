@@ -2,41 +2,38 @@ import { defineStore } from 'pinia'
 import { emailValidation } from '~/utils/validation/email'
 import { passwordValidation } from '~/utils/validation/password'
 
+interface IErrorResponse {
+	errors: Record<string, string>
+}
+const accessTokenCookieName = 'accessToken'
 // This store has the purpose of handling all interaction with auth endpoints, and provide authentification for the rest of the application.
 export const useAuthStore = defineStore('auth', () => {
 	const { $api } = useNuxtApp()
 	const tokenExpiry = ref()
 	// This is the short lived token
-	const accessTokenCookie = useCookie('accessToken', {})
-	// This is long lived and should be moved to httpOnly cookie.
-	const refreshTokenCookie = useCookie('refreshToken', {
-		refresh: true, // refreshed expiry every time refreshTokenCookie.value is set
-		expires: tokenExpiry.value ?? new Date(Date.now() + 60 * 60 * 1000),
+	const accessJWTRef = ref<string | null | undefined>(useCookie(accessTokenCookieName).value)
+
+	const isLoggedIn = computed(() => {
+		// Maybe do some check on JWT has x more ttl?
+		return !!accessJWT.value
 	})
-	const accessJWTRef = ref<string | null | undefined>(accessTokenCookie.value)
-	const refreshJWTRef = ref<string | null | undefined>(refreshTokenCookie.value)
 
 	const accessJWT = computed({
 		get: () => accessJWTRef.value,
-		set: (val: string | null | undefined) => {
+		set: async (val: string | null | undefined) => {
+			const accessTokenCookie = useCookie(accessTokenCookieName)
 			accessTokenCookie.value = val
+			await nextTick()
 			accessJWTRef.value = val
 		},
 	})
 
-	const refreshJWT = computed({
-		get: () => refreshJWTRef.value,
-		set: (val: string | null | undefined) => {
-			refreshTokenCookie.value = val
-			refreshJWTRef.value = val
-		},
-	})
-
-	const { data: user } = useLazyApi('/api/auth/me', {
+	const { data: user, refresh: refreshAuthMe } = useLazyApi('/api/auth/me', {
 		server: false,
+		enabled: !!accessJWT.value,
 	})
 
-	async function login(form: Schema<'LoginRequest'>) {
+	async function login(form: Schema<'LoginRequest'>): Promise<IErrorResponse> {
 		const emailError = emailValidation(form.email ?? '')
 		if (emailError) {
 			return { errors: { email: emailError } }
@@ -47,16 +44,19 @@ export const useAuthStore = defineStore('auth', () => {
 		}
 		const response = await $api('/api/auth', {
 			method: 'POST',
+			credentials: 'include',
 			body: form,
 		})
 		if (!response.accessToken) {
 			alert('login faild skill issue?')
-			return
+			return { errors: { noToken: 'could not generate token' } }
 		}
 		await handleAuthSuccessResponse(response)
+		refreshAuthMe()
+		return { errors: {} }
 	}
 
-	async function register(form: Schema<'RegisterRequest'>) {
+	async function register(form: Schema<'RegisterRequest'>): Promise<IErrorResponse> {
 		if (form.username && form.username?.trim().length <= 0) {
 			return { errors: { username: 'The username cannot be empty' } }
 		}
@@ -75,35 +75,52 @@ export const useAuthStore = defineStore('auth', () => {
 			onResponse: (res) => {
 				if (res.response.ok) {
 					alert('you are now registered gang shit')
-					navigateTo('/auth')
+					// navigateTo('/auth')
 				}
 				else {
 					alert('epic registration fails')
 				}
 			},
 		})
+		return { errors: {} }
 	}
 
 	async function refresh() {
-		if (!refreshJWT.value) return
-		const response = await $api('/api/auth/refresh', {
+		await $api('/api/auth/refresh', {
 			method: 'post',
 			credentials: 'include',
-			body: { refreshToken: refreshJWT.value },
+			ignoreResponseError: true,
+			onResponse: async (res) => {
+				if (res.response.ok) {
+					console.log(res.response._data)
+					await handleAuthSuccessResponse(res.response._data)
+					await nextTick()
+					await refreshAuthMe()
+				}
+				else {
+					console.log('add some logout')
+					logout()
+				}
+			},
 		})
-		await handleAuthSuccessResponse(response)
 	}
 
 	async function handleAuthSuccessResponse(response: Schema<'AuthResponse'>) {
-		tokenExpiry.value = response.refreshTokenExpiresAt
+		tokenExpiry.value = response.refreshTokenExpiryTimestamp
 		await nextTick() // make sure state is updated before we set new accessToken so that updated tokenExpiry is set on cookie
 		accessJWT.value = response.accessToken
-		refreshJWT.value = response.refreshToken
+	}
+
+	async function logout() {
+		// TODO call logout to remove refresh cookie
+		accessJWT.value = undefined
+		navigateTo('/auth')
 	}
 
 	return {
 		accessJWT: readonly(accessJWT),
 		user: readonly(user),
+		isLoggedIn,
 		login,
 		register,
 		refresh,
