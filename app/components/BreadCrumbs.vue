@@ -1,5 +1,8 @@
 <template>
-	<div id="breadcrumbs" class="breadcrumbs text-sm">
+	<div
+		id="breadcrumbs"
+		class="breadcrumbs text-sm"
+	>
 		<ul>
 			<li
 				v-for="(breadcrumb, index) in resolvedBreadCrumbs"
