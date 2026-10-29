@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
   themes: retro --default, dark --prefersdark;
   root: ":root";
@@ -9,15 +10,77 @@
 }
 
 
-h1{
-    @apply text-4xl 
+h1 {
+  @apply text-4xl
 }
 
-h5{
-    @apply text-lg
+h5 {
+  @apply text-lg
 }
+
 @utility connection-stat {
   @apply m-2.5 rounded border border-gray-600 bg-black/35;
+}
+
+.sidebar-connections-row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.sidebar-connections-link {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+.sidebar-connections-toggle {
+  display: grid;
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
+  place-items: center;
+  margin-inline-start: auto;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.sidebar-connections-chevron {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-0.1rem) rotate(45deg);
+  transition: transform 150ms ease;
+}
+
+.sidebar-connections-toggle[aria-expanded="true"] .sidebar-connections-chevron {
+  transform: translateY(0.1rem) rotate(225deg);
+}
+
+.sidebar-connections-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-inline-start: 3rem;
+}
+
+.sidebar-connections-dropdown[hidden] {
+  display: none;
+}
+
+.sidebar-connections-server {
+  padding: 0.25rem 0.75rem 0.25rem 0;
 }
 
 /* 

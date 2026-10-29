@@ -14,17 +14,45 @@
 					ORGANIZATION
 				</P>
 				<li>
-					<NuxtLink
-						:class="isActive('connections') ? 'menu-active': ''"
-						:to="'/connections'"
+					<div
+						class="sidebar-connections-row"
+						:class="isActive('connections') ? 'menu-active' : ''"
 					>
-						<Icon name="material-symbols-light:cable" />
-						Connections
-					</NuxtLink>
+						<NuxtLink
+							class="sidebar-connections-link"
+							:to="'/connections'"
+						>
+							<Icon name="material-symbols-light:cable" />
+							<span>Connections</span>
+						</NuxtLink>
+						<button
+							class="sidebar-connections-toggle"
+							type="button"
+							:aria-expanded="connectionsOpen"
+							aria-controls="connections-dropdown"
+							aria-label="Toggle connections list"
+							@click="connectionsOpen = !connectionsOpen"
+						>
+							<span class="sidebar-connections-chevron" />
+						</button>
+					</div>
+					<div
+						id="connections-dropdown"
+						class="sidebar-connections-dropdown bg-transparent"
+						:hidden="!connectionsOpen"
+					>
+						<span
+							v-for="server in mockData"
+							:key="server.id"
+							class="sidebar-connections-server link link-hover"
+						>
+							{{ server.name }}
+						</span>
+					</div>
 				</li>
 				<li>
 					<NuxtLink
-						:class="isActive('users') ? 'menu-active': ''"
+						:class="isActive('users') ? 'menu-active' : ''"
 						:to="'/users'"
 					>
 						<Icon name="material-symbols-light:group-outline-rounded" />
@@ -33,7 +61,7 @@
 				</li>
 				<li>
 					<NuxtLink
-						:class="isActive('audit-logs') ? 'menu-active': ''"
+						:class="isActive('audit-logs') ? 'menu-active' : ''"
 						:to="'/auditLogs'"
 					>
 						<Icon name="material-symbols-light:quick-reference-all-outline-rounded" />
@@ -42,7 +70,7 @@
 				</li>
 				<li>
 					<NuxtLink
-						:class="isActive('settings') ? 'menu-active': ''"
+						:class="isActive('settings') ? 'menu-active' : ''"
 						:to="'/settings'"
 					>
 						<Icon name="material-symbols-light:settings-outline-rounded" />
@@ -94,6 +122,7 @@
 import type { RouteRecordNameGeneric } from 'vue-router'
 
 const route = useRoute()
+const connectionsOpen = ref(false)
 const mockOrgs = ref<string[]>([
 	'Cool',
 	'Ikke ligeså cool',
@@ -103,6 +132,17 @@ const currentSelected = ref(mockOrgs.value[0])
 function isActive(name: RouteRecordNameGeneric): boolean {
 	return route.name === name
 }
+
+interface MockType {
+	id: number
+	name: string
+}
+
+const mockData: MockType[] = [
+	{ id: 1, name: 'Contabo server' },
+	{ id: 2, name: 'Hetzner server' },
+	{ id: 3, name: 'seb wsl laptop' },
+]
 </script>
 
 <style scoped>
