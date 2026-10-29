@@ -6,7 +6,7 @@ const { resolve } = createResolver(import.meta.url)
 
 export default defineNuxtConfig({
 
-	modules: ['@pinia/nuxt', '@nuxt/icon/module', 'nuxt-open-fetch', '@nuxt/eslint'],
+	modules: ['@pinia/nuxt', '@nuxt/icon/module', 'nuxt-open-fetch', '@nuxt/eslint', '@nuxt/test-utils/module'],
 	devtools: { enabled: true },
 	css: ['~/assets/css/main.css'],	compatibilityDate: '2025-07-15',
 	vite: {
