@@ -1,5 +1,5 @@
 <template>
-	<header class="navbar bg-base-50 border-b border-b-neutral-200">
+	<header class="navbar bg-base-100 border-b border-b-neutral-200">
 		<div class="flex-1">
 			<div>
 				<BreadCrumbs :previous-pages="['home', 'connections']" />
@@ -11,17 +11,17 @@
 				<input
 					type="checkbox"
 					class="theme-controller"
-					value="light"
+					value="retro"
 				>
 				<!-- sun icon -->
 				<Icon
 					name="material-symbols-light:light-mode-outline"
-					class="swap-on size-5"
+					class="swap-off size-5"
 				/>
 				<!-- moon icon -->
 				<Icon
 					name="material-symbols-light:dark-mode-outline"
-					class="swap-off size-5"
+					class="swap-on size-5"
 				/>
 			</label>
 
@@ -50,13 +50,15 @@
 						class="flex flex-row items-center"
 						@click="navigateProfile"
 					>
-						<Icon name="material-symbols-light:person-outline-rounded" /><p>Profile settings</p>
+						<Icon name="material-symbols-light:person-outline-rounded" />
+						<p>Profile settings</p>
 					</li>
 					<li
 						class="flex flex-row items-center"
 						@click="logout"
 					>
-						<Icon name="material-symbols-light:logout" /><p>Logout</p>
+						<Icon name="material-symbols-light:logout" />
+						<p>Logout</p>
 					</li>
 				</ul>
 			</div>
@@ -76,6 +78,4 @@ function navigateProfile() {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
