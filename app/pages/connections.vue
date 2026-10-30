@@ -1,9 +1,16 @@
 <template>
-	<div class="p-10 w-full h-full">
-		<h3>Connections</h3>
-		<p class="text-gray-500 italic">
-			Manage your SFTP servers and review incoming connection requests
-		</p>
+	<main class="mx-auto w-full p-4 sm:p-8">
+		<header class="mb-8">
+			<p class="text-sm font-medium text-primary">
+				Connections
+			</p>
+			<h1 class="mt-2">
+				Manage connections
+			</h1>
+			<p class="mt-2 text-base-content/70">
+				Manage your SFTP servers and review incoming connection requests
+			</p>
+		</header>
 		<section
 			id="cards"
 			class="w-full pt-5 h-fit flex flex-row"
@@ -72,7 +79,7 @@
 				<input
 					type="search"
 					placeholder="Search..."
-					class="w-sm rounded-md border border-gray-600 pl-2.5 outline-0 bg-black/35"
+					class="w-sm input input-md input-bordered w-full outline-0 bg-base-300"
 				>
 				<div class="ml-auto">
 					<button class="btn btn-soft btn-accent p-[0.6rem]">
@@ -164,7 +171,7 @@
 				</table>
 			</section>
 		</section>
-	</div>
+	</main>
 </template>
 
 <script lang="ts" setup>
