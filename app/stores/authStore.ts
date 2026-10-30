@@ -3,7 +3,8 @@ import { emailValidation } from '~/utils/validation/email'
 import { passwordValidation } from '~/utils/validation/password'
 
 interface IErrorResponse {
-	errors: Record<string, string>
+	success: boolean
+	errors?: Record<string, string>
 }
 const accessTokenCookieName = 'accessToken'
 // This store has the purpose of handling all interaction with auth endpoints, and provide authentification for the rest of the application.
@@ -36,11 +37,11 @@ export const useAuthStore = defineStore('auth', () => {
 	async function login(form: Schema<'LoginRequest'>): Promise<IErrorResponse> {
 		const emailError = emailValidation(form.email ?? '')
 		if (emailError) {
-			return { errors: { email: emailError } }
+			return { success: false, errors: { email: emailError } }
 		}
 		const passwordError = passwordValidation(form.password ?? '')
 		if (passwordError) {
-			return { errors: { password: passwordError } }
+			return { success: false, errors: { password: passwordError } }
 		}
 		const response = await $api('/api/auth', {
 			method: 'POST',
@@ -49,24 +50,24 @@ export const useAuthStore = defineStore('auth', () => {
 		})
 		if (!response.accessToken) {
 			alert('login faild skill issue?')
-			return { errors: { noToken: 'could not generate token' } }
+			return { success: false, errors: { noToken: 'could not generate token' } }
 		}
 		await handleAuthSuccessResponse(response)
 		refreshAuthMe()
-		return { errors: {} }
+		return { success: true, errors: {} }
 	}
 
 	async function register(form: Schema<'RegisterRequest'>): Promise<IErrorResponse> {
 		if (form.username && form.username?.trim().length <= 0) {
-			return { errors: { username: 'The username cannot be empty' } }
+			return { success: false, errors: { username: 'The username cannot be empty' } }
 		}
 		const emailError = emailValidation(form.email ?? '')
 		if (emailError) {
-			return { errors: { email: emailError } }
+			return { success: false, errors: { email: emailError } }
 		}
 		const passwordError = passwordValidation(form.password ?? '')
 		if (passwordError) {
-			return { errors: { password: passwordError } }
+			return { success: false, errors: { password: passwordError } }
 		}
 		await $api('/api/auth/register', {
 			method: 'post',
@@ -75,14 +76,14 @@ export const useAuthStore = defineStore('auth', () => {
 			onResponse: (res) => {
 				if (res.response.ok) {
 					alert('you are now registered gang shit')
-					// navigateTo('/auth')
+					navigateTo('/auth')
 				}
 				else {
 					alert('epic registration fails')
 				}
 			},
 		})
-		return { errors: {} }
+		return { success: true, errors: {} }
 	}
 
 	async function refresh() {
@@ -124,5 +125,6 @@ export const useAuthStore = defineStore('auth', () => {
 		login,
 		register,
 		refresh,
+		logout,
 	}
 })

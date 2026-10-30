@@ -54,7 +54,7 @@
 					</li>
 					<li
 						class="flex flex-row items-center"
-						@click="logout"
+						@click="authStore.logout"
 					>
 						<Icon name="material-symbols-light:logout" /><p>Logout</p>
 					</li>
@@ -66,10 +66,7 @@
 
 <script setup lang="ts">
 // TODO implement loading states and skeleton loaders
-
-function logout() {
-	alert('logout')
-}
+const authStore = useAuthStore()
 
 function navigateProfile() {
 	alert('navigate profile')

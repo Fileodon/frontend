@@ -39,6 +39,9 @@ async function handleRegister(registerForm: Schema<'RegisterRequest'>) {
 
 async function handleLogin(loginForm: Schema<'LoginRequest'>) {
 	const result = await authStore.login(loginForm)
+	if (result.success) {
+		return navigateTo('/test')
+	}
 	errors.value = result.errors
 }
 </script>
