@@ -29,7 +29,7 @@
 			<div class="flex flex-row gap-2 items-center justify-center">
 				<div class="avatar avatar-placeholder">
 					<div class="rounded-full bg-accent-content text-accent w-8 border border-accent/50 ">
-						<span class="text-sm">JE</span>
+						<span class="text-sm">{{ authStore.user?.username?.slice(0, 2).toUpperCase() }}</span>
 					</div>
 				</div>
 				<button

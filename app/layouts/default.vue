@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-const authStore = useAuthStore()
 </script>
 
 <style scoped>

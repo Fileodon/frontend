@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware(() => {
 	const { isLoggedIn } = useAuthStore()
-	console.log(isLoggedIn)
-	if (isLoggedIn) return navigateTo('/test?' + isLoggedIn)
+	// Should navigate to the correct admin dashboard path
+	if (isLoggedIn) return navigateTo('/test?')
 })
