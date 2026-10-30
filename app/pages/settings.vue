@@ -93,7 +93,7 @@
 			<div class="flex justify-end border-t border-base-300 px-6 py-4">
 				<button
 					type="submit"
-					class="btn btn-soft btn-success"
+					class="btn btn-soft btn-accent"
 				>
 					Create organization
 				</button>
