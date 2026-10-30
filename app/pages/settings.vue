@@ -28,7 +28,7 @@
 						for="organization-name"
 						class="floating-label"
 					>
-						<span>Organization name</span>
+						<span class="label-text font-medium">Organization name</span>
 					</label>
 					<input
 						id="organization-name"
@@ -93,7 +93,7 @@
 			<div class="flex justify-end border-t border-base-300 px-6 py-4">
 				<button
 					type="submit"
-					class="btn btn-soft btn-primary"
+					class="btn btn-soft btn-success"
 				>
 					Create organization
 				</button>
