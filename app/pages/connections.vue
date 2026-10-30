@@ -79,7 +79,7 @@
 				<input
 					type="search"
 					placeholder="Search..."
-					class="w-sm input input-md input-bordered w-full outline-0 bg-base-300"
+					class="w-sm input input-md input-bordered outline-0 bg-base-300"
 				>
 				<div class="ml-auto">
 					<button class="btn btn-soft btn-accent p-[0.6rem]">
