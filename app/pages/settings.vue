@@ -24,42 +24,81 @@
 
 			<div class="card-body gap-6 p-6">
 				<div class="space-y-2">
-					<label for="organization-name" class="floating-label">
+					<label
+						for="organization-name"
+						class="floating-label"
+					>
 						<span class="label-text font-medium">Organization name</span>
 					</label>
-					<input id="organization-name" v-model="form.name" type="text" placeholder="Fileodon A/S"
+					<input
+						id="organization-name"
+						v-model="form.name"
+						type="text"
+						placeholder="Fileodon A/S"
 						class="input input-md input-bordered w-full outline-0 bg-base-300"
-						aria-describedby="organization-name-help">
-					<p id="organization-name-help" class="text-sm text-base-content/70">
+						aria-describedby="organization-name-help"
+					>
+					<p
+						id="organization-name-help"
+						class="text-sm text-base-content/70"
+					>
 						Use a name your team and partners will recognize.
 					</p>
 				</div>
 
 				<div class="space-y-2">
-					<label for="workspace-url" class="floating-label">
+					<label
+						for="workspace-url"
+						class="floating-label"
+					>
 						<span class="label-text font-medium">Workspace URL</span>
 					</label>
-					<input id="workspace-url" v-model="form.url" type="text" placeholder="fileodon"
-						class="input input-bordered w-full outline-0 bg-base-300" aria-describedby="workspace-url-help">
-					<p id="workspace-url-help" class="text-sm text-base-content/70">
+					<input
+						id="workspace-url"
+						v-model="form.url"
+						type="text"
+						placeholder="fileodon"
+						class="input input-bordered w-full outline-0 bg-base-300"
+						aria-describedby="workspace-url-help"
+					>
+					<p
+						id="workspace-url-help"
+						class="text-sm text-base-content/70"
+					>
 						Use lowercase letters, numbers, and hyphens.
 					</p>
 				</div>
 
 				<div class="space-y-2">
-					<label for="contact-email" class="floating-label">
+					<label
+						for="contact-email"
+						class="floating-label"
+					>
 						<span class="label-text font-medium">Contact email</span>
 					</label>
-					<input id="contact-email" v-model="form.email" type="email" placeholder="team@example.com"
-						class="input input-bordered w-full outline-0 bg-base-300" aria-describedby="contact-email-help">
-					<p id="contact-email-help" class="text-sm text-base-content/70">
+					<input
+						id="contact-email"
+						v-model="form.email"
+						type="email"
+						placeholder="team@example.com"
+						class="input input-bordered w-full outline-0 bg-base-300"
+						aria-describedby="contact-email-help"
+					>
+					<p
+						id="contact-email-help"
+						class="text-sm text-base-content/70"
+					>
 						Connection requests and security notices will be sent here.
 					</p>
 				</div>
 			</div>
 
 			<div class="flex justify-end border-t border-base-300 px-6 py-4">
-				<button type="submit" class="btn btn-soft btn-accent" @click="createOrg">
+				<button
+					type="submit"
+					class="btn btn-soft btn-accent"
+					@click="createOrg"
+				>
 					Create organization
 				</button>
 			</div>
