@@ -3,7 +3,7 @@
 		<LayoutAuthenticatedSideBar />
 		<div class="flex flex-col grow">
 			<LayoutAuthenticatedHeader />
-			<div class=" p-1 sm:p-2">
+			<div class="p-10 w-full h-full">
 				<slot />
 			</div>
 		</div>
