@@ -1,9 +1,6 @@
 <template>
 	<div class="flex flex-col gap-4">
 		<div>
-			<h3>
-				Users
-			</h3>
 			<p class="text-gray-500 italic">
 				Manage your organisations users
 			</p>
@@ -91,10 +88,10 @@
 						<h3 class="text-lg font-bold">
 							Currently managing {{ currentUserEdit.username }}
 						</h3>
-						<div>
-							<p>
+						<div class="flex flex-col">
+							<label>
 								Role
-							</p>
+							</label>
 							<select
 								v-model="currentUserEditForm.role"
 								class="select w-fit"
