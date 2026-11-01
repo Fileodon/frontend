@@ -20,9 +20,10 @@
 			<div class="flex flex-col gap-4 h-fit m-2">
 				<div class="flex flex-row">
 					<input
+						v-model="queryString"
 						type="search"
 						placeholder="Search..."
-						class="w-sm rounded-md border border-gray-600 pl-2.5 outline-0 bg-black/35"
+						class="w-sm rounded-md border border-gray-600 px-2.5 outline-0 bg-black/35"
 					>
 					<div class="ml-auto">
 						<button class="btn btn-soft btn-accent p-[0.6rem]">
@@ -36,7 +37,6 @@
 				>
 					<thead>
 						<tr>
-							<th>ID</th>
 							<th>Username</th>
 							<th>Role</th>
 							<th>Actions</th>
@@ -48,7 +48,6 @@
 							:key="user.id"
 							class="hover:bg-gray-600/50"
 						>
-							<td>{{ user.id }}</td>
 							<td>{{ user.username }}</td>
 							<td>{{ user.role?.name }}</td>
 							<td>
@@ -174,6 +173,8 @@ const mockUsers = useState<MockUser[]>('mock-users', () => [
 	{ id: 4, username: 'Nicklas LobaDK', role: mockRoles[2] },
 	{ id: 5, username: 'Flemming lære', role: mockRoles[3] },
 ])
+
+const queryString = useState('users-query-string', () => '')
 
 const userEditModal = useTemplateRef('user_edit_modal')
 const currentUserEdit = useState<MockUser>('current-user-edit')
