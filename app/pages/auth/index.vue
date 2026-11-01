@@ -10,11 +10,13 @@
 </template>
 
 <script lang="ts" setup>
-import { passwordValidation } from '~/utils/validation/password'
-import { AuthForm } from '#components'
-
-definePageMeta({ layout: 'un-authenticated' })
+definePageMeta({
+	layout: 'un-authenticated',
+	middleware: ['guest'],
+})
 const route = useRoute()
+
+const authStore = useAuthStore()
 
 const errors = ref<Record<string, string>>()
 const form = useTemplateRef('auth-form')
@@ -30,62 +32,17 @@ watch([() => route.query, form], ([newQuery, newForm]) => {
 	}
 }, { deep: true })
 
-function handleRegister(registerForm: { username: string, email: string, password: string }) {
-	console.log('Register form submitted:', registerForm)
-	if (!registerForm) {
-		errors.value = { form: 'Register form is not found!' }
-		return
-	}
-
-	const emailError = validateEmail(registerForm.email)
-	if (emailError) {
-		errors.value = { email: emailError }
-		return
-	}
-
-	const passwordError = passwordValidation(registerForm.password)
-	if (passwordError) {
-		errors.value = { password: passwordError }
-		return
-	}
-
-	if (registerForm.username.trim().length < 0) {
-		errors.value = { username: 'The username length must not be empty!' }
-		return
-	}
+async function handleRegister(registerForm: Schema<'RegisterRequest'>) {
+	const result = await authStore.register(registerForm)
+	errors.value = result.errors
 }
 
-function handleLogin(loginForm: { email: string, password: string }) {
-	console.log('Login form submitted:', loginForm)
-	if (!loginForm) {
-		errors.value = { form: 'Login form is not found!' }
-		return
+async function handleLogin(loginForm: Schema<'LoginRequest'>) {
+	const result = await authStore.login(loginForm)
+	if (result.success) {
+		return navigateTo('/test')
 	}
-	const emailError = validateEmail(loginForm.email)
-	if (emailError) {
-		errors.value = { email: emailError }
-		return
-	}
-
-	const passwordError = passwordValidation(loginForm.password)
-	if (passwordError) {
-		errors.value = { password: passwordError }
-		return
-	}
-}
-
-function validateEmail(email: string): (string | null | undefined) {
-	if (!email || email.trim().length == 0) {
-		return 'Email input must not be empty!'
-	}
-
-	if (!email.includes('@')) {
-		return 'Email must contain \'@\'!'
-	}
-
-	if (!email.includes('.')) {
-		return 'Email must contain \'.\'!'
-	}
+	errors.value = result.errors
 }
 </script>
 

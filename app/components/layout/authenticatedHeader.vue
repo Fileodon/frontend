@@ -29,7 +29,7 @@
 			<div class="flex flex-row gap-2 items-center justify-center">
 				<div class="avatar avatar-placeholder">
 					<div class="rounded-full bg-accent-content text-accent w-8 border border-accent/50 ">
-						<span class="text-sm">JE</span>
+						<span class="text-sm">{{ authStore.user?.username?.slice(0, 2).toUpperCase() }}</span>
 					</div>
 				</div>
 				<button
@@ -55,7 +55,7 @@
 					</li>
 					<li
 						class="flex flex-row items-center"
-						@click="logout"
+						@click="authStore.logout"
 					>
 						<Icon name="material-symbols-light:logout" />
 						<p>Logout</p>
@@ -68,10 +68,7 @@
 
 <script setup lang="ts">
 // TODO implement loading states and skeleton loaders
-
-function logout() {
-	alert('logout')
-}
+const authStore = useAuthStore()
 
 function navigateProfile() {
 	alert('navigate profile')

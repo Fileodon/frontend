@@ -150,29 +150,24 @@
 <script setup lang="ts">
 const view = ref(true)
 
-interface LoginForm {
-	email: string
-	password: string
-}
-
-interface RegisterForm {
-	username: string
-	email: string
-	password: string
-}
 defineProps<{ errors: Record<string, string> | null | undefined }>()
-const emits = defineEmits(['register', 'login'])
+const emits = defineEmits<{
+	login: [form: Schema<'LoginRequest'>]
+	register: [form: Schema<'RegisterRequest'>]
+}>()
+
 defineExpose({ setView })
-const loginForm = ref<LoginForm>({
+
+const loginForm = useState<Schema<'LoginRequest'>>('auth-form-login', () => ({
 	email: '',
 	password: '',
-})
+}))
 
-const registerForm = ref<RegisterForm>({
+const registerForm = useState<Schema<'RegisterRequest'>>('auth-form-register', () => ({
 	username: '',
 	email: '',
 	password: '',
-})
+}))
 
 function setView(value: boolean) {
 	if (view.value === value) return
