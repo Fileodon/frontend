@@ -5,6 +5,11 @@
 				Manage your organisations users
 			</p>
 		</div>
+		<layout-header
+			title="Users"
+			header="Manage Users"
+			description="Manage organisation users"
+		/>
 		<section
 			id="stats"
 		>
