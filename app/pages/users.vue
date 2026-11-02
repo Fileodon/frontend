@@ -30,7 +30,7 @@
 				</div>
 				<table
 					id="users-table"
-					class="table bg-black/35 border border-gray-600 text-center"
+					class="resource-table"
 				>
 					<thead>
 						<tr>
@@ -45,7 +45,7 @@
 							:key="user.id"
 						>
 							<tr
-								class="hover:bg-gray-600/50 "
+								class="resource-table-row"
 							>
 								<td>{{ user.username }}</td>
 								<td>{{ user.role?.name }}</td>
