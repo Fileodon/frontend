@@ -3,9 +3,9 @@
 		<LayoutAuthenticatedSideBar />
 		<div class="flex flex-col grow">
 			<LayoutAuthenticatedHeader />
-			<div class=" p-1 sm:p-2">
+			<main class="mx-auto w-full p-5 sm:p-10">
 				<slot />
-			</div>
+			</main>
 		</div>
 	</div>
 </template>
