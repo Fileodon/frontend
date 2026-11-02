@@ -24,72 +24,56 @@
 
 			<div class="card-body gap-6 p-6">
 				<div class="space-y-2">
-					<label
-						for="organization-name"
-						class="floating-label"
-					>
-						<span class="label-text font-medium">Organization name</span>
-					</label>
-					<input
+					<form-input
 						id="organization-name"
-						v-model="form.name"
-						type="text"
-						placeholder="Fileodon A/S"
-						class="input input-md input-bordered w-full outline-0 bg-base-300"
-						aria-describedby="organization-name-help"
+						label="Organization name"
+						info="Use a name your team and partners will recognize"
+						:errors="errors"
 					>
-					<p
-						id="organization-name-help"
-						class="text-sm text-base-content/70"
-					>
-						Use a name your team and partners will recognize.
-					</p>
+						<input
+							id="organization-name"
+							v-model="form.name"
+							type="text"
+							placeholder="Fileodon A/S"
+							class="input input-md input-bordered w-full outline-0 bg-base-300"
+							aria-describedby="organization-name-help"
+						>
+					</form-input>
 				</div>
-
 				<div class="space-y-2">
-					<label
-						for="workspace-url"
-						class="floating-label"
-					>
-						<span class="label-text font-medium">Workspace URL</span>
-					</label>
-					<input
+					<form-input
 						id="workspace-url"
-						v-model="form.url"
-						type="text"
-						placeholder="fileodon"
-						class="input input-bordered w-full outline-0 bg-base-300"
-						aria-describedby="workspace-url-help"
+						label="Workspace URL"
+						info="Use lowercase letters, numbers, and hyphens."
+						:errors="errors"
 					>
-					<p
-						id="workspace-url-help"
-						class="text-sm text-base-content/70"
-					>
-						Use lowercase letters, numbers, and hyphens.
-					</p>
+						<input
+							id="workspace-url"
+							v-model="form.url"
+							type="text"
+							placeholder="fileodon"
+							class="input input-bordered w-full outline-0 bg-base-300"
+							aria-describedby="workspace-url-help"
+						>
+					</form-input>
 				</div>
 
 				<div class="space-y-2">
-					<label
-						for="contact-email"
-						class="floating-label"
-					>
-						<span class="label-text font-medium">Contact email</span>
-					</label>
-					<input
+					<form-input
 						id="contact-email"
-						v-model="form.email"
-						type="email"
-						placeholder="team@example.com"
-						class="input input-bordered w-full outline-0 bg-base-300"
-						aria-describedby="contact-email-help"
+						label="Contact email"
+						info="Connection requests and security notices will be sent here."
+						:errors="errors"
 					>
-					<p
-						id="contact-email-help"
-						class="text-sm text-base-content/70"
-					>
-						Connection requests and security notices will be sent here.
-					</p>
+						<input
+							id="contact-email"
+							v-model="form.email"
+							type="email"
+							placeholder="team@example.com"
+							class="input input-bordered w-full outline-0 bg-base-300"
+							aria-describedby="contact-email-help"
+						>
+					</form-input>
 				</div>
 			</div>
 
@@ -111,7 +95,7 @@ definePageMeta({
 	title: 'Settings',
 	breadcrumbs: ['index'],
 })
-
+const errors = ref<string[]>()
 interface CreateOrganization {
 	name: string
 	email: string
