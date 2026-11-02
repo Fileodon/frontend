@@ -10,12 +10,12 @@
 		</div>
 		<div>
 			<ul class="menu rounded-box w-full">
-				<P class="mb-2 text-gray-400">
+				<p class="mb-2 text-gray-400">
 					ORGANIZATION
-				</P>
+				</p>
 				<li>
 					<NuxtLink
-						:class="isActive('connections') ? 'menu-active': ''"
+						:class="isActive('connections') ? 'menu-active' : ''"
 						:to="'/connections'"
 					>
 						<Icon name="material-symbols-light:cable" />
@@ -24,7 +24,7 @@
 				</li>
 				<li>
 					<NuxtLink
-						:class="isActive('users') ? 'menu-active': ''"
+						:class="isActive('users') ? 'menu-active' : ''"
 						:to="'/users'"
 					>
 						<Icon name="material-symbols-light:group-outline-rounded" />
@@ -33,7 +33,7 @@
 				</li>
 				<li>
 					<NuxtLink
-						:class="isActive('audit-logs') ? 'menu-active': ''"
+						:class="isActive('audit-logs') ? 'menu-active' : ''"
 						:to="'/auditLogs'"
 					>
 						<Icon name="material-symbols-light:quick-reference-all-outline-rounded" />
@@ -42,7 +42,7 @@
 				</li>
 				<li>
 					<NuxtLink
-						:class="isActive('settings') ? 'menu-active': ''"
+						:class="isActive('settings') ? 'menu-active' : ''"
 						:to="'/settings'"
 					>
 						<Icon name="material-symbols-light:settings-outline-rounded" />
@@ -86,6 +86,9 @@
 					{{ org }}
 				</option>
 			</select>
+			<button class="btn btn-soft w-full mt-2 p-1">
+				Create new
+			</button>
 		</div>
 	</div>
 </template>
@@ -105,6 +108,4 @@ function isActive(name: RouteRecordNameGeneric): boolean {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
