@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<Header
+		<layout-header
 			title="Connections"
 			header="Manage connections"
 			description="Manage your SFTP servers and review incoming connection requests"

@@ -149,13 +149,13 @@ definePageMeta({
 	breadcrumbs: ['index'],
 })
 
-interface MockUser {
+export interface MockUser {
 	id: number
 	username: string
 	role?: MockRole
 }
 
-interface MockRole {
+export interface MockRole {
 	id: number
 	name: string
 }
