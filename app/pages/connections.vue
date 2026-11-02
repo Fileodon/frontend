@@ -1,5 +1,5 @@
 <template>
-	<main class="mx-auto w-full p-4 sm:p-8">
+	<div>
 		<header class="mb-8">
 			<p class="text-sm font-medium text-primary">
 				Connections
@@ -171,7 +171,7 @@
 				</table>
 			</section>
 		</section>
-	</main>
+	</div>
 </template>
 
 <script lang="ts" setup>
