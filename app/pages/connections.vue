@@ -1,16 +1,10 @@
 <template>
 	<div>
-		<header class="mb-8">
-			<p class="text-sm font-medium text-primary">
-				Connections
-			</p>
-			<h1 class="mt-2">
-				Manage connections
-			</h1>
-			<p class="mt-2 text-base-content/70">
-				Manage your SFTP servers and review incoming connection requests
-			</p>
-		</header>
+		<Header
+			title="Connections"
+			header="Manage connections"
+			description="Manage your SFTP servers and review incoming connection requests"
+		/>
 		<section
 			id="cards"
 			class="w-full pt-5 h-fit flex flex-row"
@@ -175,6 +169,8 @@
 </template>
 
 <script lang="ts" setup>
+import Header from '~/components/layout/header.vue'
+
 definePageMeta({
 	title: 'Connections',
 	breadcrumbs: ['index'],

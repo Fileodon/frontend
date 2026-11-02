@@ -1,16 +1,10 @@
 <template>
 	<div>
-		<header class="mb-8">
-			<p class="text-sm font-medium text-primary">
-				Organization
-			</p>
-			<h1 class="mt-2">
-				Create an organization
-			</h1>
-			<p class="mt-2 text-base-content/70">
-				A dedicated home for your team, connections, and file transfers.
-			</p>
-		</header>
+		<Header
+			title="Organization"
+			header="Create an organization"
+			description="A dedicated home for your team, connections, and file transfers"
+		/>
 
 		<form class="card border border-base-300 bg-base-100 shadow-sm">
 			<div class="border-b border-base-300 px-6 py-5">
@@ -91,6 +85,8 @@
 </template>
 
 <script lang="ts" setup>
+import Header from '~/components/layout/header.vue'
+
 definePageMeta({
 	title: 'Settings',
 	breadcrumbs: ['index'],
