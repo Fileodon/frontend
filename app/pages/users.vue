@@ -40,23 +40,82 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr
+						<template
 							v-for="user in mockUsers"
 							:key="user.id"
-							class="hover:bg-gray-600/50"
 						>
-							<td>{{ user.username }}</td>
-							<td>{{ user.role?.name }}</td>
-							<td>
-								<button
-									class="btn btn-sm btn-info"
-									:disabled="!mockCurrentUserPermissions.includes('edit')"
-									@click="editUser(user)"
+							<tr
+								class="hover:bg-gray-600/50 "
+							>
+								<td>{{ user.username }}</td>
+								<td>{{ user.role?.name }}</td>
+								<td>
+									<button
+										class="btn btn-sm btn-info"
+										:disabled="!mockCurrentUserPermissions.includes('edit')"
+										@click="editUser(user)"
+									>
+										Edit
+									</button>
+								</td>
+							</tr>
+							<tr
+								v-if="currentUserEditForm && currentUserEdit && currentUserEdit.id === user.id"
+							>
+								<td
+									colspan="3"
 								>
-									Edit
-								</button>
-							</td>
-						</tr>
+									<div
+										class="flex flex-col gap-4 text-left"
+									>
+										<div class="flex flex-row justify-between">
+											<h3 class="text-lg font-bold">
+												Currently managing {{ currentUserEdit.username }}
+											</h3>
+											<button
+												class="btn btn-xs rounded"
+												@click="clearCurrentUserEdit()"
+											>
+												close
+											</button>
+										</div>
+										<div class="flex flex-col">
+											<label>
+												Role
+											</label>
+											<select
+												v-model="currentUserEditForm.role"
+												class="select w-fit"
+											>
+												<option
+													v-for="role in mockRoles"
+													:key="role.id"
+													:value="role"
+												>
+													{{ role.name }}
+												</option>
+											</select>
+										</div>
+										<!-- Reverse to have submit be on tab index before remove -->
+										<div class="flex flex-row-reverse justify-between">
+											<button
+												id="submit"
+												class="btn btn-sm btn-success"
+												@click="submitEditUser"
+											>
+												Submit changes
+											</button>
+											<button
+												class="btn btn-sm btn-error"
+												@click="removeUser"
+											>
+												Remove from organisation
+											</button>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</template>
 					</tbody>
 				</table>
 				<div class="flex flex-row align-center justify-between">
@@ -76,68 +135,6 @@
 			</div>
 		</section>
 		<!-- User edit modal -->
-		<dialog
-			id="user_edit_modal"
-			ref="user_edit_modal"
-			class="modal"
-		>
-			<div class="modal-box">
-				<div v-if="currentUserEdit">
-					<form
-						class="flex flex-col gap-4"
-						@submit.prevent="submitEditUser()"
-					>
-						<h3 class="text-lg font-bold">
-							Currently managing {{ currentUserEdit.username }}
-						</h3>
-						<div class="flex flex-col">
-							<label>
-								Role
-							</label>
-							<select
-								v-model="currentUserEditForm.role"
-								class="select w-fit"
-							>
-								<option
-									v-for="role in mockRoles"
-									:key="role.id"
-									:value="role"
-								>
-									{{ role.name }}
-								</option>
-							</select>
-						</div>
-						<!-- Reverse to have submit be on tab index before remove -->
-						<div class="flex flex-row-reverse justify-between">
-							<button
-								id="submit"
-								class="btn btn-sm btn-success"
-							>
-								Submit changes
-							</button>
-							<button
-								class="btn btn-sm btn-error"
-								@click.prevent="removeUser"
-							>
-								Remove from organisation
-							</button>
-						</div>
-					</form>
-				</div>
-				<div v-else>
-					<p>Geting ready</p>
-				</div>
-			</div>
-			<!-- closes modal on esc or click on backdrop -->
-			<form
-				method="dialog"
-				class="modal-backdrop"
-			>
-				<button>
-					Close
-				</button>
-			</form>
-		</dialog>
 	</div>
 </template>
 
@@ -180,37 +177,43 @@ const mockCurrentUserPermissions = useState<string[]>('mock-current-user-permiss
 
 const queryString = useState('users-query-string', () => '')
 
-const userEditModal = useTemplateRef('user_edit_modal')
-const currentUserEdit = useState<MockUser>('current-user-edit')
+const currentUserEdit = useState<MockUser | undefined>('current-user-edit', () => undefined)
 // TODO replace type here with the DTO form
-const currentUserEditForm = useState<MockUser>()
+const currentUserEditForm = useState<MockUser | undefined>('current-user-edit-form', () => undefined)
 
 async function editUser(user: MockUser) {
 	currentUserEdit.value = { ...user }
 	currentUserEditForm.value = { ...user }
 	await nextTick()
-	userEditModal.value?.showModal()
 }
 
 async function submitEditUser() {
 	// TODO validate stuff maybe
-	if (currentUserEdit.value === undefined) {
+	if (currentUserEdit.value === undefined || currentUserEditForm.value === undefined) {
 		alert('error tried to submit without edit set')
 		return
 	}
 
 	const originaluserindex = mockUsers.value.findIndex(u => u.id === currentUserEdit.value?.id)
+	if (!originaluserindex) {
+		return
+	}
 	mockUsers.value[originaluserindex] = currentUserEditForm.value
-	userEditModal.value?.close()
+	clearCurrentUserEdit()
 }
 
 async function removeUser() {
-	if (currentUserEdit.value === undefined) {
+	if (currentUserEdit.value === undefined || currentUserEditForm.value === undefined) {
 		alert('error tried to remove without edit set')
 		return
 	}
-	mockUsers.value = mockUsers.value.filter(u => u.id !== currentUserEdit.value.id)
-	userEditModal.value?.close()
+	mockUsers.value = mockUsers.value.filter(u => u.id !== currentUserEdit.value?.id)
+	clearCurrentUserEdit()
+}
+
+async function clearCurrentUserEdit() {
+	currentUserEdit.value = undefined
+	currentUserEditForm.value = undefined
 }
 </script>
 
