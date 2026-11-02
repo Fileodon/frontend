@@ -50,6 +50,7 @@
 							<td>
 								<button
 									class="btn btn-sm btn-info"
+									:disabled="!mockCurrentUserPermissions.includes('edit')"
 									@click="editUser(user)"
 								>
 									Edit
@@ -63,6 +64,7 @@
 						Showing {{ mockUsers.length }} out of {{ mockUsers.length }} users
 					</p>
 					<div class="join">
+						<!-- TODO: Impementer pagination -->
 						<button
 							disabled
 							class="join-item btn btn-sm btn-active"
@@ -169,6 +171,11 @@ const mockUsers = useState<MockUser[]>('mock-users', () => [
 	{ id: 3, username: 'Tobias Tobiassen', role: mockRoles[1] },
 	{ id: 4, username: 'Nicklas LobaDK', role: mockRoles[2] },
 	{ id: 5, username: 'Flemming lære', role: mockRoles[3] },
+])
+
+const mockCurrentUserPermissions = useState<string[]>('mock-current-user-permissions', () => [
+	'edit',
+	'view',
 ])
 
 const queryString = useState('users-query-string', () => '')

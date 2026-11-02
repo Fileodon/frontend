@@ -19,6 +19,10 @@ h5 {
   @apply m-2.5 rounded border border-base-100 bg-neutral/35;
 }
 
+@utility select {
+	@apply outline-0
+}
+
 /* 
 @utility menu-active {
     @apply bg-primary-content text-primary
