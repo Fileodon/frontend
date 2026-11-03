@@ -65,59 +65,18 @@
 								</td>
 							</tr>
 							<tr
-								v-if="currentUserEditForm && currentUserEdit && currentUserEdit.id === user.id"
+								v-show="currentUserEdit && currentUserEdit.id === user.id"
 							>
 								<td
 									colspan="3"
 								>
-									<div
-										class="flex flex-col gap-4 text-left"
-									>
-										<div class="flex flex-row justify-between">
-											<h3 class="text-lg font-bold">
-												Currently managing {{ currentUserEdit.username }}
-											</h3>
-											<button
-												class="btn btn-xs rounded"
-												@click="clearCurrentUserEdit()"
-											>
-												close
-											</button>
-										</div>
-										<div class="flex flex-col">
-											<label>
-												Role
-											</label>
-											<select
-												v-model="currentUserEditForm.role"
-												class="select w-fit"
-											>
-												<option
-													v-for="role in mockRoles"
-													:key="role.id"
-													:value="role"
-												>
-													{{ role.name }}
-												</option>
-											</select>
-										</div>
-										<!-- Reverse to have submit be on tab index before remove -->
-										<div class="flex flex-row-reverse justify-between">
-											<button
-												id="submit"
-												class="btn btn-sm btn-success"
-												@click="submitEditUser"
-											>
-												Submit changes
-											</button>
-											<button
-												class="btn btn-sm btn-error"
-												@click="removeUser"
-											>
-												Remove from organisation
-											</button>
-										</div>
-									</div>
+									<forms-organization-user
+										:user="user"
+										:roles="mockRoles"
+										@remove-user="removeUser"
+										@save-changes="submitEditUser"
+										@close="clearCurrentUserEdit"
+									/>
 								</td>
 							</tr>
 						</template>
@@ -183,19 +142,24 @@ const mockCurrentUserPermissions = useState<string[]>('mock-current-user-permiss
 const queryString = useState('users-query-string', () => '')
 
 const currentUserEdit = useState<MockUser | undefined>('current-user-edit', () => undefined)
-// TODO replace type here with the DTO form
-const currentUserEditForm = useState<MockUser | undefined>('current-user-edit-form', () => undefined)
 
 async function editUser(user: MockUser) {
+	if (currentUserEdit.value?.id == user.id) {
+		clearCurrentUserEdit()
+		return
+	}
 	currentUserEdit.value = { ...user }
-	currentUserEditForm.value = { ...user }
 	await nextTick()
 }
 
-async function submitEditUser() {
+async function submitEditUser(user: MockUser) {
 	// TODO validate stuff maybe
-	if (currentUserEdit.value === undefined || currentUserEditForm.value === undefined) {
+	if (currentUserEdit.value === undefined || user.id !== currentUserEdit.value.id) {
 		alert('error tried to submit without edit set')
+		return
+	}
+
+	if (user.id !== currentUserEdit.value.id) {
 		return
 	}
 
@@ -203,22 +167,22 @@ async function submitEditUser() {
 	if (!originaluserindex) {
 		return
 	}
-	mockUsers.value[originaluserindex] = currentUserEditForm.value
+	mockUsers.value[originaluserindex] = user
 	clearCurrentUserEdit()
 }
 
-async function removeUser() {
-	if (currentUserEdit.value === undefined || currentUserEditForm.value === undefined) {
+async function removeUser(user: MockUser) {
+	if (currentUserEdit.value === undefined || user.id !== currentUserEdit.value.id) {
 		alert('error tried to remove without edit set')
 		return
 	}
-	mockUsers.value = mockUsers.value.filter(u => u.id !== currentUserEdit.value?.id)
+
+	mockUsers.value = mockUsers.value.filter(u => u.id !== user.id)
 	clearCurrentUserEdit()
 }
 
 async function clearCurrentUserEdit() {
 	currentUserEdit.value = undefined
-	currentUserEditForm.value = undefined
 }
 </script>
 

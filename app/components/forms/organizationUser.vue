@@ -2,13 +2,15 @@
 	<div
 		class="flex flex-col gap-4 text-left"
 	>
-		<div class="flex flex-row justify-between">
+		<div
+			class="flex flex-row justify-between"
+		>
 			<h3 class="text-lg font-bold">
 				Currently managing {{ dirtyUser.username }}
 			</h3>
 			<button
 				class="btn btn-xs rounded"
-				@click="close()"
+				@click="emit('close')"
 			>
 				close
 			</button>
@@ -35,13 +37,13 @@
 			<button
 				id="submit"
 				class="btn btn-sm btn-success"
-				@click="submitUser"
+				@click="emit('saveChanges', dirtyUser)"
 			>
 				Submit changes
 			</button>
 			<button
 				class="btn btn-sm btn-error"
-				@click="removeUser"
+				@click="emit('removeUser', dirtyUser)"
 			>
 				Remove from organisation
 			</button>
@@ -55,12 +57,23 @@ import type { MockRole, MockUser } from '~/pages/users.vue'
 const props = defineProps<{
 	user: MockUser
 	roles: MockRole[]
-	removeUser: () => void
-	submitUser: () => void
-	close: () => void
+}>()
+
+const emit = defineEmits<{
+	removeUser: [user: MockUser]
+	saveChanges: [user: MockUser] // Implementer her og på remove at den skal sende den korrekte DTO retur
+	close: []
 }>()
 
 const { dirtyObject: dirtyUser } = useForm(props.user)
+
+onUnmounted(() => {
+	console.log('unmounting organizationUsers')
+})
+
+watchEffect(() => {
+	console.log(props)
+})
 </script>
 
 <style scoped>

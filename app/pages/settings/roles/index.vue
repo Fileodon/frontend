@@ -8,6 +8,7 @@
 				<thead>
 					<tr>
 						<td>name</td>
+						<td>Actions</td>
 					</tr>
 				</thead>
 				<tbody>
@@ -19,26 +20,24 @@
 							<td>
 								{{ role.name }}
 							</td>
+							<td>
+								<button
+									class="btn btn-sm btn-info"
+									@click="editUser(role)"
+								>
+									Edit
+								</button>
+							</td>
 						</tr>
-						<tr>
-							<td colspan="1">
-								<fieldset class="fieldset grid grid-cols-1 md:grid-cols-3  bg-base-100 border-base-300 rounded-box border p-4 w-full ">
-									<legend class="fieldset-legend">
-										Permissions
-									</legend>
-									<label
-										v-for="(p, index) in mockPermissions"
-										:key="index"
-										class="label"
-									>
-										<input
-											type="checkbox"
-											:checked="true"
-											class="toggle toggle-accent"
-										>
-										{{ p }}
-									</label>
-								</fieldset>
+						<tr v-show="currentRoleEdit && currentRoleEdit.id === role.id ">
+							<td colspan="2">
+								<forms-organization-roles
+									:role="role"
+									:permissions="mockPermissions"
+									@close="clearCurrentUserEdit"
+									@submit-role="() => console.log('save role permissions')"
+									@remove-role="() => console.log('remove role')"
+								/>
 							</td>
 						</tr>
 					</template>
@@ -53,8 +52,8 @@ enum MockStatus {
 	SYSTEM = 'system',
 	CUSTOM = 'custom',
 }
-type permission = 'users.edit' | 'user.view' | 'connections.edit' | 'connections.view'
-interface MockRole {
+export type permission = 'users.edit' | 'user.view' | 'connections.edit' | 'connections.view'
+export interface MockRole {
 	id: number
 	name: string
 	type: MockStatus
@@ -73,6 +72,21 @@ const mockRoles: MockRole[] = [
 	{ id: 3, name: 'viewer', type: MockStatus.SYSTEM, user_count: 3, permissions: ['connections.view', 'user.view'] },
 	{ id: 4, name: 'guest', type: MockStatus.CUSTOM, user_count: 0, permissions: [] },
 ]
+
+const currentRoleEdit = useState<MockRole | undefined>('current-role-edit', () => undefined)
+
+async function editUser(role: MockRole) {
+	if (currentRoleEdit.value?.id == role.id) {
+		clearCurrentUserEdit()
+		return
+	}
+	currentRoleEdit.value = { ...role }
+	await nextTick()
+}
+
+async function clearCurrentUserEdit() {
+	currentRoleEdit.value = undefined
+}
 </script>
 
 <style scoped>
