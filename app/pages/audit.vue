@@ -49,10 +49,12 @@
 				<table class="table table-sm w-full h-fit text-center">
 					<thead>
 						<tr>
-							<th>Action</th>
-							<th>User</th>
-							<th>Message</th>
-							<th>Timestamp</th>
+							<th
+								v-for="item in headerMockData"
+								:key="item"
+							>
+								{{ item }}
+							</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -121,6 +123,13 @@ const dropdownMockdata: string[] = [
 	'Database',
 	'Files',
 	'Servers',
+]
+
+const headerMockData: string[] = [
+	'Action',
+	'User',
+	'Message',
+	'Timestamp',
 ]
 
 const mockData: MockType[] = [
