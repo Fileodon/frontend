@@ -70,10 +70,6 @@ const { dirtyObject: dirtyUser } = useForm(props.user)
 onUnmounted(() => {
 	console.log('unmounting organizationUsers')
 })
-
-watchEffect(() => {
-	console.log(props)
-})
 </script>
 
 <style scoped>
