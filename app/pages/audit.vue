@@ -109,12 +109,7 @@ const statusClasses: Record<ActionType, { badge: string, indicator: string }> = 
 	[ActionType.MODIFIED]: { badge: 'badge-warning', indicator: 'status-warning' },
 	[ActionType.DELETE]: { badge: 'badge-error', indicator: 'status-error' },
 }
-/*
-							<th>Action</th>
-							<th>User</th>
-							<th>Message</th>
-							<th>Timestamp</th>
-*/
+
 interface MockType {
 	name: string
 	action: ActionType
