@@ -167,7 +167,7 @@ async function submitEditUser(user: MockUser) {
 	}
 
 	const originaluserindex = mockUsers.value.findIndex(u => u.id === currentUserEdit.value?.id)
-	if (!originaluserindex) {
+	if (originaluserindex < 0) {
 		return
 	}
 	mockUsers.value[originaluserindex] = user
