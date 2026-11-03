@@ -1,7 +1,7 @@
 <template>
 	<section
 		id="table"
-		class="card w-full h-fit border border-gray-600 p-2"
+		class="card flex flex-col gap-4 w-full h-fit border border-gray-600 p-2 shadow-sm"
 	>
 		<div class="flex flex-col gap-4 h-fit">
 			<div class="flex flex-row">

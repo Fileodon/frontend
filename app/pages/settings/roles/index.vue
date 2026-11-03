@@ -37,7 +37,18 @@
 		</section>
 		<table-card>
 			<template #head>
-				<h1>something here</h1>
+				<input
+					v-model="queryString"
+					type="search"
+					placeholder="Search..."
+					class="w-sm rounded-md border border-gray-600 px-2.5 outline-0 bg-black/35"
+				>
+				<div class="ml-auto">
+					<button class="btn btn-soft btn-accent p-[0.6rem]">
+						Create new
+						<!-- Syntes evt create new bare skal pushe en ny til in memory staten og så åbne edit? så hvis man trykker close eller remove bliver den bare ikke sendt? -->
+					</button>
+				</div>
 			</template>
 			<table class="resource-table">
 				<thead>
@@ -112,6 +123,7 @@ const mockRoles: MockRole[] = [
 	{ id: 4, name: 'guest', type: MockStatus.CUSTOM, user_count: 0, permissions: [] },
 ]
 
+const queryString = useState('users-query-string', () => '')
 const currentRoleEdit = useState<MockRole | undefined>('current-role-edit', () => undefined)
 
 async function editUser(role: MockRole) {

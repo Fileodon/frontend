@@ -1,5 +1,5 @@
 <template>
-	<div class="flex flex-col gap-4">
+	<div>
 		<layout-header
 			title="Users"
 			header="Manage Users"
@@ -23,89 +23,84 @@
 				</div>
 			</div>
 		</section>
-		<section
-			id="table"
-			class="card w-full h-fit border border-gray-600"
-		>
-			<div class="flex flex-col gap-4 h-fit m-2">
-				<div class="flex flex-row">
-					<input
-						v-model="queryString"
-						type="search"
-						placeholder="Search..."
-						class="w-sm rounded-md border border-gray-600 px-2.5 outline-0 bg-black/35"
-					>
-					<div class="ml-auto">
-						<button class="btn btn-soft btn-accent p-[0.6rem]">
-							<!-- <Icon name="material-symbols-light:add" /> --> Invite
-						</button>
-					</div>
-				</div>
-				<table
-					id="users-table"
-					class="resource-table"
+		<table-card>
+			<template #head>
+				<input
+					v-model="queryString"
+					type="search"
+					placeholder="Search..."
+					class="w-sm rounded-md border border-gray-600 px-2.5 outline-0 bg-black/35"
 				>
-					<thead>
-						<tr>
-							<th>Username</th>
-							<th>Role</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<template
-							v-for="user in mockUsers"
-							:key="user.id"
-						>
-							<tr
-								class="resource-table-row"
-							>
-								<td>{{ user.username }}</td>
-								<td>{{ user.role?.name }}</td>
-								<td>
-									<button
-										class="btn btn-sm btn-info"
-										:disabled="!mockCurrentUserPermissions.includes('edit')"
-										@click="editUser(user)"
-									>
-										Edit
-									</button>
-								</td>
-							</tr>
-							<tr
-								v-show="currentUserEdit && currentUserEdit.id === user.id"
-							>
-								<td
-									colspan="3"
-								>
-									<forms-organization-user
-										:user="user"
-										:roles="mockRoles"
-										@remove-user="removeUser"
-										@save-changes="submitEditUser"
-										@close="clearCurrentUserEdit"
-									/>
-								</td>
-							</tr>
-						</template>
-					</tbody>
-				</table>
-				<div class="flex flex-row align-center justify-between">
-					<p class="text-gray-500">
-						Showing {{ mockUsers.length }} out of {{ mockUsers.length }} users
-					</p>
-					<div class="join">
-						<!-- TODO: Impementer pagination -->
-						<button
-							disabled
-							class="join-item btn btn-sm btn-active"
-						>
-							1
-						</button>
-					</div>
+				<div class="ml-auto">
+					<button class="btn btn-soft btn-accent p-[0.6rem]">
+						<!-- <Icon name="material-symbols-light:add" /> --> Invite
+					</button>
 				</div>
-			</div>
-		</section>
+			</template>
+			<table
+				id="users-table"
+				class="resource-table"
+			>
+				<thead>
+					<tr>
+						<th>Username</th>
+						<th>Role</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<template
+						v-for="user in mockUsers"
+						:key="user.id"
+					>
+						<tr
+							class="resource-table-row"
+						>
+							<td>{{ user.username }}</td>
+							<td>{{ user.role?.name }}</td>
+							<td>
+								<button
+									class="btn btn-sm btn-info"
+									:disabled="!mockCurrentUserPermissions.includes('edit')"
+									@click="editUser(user)"
+								>
+									Edit
+								</button>
+							</td>
+						</tr>
+						<tr
+							v-show="currentUserEdit && currentUserEdit.id === user.id"
+						>
+							<td
+								colspan="3"
+							>
+								<forms-organization-user
+									:user="user"
+									:roles="mockRoles"
+									@remove-user="removeUser"
+									@save-changes="submitEditUser"
+									@close="clearCurrentUserEdit"
+								/>
+							</td>
+						</tr>
+					</template>
+				</tbody>
+			</table>
+			<template #footer>
+				<p class="text-gray-500">
+					Showing {{ mockUsers.length }} out of {{ mockUsers.length }} users
+				</p>
+				<div class="join">
+					<!-- TODO: Impementer pagination -->
+					<button
+						disabled
+						class="join-item btn btn-sm btn-active"
+					>
+						1
+					</button>
+				</div>
+			</template>
+		</table-card>
 		<!-- User edit modal -->
 	</div>
 </template>

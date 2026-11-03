@@ -16,21 +16,26 @@
 			</button>
 		</div>
 		<div class="flex flex-col">
-			<label>
-				Role
-			</label>
-			<select
-				v-model="dirtyUser.role"
-				class="select w-fit"
+			<form-input
+				id="role-form-input-select"
+				label="Role"
+				info=""
+				:errors="undefined"
 			>
-				<option
-					v-for="role in roles"
-					:key="role.id"
-					:value="role"
+				<select
+					id="role-form-input-select"
+					v-model="dirtyUser.role"
+					class="select w-fit"
 				>
-					{{ role.name }}
-				</option>
-			</select>
+					<option
+						v-for="role in roles"
+						:key="role.id"
+						:value="role"
+					>
+						{{ role.name }}
+					</option>
+				</select>
+			</form-input>
 		</div>
 		<!-- Reverse to have submit be on tab index before remove -->
 		<div class="flex flex-row-reverse justify-between">
@@ -66,10 +71,6 @@ const emit = defineEmits<{
 }>()
 
 const { dirtyObject: dirtyUser } = useForm(props.user)
-
-onUnmounted(() => {
-	console.log('unmounting organizationUsers')
-})
 </script>
 
 <style scoped>

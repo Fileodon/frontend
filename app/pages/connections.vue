@@ -62,14 +62,8 @@
 				</div>
 			</div>
 		</section>
-		<section
-			id="overview"
-			class="card w-full h-fit border border-base-300 bg-base-100 shadow-sm mt-5"
-		>
-			<section
-				id="header"
-				class="flex flex-row p-2"
-			>
+		<table-card>
+			<template #head>
 				<input
 					type="search"
 					placeholder="Search..."
@@ -80,97 +74,89 @@
 						<!-- <Icon name="material-symbols-light:add" /> --> New Connection
 					</button>
 				</div>
-			</section>
-			<section
-				id="table"
-				class="flex-1 h-fit bg-black/35 border-gray-600 border m-2"
-			>
-				<table class="table table-sm w-full h-fit text-center">
-					<thead>
-						<tr>
-							<th>Name</th>
-							<th>Status</th>
-							<th>Ip</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr
-							v-for="item in mockData"
-							:key="item.name"
-							class="hover:bg-gray-600/50"
-						>
-							<td>
-								<div class="flex-1">
-									<!-- <Icon name="material-symbols-light:dns-outline" class="bg-green-300 pr-5"></Icon> -->
-									{{ item.name }}
-									<p class="text-gray-500 italic">
-										{{ item.username }}
-									</p>
-								</div>
-							</td>
-							<td>
+			</template>
+
+			<table class="resource-table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Status</th>
+						<th>Ip</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr
+						v-for="item in mockData"
+						:key="item.name"
+						class="resource-table-row"
+					>
+						<td>
+							<!-- <Icon name="material-symbols-light:dns-outline" class="bg-green-300 pr-5"></Icon> -->
+							{{ item.name }}
+							<p class="text-gray-500 italic">
+								{{ item.username }}
+							</p>
+						</td>
+						<td>
+							<div
+								class="badge badge-soft"
+								:class="statusClasses[item.status].badge"
+							>
 								<div
-									class="badge badge-soft"
-									:class="statusClasses[item.status].badge"
-								>
+									:aria-label="item.status"
+									class="status"
+									:class="statusClasses[item.status].indicator"
+								/>
+								{{ item.status }}
+							</div>
+						</td>
+						<td>{{ item.ip }}</td>
+						<td>
+							<div v-if="item.status == StatusType.ACTIVE">
+								<div class="dropdown">
 									<div
-										:aria-label="item.status"
-										class="status"
-										:class="statusClasses[item.status].indicator"
-									/>
-									{{ item.status }}
-								</div>
-							</td>
-							<td>{{ item.ip }}</td>
-							<td>
-								<div v-if="item.status == StatusType.ACTIVE">
-									<div class="dropdown">
-										<div
-											tabindex="0"
-											role="button"
-											class="btn-ghost hover:cursor-pointer m-1"
-										>
-											<Icon name="material-symbols-light:more-vert" />
-										</div>
-										<ul
-											tabindex="-1"
-											class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 border-gray-600 border shadow-sm"
-										>
-											<li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35">
-												<a>Item 1</a>
-											</li>
-											<li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35">
-												<a>Item 2</a>
-											</li>
-										</ul>
+										tabindex="0"
+										role="button"
+										class="btn-ghost hover:cursor-pointer m-1"
+									>
+										<Icon name="material-symbols-light:more-vert" />
 									</div>
+									<ul
+										tabindex="-1"
+										class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 border-gray-600 border shadow-sm"
+									>
+										<li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35">
+											<a>Item 1</a>
+										</li>
+										<li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35">
+											<a>Item 2</a>
+										</li>
+									</ul>
 								</div>
-								<div v-else-if="item.status == StatusType.PENDING">
-									<button class="btn btn-sm btn-outline btn-error mr-2">
-										Reject
-									</button>
-									<button class="btn btn-sm btn-success">
-										Accept
-									</button>
-								</div>
-								<div v-else>
-									<button class="btn btn-sm btn-outline btn-warning">
-										Reconnect
-									</button>
-								</div>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</section>
-		</section>
+							</div>
+							<div v-else-if="item.status == StatusType.PENDING">
+								<button class="btn btn-sm btn-outline btn-error mr-2">
+									Reject
+								</button>
+								<button class="btn btn-sm btn-success">
+									Accept
+								</button>
+							</div>
+							<div v-else>
+								<button class="btn btn-sm btn-outline btn-warning">
+									Reconnect
+								</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</table-card>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import Header from '~/components/layout/header.vue'
-
 definePageMeta({
 	title: 'Connections',
 	breadcrumbs: ['index'],
