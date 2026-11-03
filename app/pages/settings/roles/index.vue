@@ -1,5 +1,40 @@
 <template>
 	<div>
+		<layout-header
+			title="Roles"
+			header="Manage organization roles"
+			description="Manage roles in your organization"
+		/>
+		<section
+			id="stats"
+		>
+			<div class="stats connection-stat">
+				<div class="stat">
+					<div class="stat-title">
+						Total roles
+					</div>
+					<div class="stat-value font-normal">
+						{{ mockRoles.length }}
+					</div>
+					<div class="stat-desc">
+						The total amount of roles in "Orgname"
+					</div>
+				</div>
+			</div>
+			<div class="stats connection-stat">
+				<div class="stat">
+					<div class="stat-title">
+						Custom roles
+					</div>
+					<div class="stat-value text-success font-normal">
+						{{ mockRoles.filter(r => r.type == MockStatus.CUSTOM).length }}
+					</div>
+					<div class="stat-desc">
+						Custom made roles
+					</div>
+				</div>
+			</div>
+		</section>
 		<table-card>
 			<template #head>
 				<h1>something here</h1>
@@ -7,7 +42,8 @@
 			<table class="resource-table">
 				<thead>
 					<tr>
-						<td>name</td>
+						<td>Name</td>
+						<td>Type</td>
 						<td>Actions</td>
 					</tr>
 				</thead>
@@ -21,6 +57,9 @@
 								{{ role.name }}
 							</td>
 							<td>
+								{{ role.type }}
+							</td>
+							<td>
 								<button
 									class="btn btn-sm btn-info"
 									@click="editUser(role)"
@@ -30,7 +69,7 @@
 							</td>
 						</tr>
 						<tr v-show="currentRoleEdit && currentRoleEdit.id === role.id ">
-							<td colspan="2">
+							<td colspan="3">
 								<forms-organization-roles
 									:role="role"
 									:permissions="mockPermissions"

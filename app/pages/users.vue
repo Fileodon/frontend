@@ -1,10 +1,5 @@
 <template>
 	<div class="flex flex-col gap-4">
-		<div>
-			<p class="text-gray-500 italic">
-				Manage your organisations users
-			</p>
-		</div>
 		<layout-header
 			title="Users"
 			header="Manage Users"
@@ -12,8 +7,21 @@
 		/>
 		<section
 			id="stats"
+			class="w-full h-fit flex flex-row"
 		>
-			<!-- Any stats? -->
+			<div class="stats connection-stat">
+				<div class="stat">
+					<div class="stat-title">
+						Total users
+					</div>
+					<div class="stat-value font-normal">
+						<p>{{ mockUsers.length }}</p>
+					</div>
+					<div class="stat-desc">
+						In this organization xxx
+					</div>
+				</div>
+			</div>
 		</section>
 		<section
 			id="table"
