@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<Header
+		<layout-header
 			title="Organization"
 			header="Create an organization"
 			description="A dedicated home for your team, connections, and file transfers"
@@ -85,8 +85,6 @@
 </template>
 
 <script lang="ts" setup>
-import Header from '~/components/layout/header.vue'
-
 definePageMeta({
 	title: 'Settings',
 	breadcrumbs: ['index'],

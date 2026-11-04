@@ -34,7 +34,7 @@
 				<li>
 					<NuxtLink
 						:class="isActive('audit-logs') ? 'menu-active' : ''"
-						:to="'/auditLogs'"
+						:to="'/audit'"
 					>
 						<Icon name="material-symbols-light:quick-reference-all-outline-rounded" />
 						Audit
