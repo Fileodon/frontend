@@ -18,7 +18,7 @@
 						<p>{{ mockUsers.length }}</p>
 					</div>
 					<div class="stat-desc">
-						In this organization xxx
+						In Cool
 					</div>
 				</div>
 			</div>
