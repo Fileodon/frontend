@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<Header
+		<layout-header
 			title="Connections"
 			header="Manage connections"
 			description="Manage your SFTP servers and review incoming connection requests"
@@ -169,8 +169,6 @@
 </template>
 
 <script lang="ts" setup>
-import Header from '~/components/layout/header.vue'
-
 definePageMeta({
 	title: 'Connections',
 	breadcrumbs: ['index'],
