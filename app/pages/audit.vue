@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<Header
+		<layout-header
 			title="Audit"
 			header="Audit logs"
 			description="View your teams actions"
@@ -93,8 +93,6 @@
 </template>
 
 <script lang="ts" setup>
-import Header from '~/components/layout/header.vue'
-
 definePageMeta({
 	title: 'Connections',
 	breadcrumbs: ['index'],
