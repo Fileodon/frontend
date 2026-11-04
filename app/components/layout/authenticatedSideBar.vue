@@ -48,6 +48,16 @@
 						<Icon name="material-symbols-light:settings-outline-rounded" />
 						Settings
 					</NuxtLink>
+					<ul>
+						<li>
+							<NuxtLink
+								:class="isActive('settings-roles') ? 'menu-active' : ''"
+								:to="'/settings/roles'"
+							>
+								Roles & permissions
+							</NuxtLink>
+						</li>
+					</ul>
 				</li>
 				<!-- <li>
                     <NuxtLink :class="isActive('test') ? 'menu-active': ''" :to="'/test'">

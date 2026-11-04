@@ -19,6 +19,18 @@ h5 {
   @apply m-2.5 rounded border border-base-100 bg-neutral/35;
 }
 
+@utility select {
+	@apply outline-0
+}
+
+@utility resource-table {
+	@apply table bg-black/35 border border-gray-600 text-center
+}
+
+@utility resource-table-row {
+	@apply hover:bg-gray-600/50
+}
+
 /* 
 @utility menu-active {
     @apply bg-primary-content text-primary
