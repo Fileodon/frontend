@@ -20,7 +20,7 @@
 				>
 				<div class="ml-auto">
 					<button class="btn btn-soft btn-accent p-[0.6rem]">
-						<!-- <Icon name="material-symbols-light:add" /> --> New Connection
+						<!-- <Icon name="material-symbols-light:add" /> --> Create file/folder
 					</button>
 				</div>
 			</section>
