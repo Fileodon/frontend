@@ -19,7 +19,10 @@
 					class="w-sm input input-md input-bordered outline-0 bg-base-300"
 				>
 				<div class="ml-auto">
-					<button class="btn btn-soft btn-accent p-[0.6rem]">
+					<button
+						class="btn btn-soft btn-accent p-[0.6rem]"
+						@click="createNew"
+					>
 						<!-- <Icon name="material-symbols-light:add" /> --> Create file/folder
 					</button>
 				</div>
@@ -130,6 +133,16 @@ function clickedEvent(item: (DirectoryStructure | FileStructure), e: PointerEven
 			currentDestination.value += item.path
 		}
 	}
+}
+
+function createNew() {
+	console.log('Create new!!')
+	// Modal
+	/* Elementer
+    * [Close]
+    * Name:
+    * [Create]
+    */
 }
 </script>
 
