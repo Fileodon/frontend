@@ -26,7 +26,7 @@
 					>
 						<input
 							id="organization-name"
-							v-model="form.name"
+							v-model="form.orgName"
 							type="text"
 							placeholder="Fileodon A/S"
 							class="input input-md input-bordered w-full outline-0 bg-base-300"
@@ -43,7 +43,7 @@
 					>
 						<input
 							id="workspace-url"
-							v-model="form.url"
+							v-model="form.workspaceURL"
 							type="text"
 							placeholder="fileodon"
 							class="input input-bordered w-full outline-0 bg-base-300"
@@ -61,7 +61,7 @@
 					>
 						<input
 							id="contact-email"
-							v-model="form.email"
+							v-model="form.contactEmail"
 							type="email"
 							placeholder="team@example.com"
 							class="input input-bordered w-full outline-0 bg-base-300"
@@ -75,7 +75,7 @@
 				<button
 					type="submit"
 					class="btn btn-soft btn-accent"
-					@click="createOrg"
+					@click.prevent="createOrg"
 				>
 					Create organization
 				</button>
@@ -89,20 +89,17 @@ definePageMeta({
 	title: 'Settings',
 	breadcrumbs: ['index'],
 })
+const orgStore = useOrganizationStore()
 const errors = ref<string[]>()
-interface CreateOrganization {
-	name: string
-	email: string
-	url: string
-}
 
-const form = ref<CreateOrganization>({
-	name: '',
-	email: '',
-	url: '',
+const form = ref<Schema<'CreateOrganizationRequest'>>({
+	orgName: '',
+	contactEmail: '',
+	workspaceURL: '',
 })
 function createOrg() {
 	console.log('form:', form.value)
+	orgStore.createNewOrganization(form.value)
 }
 </script>
 
