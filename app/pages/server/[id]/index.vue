@@ -27,6 +27,19 @@
 					</button>
 				</div>
 			</section>
+			<section class="pl-2">
+				<div class="breadcrumbs text-sm">
+					<ul>
+						<li><a>/</a></li>
+						<li
+							v-for="dir in currentDestination.split('/').filter(x => x !== '')"
+							:key="dir"
+						>
+							<a @click="currentDestination = dir">{{ dir }}</a>
+						</li>
+					</ul>
+				</div>
+			</section>
 			<section
 				id="table"
 				class="flex-1 h-fit bg-black/35 border-gray-600 border m-2"
@@ -94,7 +107,7 @@ interface FileStructure extends Structure {
 
 interface Structure { name: string }
 
-const currentDestination = ref<string>()
+const currentDestination = ref<string>('/')
 
 const mockData: (DirectoryStructure | FileStructure)[] = [
 	{
@@ -120,18 +133,25 @@ const mockData: (DirectoryStructure | FileStructure)[] = [
 ]
 
 function clickedEvent(item: (DirectoryStructure | FileStructure), e: PointerEvent) {
-	console.log('clicked:', item, e)
+	console.log('clicked:', item.name, e)
 	// Is file :D
 	if ('ext' in item) {
 		router.push(`/server/${id.value}/file/${item.name}.${item.ext}`)
 	}
 	else {
-		if (item.path == '/' || item.path === '') {
+		console.log('clicked', item.path.length, item.path == '.. ')
+		if (item.path === '/') {
+			console.log('.. if')
 			if (currentDestination.value == '' || currentDestination.value == '/') {
+				console.log('destination is empty', currentDestination.value)
 				return
 			}
-			currentDestination.value += item.path
+			currentDestination.value = '/' + currentDestination.value?.split('/').pop()
+			console.log('update destination', currentDestination.value)
+			return
 		}
+		currentDestination.value += item.path
+		console.log('update destination', currentDestination.value)
 	}
 }
 
