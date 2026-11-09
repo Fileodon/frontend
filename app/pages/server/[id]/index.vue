@@ -112,7 +112,7 @@ const currentDestination = ref<string>('/')
 const mockData: (DirectoryStructure | FileStructure)[] = [
 	{
 		name: '..',
-		path: '/',
+		path: '<base>',
 	},
 	{
 		name: 'API',
@@ -146,12 +146,14 @@ function clickedEvent(item: (DirectoryStructure | FileStructure), e: PointerEven
 				console.log('destination is empty', currentDestination.value)
 				return
 			}
+			console.log(currentDestination.value?.split('/'))
 			currentDestination.value = '/' + currentDestination.value?.split('/').pop()
 			console.log('update destination', currentDestination.value)
 			return
 		}
+		console.log('pre update destination', currentDestination.value, currentDestination.value.split('/'))
 		currentDestination.value += item.path
-		console.log('update destination', currentDestination.value)
+		console.log('post update destination', currentDestination.value, currentDestination.value.split('/'))
 	}
 }
 
@@ -159,12 +161,11 @@ function createNew() {
 	console.log('Create new!!')
 	// Modal
 	/* Elementer
-    * [Close]
-    * Name:
-    * [Create]
-    */
+	* [Close]
+	* Name:
+	* [Create]
+	*/
 }
 </script>
 
-<style>
-</style>
+<style></style>
