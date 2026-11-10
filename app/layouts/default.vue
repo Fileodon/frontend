@@ -1,10 +1,12 @@
 <template>
-	<div class="w-full h-full flex flex-row">
+	<div class="flex h-dvh w-full overflow-hidden">
 		<LayoutAuthenticatedSideBar />
-		<div class="flex flex-col grow">
+		<div class="flex min-w-0 grow flex-col">
 			<LayoutAuthenticatedHeader />
-			<main class="mx-auto w-full p-5 sm:p-10">
-				<slot />
+			<main class="min-h-0 flex-1 overflow-y-auto">
+				<div class="mx-auto w-full p-5 sm:p-10">
+					<slot />
+				</div>
 			</main>
 		</div>
 	</div>

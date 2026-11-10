@@ -1,5 +1,5 @@
 <template>
-	<div class="side-bar hidden sm:flex sm:w-52 h-full border-r border-r-neutral-200 flex-col">
+	<div class="hidden sm:flex sm:w-52 h-full shrink-0 border-r border-r-neutral-200 flex-col overflow-y-auto">
 		<div class="flex items-center justify-center h-24">
 			<NuxtLink :to="'/'">
 				<Icon
