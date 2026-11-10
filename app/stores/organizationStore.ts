@@ -9,14 +9,20 @@ export const useOrganizationStore = defineStore('organization', () => {
 		localStorage.setItem('currentOrganizationId', `${newVal}`)
 	})
 
-	const { data: currentOrganization } = useLazyApi('/api/organization/{organizationId}', {
+	const { data: currentOrganization } = useLazyApi('/organization/{organizationId}', {
 		method: 'GET',
 		path: {
 			organizationId: currentSelectedOrganizationId,
 		},
+		onResponseError: (err) => {
+			localStorage.removeItem('currentOrganizationId')
+			if (err.response.status === 404) {
+				localStorage.removeItem('currentOrganizationId')
+			}
+		},
 	})
 
-	const { data: userOrganizations } = useLazyApi('/api/userorganization', {
+	const { data: userOrganizations } = useLazyApi('/userorganization', {
 		method: 'GET',
 	})
 
@@ -30,17 +36,17 @@ export const useOrganizationStore = defineStore('organization', () => {
 	watch(userOrganizations, () => {
 		if (currentOrganization.value) return
 
-		const previousOrganizationId = localStorage.getItem('currentOrganizationId')
+		const previousOrganizationId = localStorage.getItem('currentOrganizationId')?.trim()
 		if (previousOrganizationId && Number(previousOrganizationId)) {
 			currentSelectedOrganizationId.value = Number(previousOrganizationId)
 		}
-		else if (userOrganizations.value && userOrganizations.value?.userOrganizationRequests && userOrganizations.value.userOrganizationRequests[0]?.id) {
-			currentSelectedOrganizationId.value = userOrganizations.value.userOrganizationRequests[0]?.id
+		else if (userOrganizations.value && userOrganizations.value[0]?.organization && userOrganizations.value[0]?.organization.id) {
+			currentSelectedOrganizationId.value = userOrganizations.value[0]?.organization.id
 		}
 	})
 
 	async function createNewOrganization(newOrg: Schema<'CreateOrganizationRequest'>) {
-		const response = await $api('/api/organization', {
+		const response = await $api('/organization', {
 			method: 'POST',
 			body: newOrg,
 		})

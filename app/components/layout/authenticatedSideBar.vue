@@ -89,7 +89,7 @@
 					Your organizations
 				</option>
 				<option
-					v-for="org in orgStore.userOrganizations?.userOrganizationRequests"
+					v-for="org in orgStore.userOrganizations"
 					:key="org?.id"
 					:value="org.organization?.id"
 				>
