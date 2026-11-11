@@ -2,9 +2,9 @@
 	<div>
 		<form class="card border border-base-300 bg-base-100 shadow-sm">
 			<div class="border-b border-base-300 px-6 py-5">
-				<h2 class="card-title">
+				<h3 class="card-title">
 					{{ title }}
-				</h2>
+				</h3>
 				<p class="mt-1 text-sm text-base-content/70">
 					{{ subtitle }}
 				</p>

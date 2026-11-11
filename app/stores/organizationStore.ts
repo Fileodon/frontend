@@ -22,7 +22,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 		},
 	})
 
-	const { data: userOrganizations } = useLazyApi('/userorganization', {
+	const { data: userOrganizations, refresh: refreshUserOrganizations } = useLazyApi('/userorganization', {
 		method: 'GET',
 	})
 
@@ -54,10 +54,41 @@ export const useOrganizationStore = defineStore('organization', () => {
 		// refresh()
 	}
 
+	async function editOrganization(editOrganization: string) {
+		alert('not implemented')
+	}
+
+	async function deleteOrganization(organization: Schema<'GetOrganizationResponse'>) {
+		if (!organization.id) {
+			throw new Error('Could not find organization ID')
+		}
+
+		await $api('/organization/{organizationId}', {
+			method: 'DELETE',
+			path: {
+				organizationId: organization.id,
+			},
+			onResponse: (response) => {
+				if (!response.response.ok || response.error?.message) {
+					alert(response.error?.message)
+					return
+				}
+				if (organization.id == currentOrganization.value?.id) {
+					if (userOrganizations.value && userOrganizations.value[0]?.organization && userOrganizations.value[0]?.organization.id) {
+						currentSelectedOrganizationId.value = userOrganizations.value[0]?.organization.id
+					}
+				}
+				refreshUserOrganizations()
+			},
+		})
+	}
+
 	return {
 		currentOrganization,
 		userOrganizations,
 		createNewOrganization,
 		currentSelectedOrganizationId,
+		editOrganization,
+		deleteOrganization,
 	}
 })

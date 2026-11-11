@@ -1,9 +1,9 @@
 <template>
-	<label class="card bg-error-content/75   shadow-lg ">
+	<h3 class="font-bold text-error">
+		{{ title }}
+	</h3>
+	<label class="card border-error-content/75 border-4 ">
 		<div class="card-body">
-			<h1 class="card-title">
-				{{ title }}
-			</h1>
 			<div>
 				<slot />
 			</div>

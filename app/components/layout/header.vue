@@ -4,9 +4,9 @@
 			<p class="text-sm font-medium text-primary">
 				{{ title }}
 			</p>
-			<h1 class="mt-2">
+			<h2 class="mt-2">
 				{{ header }}
-			</h1>
+			</h2>
 			<p class="mt-2 text-base-content/70">
 				{{ description }}
 			</p>
