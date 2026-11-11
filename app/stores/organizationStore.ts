@@ -59,9 +59,15 @@ export const useOrganizationStore = defineStore('organization', () => {
 		// refresh()
 	}
 
-	async function editOrganization(editOrganization: string) {
-		alert('not implemented')
-		console.log(editOrganization)
+	async function editOrganization(editOrganization: Schema<'EditOrganizationRequest'>): Promise<Schema<'GetOrganizationResponse'>> {
+		const response = await $api('/organization/{organizationId}', {
+			method: 'PUT',
+			path: {
+				organizationId: editOrganization.id,
+			},
+			body: editOrganization,
+		})
+		return response
 	}
 
 	async function deleteOrganization(organization: Schema<'GetOrganizationResponse'>) {
