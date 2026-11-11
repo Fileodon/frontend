@@ -9,7 +9,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 		localStorage.setItem('currentOrganizationId', `${newVal}`)
 	})
 
-	const { data: currentOrganization } = useLazyApi('/organization/{organizationId}', {
+	const { data: currentOrganization, pending: currentOrganizationPending } = useLazyApi('/organization/{organizationId}', {
 		method: 'GET',
 		path: {
 			organizationId: currentSelectedOrganizationId,
@@ -22,7 +22,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 		},
 	})
 
-	const { data: userOrganizations, refresh: refreshUserOrganizations } = useLazyApi('/userorganization', {
+	const { data: userOrganizations, refresh: refreshUserOrganizations, pending: userOrganizationsPending } = useLazyApi('/userorganization', {
 		method: 'GET',
 	})
 
@@ -49,13 +49,19 @@ export const useOrganizationStore = defineStore('organization', () => {
 		const response = await $api('/organization', {
 			method: 'POST',
 			body: newOrg,
+			onResponse: (res) => {
+				if (res.response.ok) {
+					refreshUserOrganizations()
+				}
+			},
 		})
-		console.log(response)
+		return response
 		// refresh()
 	}
 
 	async function editOrganization(editOrganization: string) {
 		alert('not implemented')
+		console.log(editOrganization)
 	}
 
 	async function deleteOrganization(organization: Schema<'GetOrganizationResponse'>) {
@@ -90,5 +96,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 		currentSelectedOrganizationId,
 		editOrganization,
 		deleteOrganization,
+		currentOrganizationPending,
+		userOrganizationsPending,
 	}
 })

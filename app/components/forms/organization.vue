@@ -21,6 +21,7 @@
 						<input
 							id="organization-name"
 							v-model="organizationForm.orgName"
+							:disabled="pending"
 							type="text"
 							placeholder="Fileodon A/S"
 							class="input input-md input-bordered w-full outline-0 bg-base-300"
@@ -38,6 +39,7 @@
 						<input
 							id="workspace-url"
 							v-model="organizationForm.workspaceURL"
+							:disabled="pending"
 							type="text"
 							placeholder="fileodon"
 							class="input input-bordered w-full outline-0 bg-base-300"
@@ -56,6 +58,7 @@
 						<input
 							id="contact-email"
 							v-model="organizationForm.contactEmail"
+							:disabled="pending"
 							type="email"
 							placeholder="team@example.com"
 							class="input input-bordered w-full outline-0 bg-base-300"
@@ -69,7 +72,8 @@
 				<button
 					type="submit"
 					class="btn btn-soft btn-accent"
-					@click="submitForm"
+					:disabled="pending"
+					@click.prevent="submitForm"
 				>
 					{{ submitBtnText }}
 				</button>
@@ -83,21 +87,26 @@ const props = defineProps<{
 	title: string
 	subtitle: string
 	submitBtnText: string
-	organization: Schema<'CreateOrganizationRequest'>
+	organization?: Schema<'CreateOrganizationRequest'>
+	pending: boolean
 }>()
 
 const errors = ref<string[]>()
 
 const emit = defineEmits<{
-	submit: [organization: Schema<'CreateOrganizationRequest'>]
+	(e: 'submit', oranization: Schema<'CreateOrganizationRequest'>): Promise<void>
 }>()
 
-const { dirtyObject: organizationForm } = useForm(props.organization)
+const { dirtyObject: organizationForm } = useForm(props.organization ?? {
+	orgName: '',
+	workspaceURL: '',
+	contactEmail: '',
+})
 
 async function submitForm() {
 	// TODO: validation
 	await nextTick()
-	emit('submit', organizationForm.value)
+	await emit('submit', organizationForm.value)
 }
 </script>
 

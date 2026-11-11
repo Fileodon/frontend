@@ -1,5 +1,9 @@
 <template>
-	<div class="flex flex-col gap-4">
+	<views-page-loading v-if="orgStore.currentOrganizationPending" />
+	<div
+		v-else
+		class="flex flex-col gap-4"
+	>
 		<layout-header
 			title="Organization"
 			:header="`Edit ${orgStore.currentOrganization?.orgName}`"
@@ -13,7 +17,8 @@
 			title="Organization settings"
 			subtitle="Update your organizations informations"
 			submit-btn-text="Submit edit"
-			@submit="orgStore.createNewOrganization"
+			:pending="pending"
+			@submit="updateOrganization"
 		/>
 		<danger-zone>
 			<div class="flex flex-row justify-between">
@@ -33,27 +38,34 @@
 </template>
 
 <script lang="ts" setup>
+import { useDebounceFn } from '@vueuse/core'
+
 definePageMeta({
 	title: 'Settings',
 	breadcrumbs: ['index'],
 })
 const orgStore = useOrganizationStore()
+const pending = useState('org-edit-pending', () => false)
 
-function updateOrganization(editedStore: Schema<'CreateOrganizationRequest'>) {
+const updateOrganization = useDebounceFn(async (editedStore: Schema<'CreateOrganizationRequest'>) => {
 	console.log('form:', editedStore)
-	orgStore.editOrganization(editedStore)
-}
+	pending.value = true
+	// await orgStore.editOrganization(editedStore)
+	pending.value = false
+}, 500)
 
-function deleteOrganization() {
+const deleteOrganization = useDebounceFn(async () => {
+	pending.value = true
 	if (!orgStore.currentOrganization) {
 		alert('Could not find organization')
 		return
 	}
 	const confirm = window.confirm('Are you sure my man?')
 	if (confirm === true) {
-		orgStore.deleteOrganization(orgStore.currentOrganization)
+		await orgStore.deleteOrganization(orgStore.currentOrganization)
 	}
-}
+	pending.value = true
+}, 500)
 </script>
 
 <style scoped></style>
