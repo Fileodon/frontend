@@ -1,5 +1,5 @@
 <template>
-	<div class="side-bar hidden sm:flex sm:w-52 h-full border-r border-r-neutral-200 flex-col">
+	<div class="hidden sm:flex sm:w-52 h-full shrink-0 border-r border-r-neutral-200 flex-col overflow-y-auto">
 		<div class="flex items-center justify-center h-24">
 			<NuxtLink :to="'/'">
 				<Icon
@@ -79,7 +79,7 @@
 			</div>
 			<div class="divider -mx-2" />
 			<select
-				v-model="currentSelected"
+				v-model="orgStore.currentSelectedOrganizationId"
 				class="select"
 			>
 				<option
@@ -89,11 +89,11 @@
 					Your organizations
 				</option>
 				<option
-					v-for="org in mockOrgs"
-					:key="org"
-					:value="org"
+					v-for="org in orgStore.userOrganizations"
+					:key="org?.id"
+					:value="org.organization?.id"
 				>
-					{{ org }}
+					{{ org.organization?.orgName }}
 				</option>
 			</select>
 			<button class="btn btn-soft w-full mt-2 p-1">
@@ -107,11 +107,8 @@
 import type { RouteRecordNameGeneric } from 'vue-router'
 
 const route = useRoute()
-const mockOrgs = ref<string[]>([
-	'Cool',
-	'Ikke ligeså cool',
-])
-const currentSelected = ref(mockOrgs.value[0])
+
+const orgStore = useOrganizationStore()
 
 function isActive(name: RouteRecordNameGeneric): boolean {
 	return route.name === name

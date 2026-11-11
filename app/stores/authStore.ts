@@ -29,7 +29,7 @@ export const useAuthStore = defineStore('auth', () => {
 		},
 	})
 
-	const { data: user, refresh: refreshAuthMe } = useLazyApi('/api/auth/me', {
+	const { data: user, refresh: refreshAuthMe } = useLazyApi('/auth/me', {
 		server: false,
 		enabled: !!accessJWT.value,
 	})
@@ -43,7 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
 		if (passwordError) {
 			return { success: false, errors: { password: passwordError } }
 		}
-		const response = await $api('/api/auth', {
+		const response = await $api('/auth', {
 			method: 'POST',
 			credentials: 'include',
 			body: form,
@@ -69,7 +69,7 @@ export const useAuthStore = defineStore('auth', () => {
 		if (passwordError) {
 			return { success: false, errors: { password: passwordError } }
 		}
-		await $api('/api/auth/register', {
+		await $api('/auth/register', {
 			method: 'post',
 			credentials: 'include',
 			body: form,
@@ -87,7 +87,7 @@ export const useAuthStore = defineStore('auth', () => {
 	}
 
 	async function refresh() {
-		await $api('/api/auth/refresh', {
+		await $api('/auth/refresh', {
 			method: 'post',
 			credentials: 'include',
 			ignoreResponseError: true,

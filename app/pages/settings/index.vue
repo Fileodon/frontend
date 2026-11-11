@@ -25,13 +25,17 @@ definePageMeta({
 	title: 'Settings',
 	breadcrumbs: ['index'],
 })
+const orgStore = useOrganizationStore()
 const mockOrg = ref<Schema<'CreateOrganizationRequest'>>({
 	orgName: 'Cool',
 	contactEmail: 'contact@cool.com',
 	workspaceURL: 'http://gmail.com',
 })
-function createOrg(org: Schema<'CreateOrganizationRequest'>) {
-	console.log(org)
+const errors = ref<string[]>()
+
+function createOrg() {
+	console.log('form:', mockOrg.value)
+	orgStore.createNewOrganization(mockOrg.value)
 }
 </script>
 
