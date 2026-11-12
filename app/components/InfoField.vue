@@ -9,7 +9,10 @@
 		<h5 :name="label.toLowerCase()">
 			{{ info }}
 		</h5>
-		<p v-if="description">
+		<p
+			v-if="description"
+			class="text-base-content/50"
+		>
 			{{ description }}
 		</p>
 	</div>
