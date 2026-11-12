@@ -15,7 +15,7 @@
 						Total users
 					</div>
 					<div class="stat-value font-normal">
-						<p>{{ mockUsers.length }}</p>
+						<p>{{ userOrganizationStore.organizationUsers?.length }}</p>
 					</div>
 					<div class="stat-desc">
 						In Cool
@@ -50,18 +50,17 @@
 				</thead>
 				<tbody>
 					<template
-						v-for="user in mockUsers"
+						v-for="user in userOrganizationStore.organizationUsers"
 						:key="user.id"
 					>
 						<tr
 							class="resource-table-row"
 						>
-							<td>{{ user.username }}</td>
+							<td>{{ user.userName }}</td>
 							<td>{{ user.role?.name }}</td>
 							<td>
 								<button
 									class="btn btn-sm btn-info"
-									:disabled="!mockCurrentUserPermissions.includes('edit')"
 									@click="editUser(user)"
 								>
 									Edit
@@ -74,13 +73,13 @@
 							<td
 								colspan="3"
 							>
-								<forms-organization-user
+								<!-- <forms-organization-user
 									:user="user"
 									:roles="mockRoles"
 									@remove-user="removeUser"
 									@save-changes="submitEditUser"
 									@close="clearCurrentUserEdit"
-								/>
+								/> -->
 							</td>
 						</tr>
 					</template>
@@ -88,7 +87,7 @@
 			</table>
 			<template #footer>
 				<p class="text-gray-500">
-					Showing {{ mockUsers.length }} out of {{ mockUsers.length }} users
+					Showing {{ userOrganizationStore.organizationUsers?.length }} out of {{ userOrganizationStore.organizationUsers?.length }} users
 				</p>
 				<div class="join">
 					<!-- TODO: Impementer pagination -->
@@ -111,42 +110,13 @@ definePageMeta({
 	breadcrumbs: ['index'],
 })
 
-export interface MockUser {
-	id: number
-	username: string
-	role?: MockRole
-}
-
-export interface MockRole {
-	id: number
-	name: string
-}
-
-const mockRoles: MockRole[] = [
-	{ id: 1, name: 'admin' },
-	{ id: 2, name: 'editor' },
-	{ id: 3, name: 'viewer' },
-	{ id: 4, name: 'guest' },
-]
-
-const mockUsers = useState<MockUser[]>('mock-users', () => [
-	{ id: 1, username: 'Jakob Espersen', role: mockRoles[0] },
-	{ id: 2, username: 'Sebastian JenseN?', role: mockRoles[1] },
-	{ id: 3, username: 'Tobias Tobiassen', role: mockRoles[1] },
-	{ id: 4, username: 'Nicklas LobaDK', role: mockRoles[2] },
-	{ id: 5, username: 'Flemming lære', role: mockRoles[3] },
-])
-
-const mockCurrentUserPermissions = useState<string[]>('mock-current-user-permissions', () => [
-	'edit',
-	'view',
-])
+const userOrganizationStore = useUserOrganizationStore()
 
 const queryString = useState('users-query-string', () => '')
 
-const currentUserEdit = useState<MockUser | undefined>('current-user-edit', () => undefined)
+const currentUserEdit = useState<Schema<'GetUserOrganizationResponse'> | undefined>('current-user-edit', () => undefined)
 
-async function editUser(user: MockUser) {
+async function editUser(user: Schema<'GetUserOrganizationResponse'>) {
 	if (currentUserEdit.value?.id == user.id) {
 		clearCurrentUserEdit()
 		return
@@ -155,7 +125,7 @@ async function editUser(user: MockUser) {
 	await nextTick()
 }
 
-async function submitEditUser(user: MockUser) {
+async function submitEditUser(user: Schema<'EditUserOrganizationRequest'>) {
 	// TODO validate stuff maybe
 	if (currentUserEdit.value === undefined || user.id !== currentUserEdit.value.id) {
 		alert('error tried to submit without edit set')
@@ -166,21 +136,17 @@ async function submitEditUser(user: MockUser) {
 		return
 	}
 
-	const originaluserindex = mockUsers.value.findIndex(u => u.id === currentUserEdit.value?.id)
-	if (originaluserindex < 0) {
-		return
-	}
-	mockUsers.value[originaluserindex] = user
+	// TODO submit edit via api
 	clearCurrentUserEdit()
 }
 
-async function removeUser(user: MockUser) {
+async function removeUser(user: Schema<'GetUserOrganizationResponse'>) {
 	if (currentUserEdit.value === undefined || user.id !== currentUserEdit.value.id) {
 		alert('error tried to remove without edit set')
 		return
 	}
 
-	mockUsers.value = mockUsers.value.filter(u => u.id !== user.id)
+	// TODO Call api
 	clearCurrentUserEdit()
 }
 

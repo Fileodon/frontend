@@ -22,6 +22,8 @@ export const useOrganizationStore = defineStore('organization', () => {
 		},
 	})
 
+	const organizationPermissions = computed(() => currentOrganization.value?.permissions)
+
 	const { data: userOrganizations, refresh: refreshUserOrganizations, pending: userOrganizationsPending } = useLazyApi('/userorganization', {
 		method: 'GET',
 	})
@@ -119,5 +121,6 @@ export const useOrganizationStore = defineStore('organization', () => {
 		deleteOrganization,
 		currentOrganizationPending,
 		userOrganizationsPending,
+		organizationPermissions,
 	}
 })

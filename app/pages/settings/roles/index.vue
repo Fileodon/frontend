@@ -60,7 +60,7 @@
 				</thead>
 				<tbody>
 					<template
-						v-for="role in mockRoles"
+						v-for="role in roleStore.roles"
 						:key="role.id"
 					>
 						<tr class="resource-table-row">
@@ -68,7 +68,7 @@
 								{{ role.name }}
 							</td>
 							<td>
-								{{ role.type }}
+								{{ role.isSystemRole ? 'system' : 'custom' }}
 							</td>
 							<td>
 								<button
@@ -98,6 +98,13 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+	title: 'Roles',
+	breadcrumbs: ['index'],
+})
+
+const roleStore = useRoleStore()
+
 enum MockStatus {
 	SYSTEM = 'system',
 	CUSTOM = 'custom',
