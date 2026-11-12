@@ -9,7 +9,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 		localStorage.setItem('currentOrganizationId', `${newVal}`)
 	})
 
-	const { data: currentOrganization } = useLazyApi('/organization/{organizationId}', {
+	const { data: currentOrganization, pending: currentOrganizationPending } = useLazyApi('/organization/{organizationId}', {
 		method: 'GET',
 		path: {
 			organizationId: currentSelectedOrganizationId,
@@ -22,7 +22,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 		},
 	})
 
-	const { data: userOrganizations } = useLazyApi('/userorganization', {
+	const { data: userOrganizations, refresh: refreshUserOrganizations, pending: userOrganizationsPending } = useLazyApi('/userorganization', {
 		method: 'GET',
 	})
 
@@ -40,18 +40,74 @@ export const useOrganizationStore = defineStore('organization', () => {
 		if (previousOrganizationId && Number(previousOrganizationId)) {
 			currentSelectedOrganizationId.value = Number(previousOrganizationId)
 		}
-		else if (userOrganizations.value && userOrganizations.value[0]?.organization && userOrganizations.value[0]?.organization.id) {
-			currentSelectedOrganizationId.value = userOrganizations.value[0]?.organization.id
-		}
+		else
+			trySetCurrentOrganizationId()
 	})
 
-	async function createNewOrganization(newOrg: Schema<'CreateOrganizationRequest'>) {
-		const response = await $api('/organization', {
-			method: 'POST',
-			body: newOrg,
-		})
-		console.log(response)
+	async function createNewOrganization(newOrg: Schema<'CreateOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
+		try {
+			const response = await $api('/organization', {
+				method: 'POST',
+				body: newOrg,
+			})
+			refreshUserOrganizations()
+			return {
+				status: 'success',
+				data: response,
+			}
+		}
+		catch (err) {
+			return handleApiFormError(err)
+		}
 		// refresh()
+	}
+
+	async function editOrganization(editOrganization: Schema<'EditOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
+		try {
+			const response = await $api('/organization/{organizationId}', {
+				method: 'PUT',
+				path: {
+					organizationId: editOrganization.id,
+				},
+				body: editOrganization,
+			})
+			return {
+				status: 'success',
+				data: response,
+			}
+		}
+		catch (err) {
+			return handleApiFormError(err)
+		}
+	}
+
+	async function deleteOrganization(organization: Schema<'GetOrganizationResponse'>) {
+		if (!organization.id) {
+			throw new Error('Could not find organization ID')
+		}
+
+		await $api('/organization/{organizationId}', {
+			method: 'DELETE',
+			path: {
+				organizationId: organization.id,
+			},
+			onResponse: (response) => {
+				if (!response.response.ok || response.error?.message) {
+					alert(response.error?.message)
+					return
+				}
+				if (organization.id == currentOrganization.value?.id) {
+					trySetCurrentOrganizationId()
+				}
+				refreshUserOrganizations()
+			},
+		})
+	}
+
+	function trySetCurrentOrganizationId() {
+		if (userOrganizations.value && userOrganizations.value[0]?.organization && Number(userOrganizations.value[0]?.organization.id)) {
+			currentSelectedOrganizationId.value = Number(userOrganizations.value[0]?.organization.id)
+		}
 	}
 
 	return {
@@ -59,5 +115,9 @@ export const useOrganizationStore = defineStore('organization', () => {
 		userOrganizations,
 		createNewOrganization,
 		currentSelectedOrganizationId,
+		editOrganization,
+		deleteOrganization,
+		currentOrganizationPending,
+		userOrganizationsPending,
 	}
 })

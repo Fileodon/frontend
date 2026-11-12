@@ -1,106 +1,82 @@
 <template>
-	<div>
+	<views-page-loading v-if="orgStore.currentOrganizationPending" />
+	<div
+		v-else
+		class="flex flex-col gap-4"
+	>
 		<layout-header
 			title="Organization"
-			header="Create an organization"
-			description="A dedicated home for your team, connections, and file transfers"
+			:header="`Edit ${orgStore.currentOrganization?.orgName}`"
+			description="Manage your organizations settings"
 		/>
-
-		<form class="card border border-base-300 bg-base-100 shadow-sm">
-			<div class="border-b border-base-300 px-6 py-5">
-				<h2 class="card-title">
-					Organization details
-				</h2>
-				<p class="mt-1 text-sm text-base-content/70">
-					You can update these details later.
-				</p>
-			</div>
-
-			<div class="card-body gap-6 p-6">
-				<div class="space-y-2">
-					<form-input
-						id="organization-name"
-						label="Organization name"
-						info="Use a name your team and partners will recognize"
-						:errors="errors"
-					>
-						<input
-							id="organization-name"
-							v-model="form.orgName"
-							type="text"
-							placeholder="Fileodon A/S"
-							class="input input-md input-bordered w-full outline-0 bg-base-300"
-							aria-describedby="organization-name-help"
-						>
-					</form-input>
+		<forms-organization
+			v-if="orgStore.currentOrganization"
+			id="organization-form"
+			:key="orgStore.currentOrganization.id"
+			:organization="orgStore.currentOrganization"
+			title="Organization settings"
+			subtitle="Update your organizations informations"
+			submit-btn-text="Submit edit"
+			:pending="pending"
+			:errors="formErrors"
+			@submit="updateOrganization"
+		/>
+		<danger-zone>
+			<div class="flex flex-row justify-between">
+				<div>
+					<p class="font-bold">
+						Delete this organization
+					</p>
+					<p>If tyou delete, this organization and its related resources will be gone forever</p>
 				</div>
-				<div class="space-y-2">
-					<form-input
-						id="workspace-url"
-						label="Workspace URL"
-						info="Use lowercase letters, numbers, and hyphens."
-						:errors="errors"
-					>
-						<input
-							id="workspace-url"
-							v-model="form.workspaceURL"
-							type="text"
-							placeholder="fileodon"
-							class="input input-bordered w-full outline-0 bg-base-300"
-							aria-describedby="workspace-url-help"
-						>
-					</form-input>
-				</div>
-
-				<div class="space-y-2">
-					<form-input
-						id="contact-email"
-						label="Contact email"
-						info="Connection requests and security notices will be sent here."
-						:errors="errors"
-					>
-						<input
-							id="contact-email"
-							v-model="form.contactEmail"
-							type="email"
-							placeholder="team@example.com"
-							class="input input-bordered w-full outline-0 bg-base-300"
-							aria-describedby="contact-email-help"
-						>
-					</form-input>
-				</div>
-			</div>
-
-			<div class="flex justify-end border-t border-base-300 px-6 py-4">
 				<button
-					type="submit"
-					class="btn btn-soft btn-accent"
-					@click.prevent="createOrg"
+					class="btn btn-error"
+					@click="deleteOrganization"
 				>
-					Create organization
+					Delete this organization
 				</button>
 			</div>
-		</form>
+		</danger-zone>
 	</div>
 </template>
 
 <script lang="ts" setup>
+import { useDebounceFn } from '@vueuse/core'
+
 definePageMeta({
 	title: 'Settings',
 	breadcrumbs: ['index'],
 })
-const orgStore = useOrganizationStore()
-const errors = ref<string[]>()
 
-const form = ref<Schema<'CreateOrganizationRequest'>>({
-	orgName: '',
-	contactEmail: '',
-	workspaceURL: '',
-})
-function createOrg() {
-	console.log('form:', form.value)
-	orgStore.createNewOrganization(form.value)
-}
+const orgStore = useOrganizationStore()
+const pending = useState('org-edit-pending', () => false)
+const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-edit-form-errors')
+
+const updateOrganization = useDebounceFn(async (editedStore: Schema<'CreateOrganizationRequest'>) => {
+	if (!orgStore.currentOrganization) return
+	pending.value = true
+	const result = await orgStore.editOrganization({
+		id: orgStore.currentOrganization?.id,
+		...editedStore,
+	})
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
+	pending.value = false
+}, 500)
+
+const deleteOrganization = useDebounceFn(async () => {
+	pending.value = true
+	if (!orgStore.currentOrganization) {
+		alert('Could not find organization')
+		return
+	}
+	const confirm = window.confirm('Are you sure my man?')
+	if (confirm === true) {
+		await orgStore.deleteOrganization(orgStore.currentOrganization)
+	}
+	pending.value = false
+}, 500)
 </script>
 
 <style scoped></style>

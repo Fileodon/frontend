@@ -96,7 +96,10 @@
 					{{ org.organization?.orgName }}
 				</option>
 			</select>
-			<button class="btn btn-soft w-full mt-2 p-1">
+			<button
+				class="btn btn-soft w-full mt-2 p-1"
+				@click="navigateTo('create-organization')"
+			>
 				Create new
 			</button>
 		</div>

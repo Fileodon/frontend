@@ -26,12 +26,14 @@ export const useAuthStore = defineStore('auth', () => {
 			accessTokenCookie.value = val
 			await nextTick()
 			accessJWTRef.value = val
+			// refreshAuthMe()
 		},
 	})
 
 	const { data: user, refresh: refreshAuthMe } = useLazyApi('/auth/me', {
 		server: false,
 		enabled: !!accessJWT.value,
+		watch: [accessJWT],
 	})
 
 	async function login(form: Schema<'LoginRequest'>): Promise<IErrorResponse> {
