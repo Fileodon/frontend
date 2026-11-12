@@ -16,7 +16,7 @@
 						id="organization-name"
 						label="Organization name"
 						info="Use a name your team and partners will recognize"
-						:errors="errors"
+						:errors="errors?.OrgName"
 					>
 						<input
 							id="organization-name"
@@ -34,7 +34,7 @@
 						id="workspace-url"
 						label="Workspace URL"
 						info="Use lowercase letters, numbers, and hyphens."
-						:errors="errors"
+						:errors="errors?.WorkspaceURL"
 					>
 						<input
 							id="workspace-url"
@@ -53,7 +53,7 @@
 						id="contact-email"
 						label="Contact email"
 						info="Connection requests and security notices will be sent here."
-						:errors="errors"
+						:errors="errors?.ContactEmail"
 					>
 						<input
 							id="contact-email"
@@ -72,7 +72,7 @@
 				<button
 					type="submit"
 					class="btn btn-soft btn-accent"
-					:disabled="pending"
+					:disabled="pending || !isDirty"
 					@click.prevent="submitForm"
 				>
 					{{ submitBtnText }}
@@ -89,15 +89,14 @@ const props = defineProps<{
 	submitBtnText: string
 	organization?: Schema<'CreateOrganizationRequest'>
 	pending: boolean
+	errors: Schema<'ValidationProblemDetails'>['errors']
 }>()
-
-const errors = ref<string[]>()
 
 const emit = defineEmits<{
 	(e: 'submit', oranization: Schema<'CreateOrganizationRequest'>): Promise<void>
 }>()
 
-const { dirtyObject: organizationForm } = useForm(props.organization ?? {
+const { dirtyObject: organizationForm, isDirty } = useForm(props.organization ?? {
 	orgName: '',
 	workspaceURL: '',
 	contactEmail: '',

@@ -40,34 +40,45 @@ export const useOrganizationStore = defineStore('organization', () => {
 		if (previousOrganizationId && Number(previousOrganizationId)) {
 			currentSelectedOrganizationId.value = Number(previousOrganizationId)
 		}
-		else if (userOrganizations.value && userOrganizations.value[0]?.organization && userOrganizations.value[0]?.organization.id) {
-			currentSelectedOrganizationId.value = userOrganizations.value[0]?.organization.id
-		}
+		else
+			trySetCurrentOrganizationId()
 	})
 
-	async function createNewOrganization(newOrg: Schema<'CreateOrganizationRequest'>) {
-		const response = await $api('/organization', {
-			method: 'POST',
-			body: newOrg,
-			onResponse: (res) => {
-				if (res.response.ok) {
-					refreshUserOrganizations()
-				}
-			},
-		})
-		return response
+	async function createNewOrganization(newOrg: Schema<'CreateOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
+		try {
+			const response = await $api('/organization', {
+				method: 'POST',
+				body: newOrg,
+			})
+			refreshUserOrganizations()
+			return {
+				status: 'success',
+				data: response,
+			}
+		}
+		catch (err) {
+			return handleApiFormError(err)
+		}
 		// refresh()
 	}
 
-	async function editOrganization(editOrganization: Schema<'EditOrganizationRequest'>): Promise<Schema<'GetOrganizationResponse'>> {
-		const response = await $api('/organization/{organizationId}', {
-			method: 'PUT',
-			path: {
-				organizationId: editOrganization.id,
-			},
-			body: editOrganization,
-		})
-		return response
+	async function editOrganization(editOrganization: Schema<'EditOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
+		try {
+			const response = await $api('/organization/{organizationId}', {
+				method: 'PUT',
+				path: {
+					organizationId: editOrganization.id,
+				},
+				body: editOrganization,
+			})
+			return {
+				status: 'success',
+				data: response,
+			}
+		}
+		catch (err) {
+			return handleApiFormError(err)
+		}
 	}
 
 	async function deleteOrganization(organization: Schema<'GetOrganizationResponse'>) {
@@ -86,13 +97,17 @@ export const useOrganizationStore = defineStore('organization', () => {
 					return
 				}
 				if (organization.id == currentOrganization.value?.id) {
-					if (userOrganizations.value && userOrganizations.value[0]?.organization && userOrganizations.value[0]?.organization.id) {
-						currentSelectedOrganizationId.value = userOrganizations.value[0]?.organization.id
-					}
+					trySetCurrentOrganizationId()
 				}
 				refreshUserOrganizations()
 			},
 		})
+	}
+
+	function trySetCurrentOrganizationId() {
+		if (userOrganizations.value && userOrganizations.value[0]?.organization && Number(userOrganizations.value[0]?.organization.id)) {
+			currentSelectedOrganizationId.value = Number(userOrganizations.value[0]?.organization.id)
+		}
 	}
 
 	return {

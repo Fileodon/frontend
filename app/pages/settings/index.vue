@@ -18,12 +18,15 @@
 			subtitle="Update your organizations informations"
 			submit-btn-text="Submit edit"
 			:pending="pending"
+			:errors="formErrors"
 			@submit="updateOrganization"
 		/>
 		<danger-zone>
 			<div class="flex flex-row justify-between">
 				<div>
-					<h3>Delete this organization</h3>
+					<p class="font-bold">
+						Delete this organization
+					</p>
 					<p>If tyou delete, this organization and its related resources will be gone forever</p>
 				</div>
 				<button
@@ -44,13 +47,21 @@ definePageMeta({
 	title: 'Settings',
 	breadcrumbs: ['index'],
 })
+
 const orgStore = useOrganizationStore()
 const pending = useState('org-edit-pending', () => false)
+const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-edit-form-errors')
 
 const updateOrganization = useDebounceFn(async (editedStore: Schema<'CreateOrganizationRequest'>) => {
-	console.log('form:', editedStore)
+	if (!orgStore.currentOrganization) return
 	pending.value = true
-	// await orgStore.editOrganization(editedStore)
+	const result = await orgStore.editOrganization({
+		id: orgStore.currentOrganization?.id,
+		...editedStore,
+	})
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
 	pending.value = false
 }, 500)
 
@@ -64,7 +75,7 @@ const deleteOrganization = useDebounceFn(async () => {
 	if (confirm === true) {
 		await orgStore.deleteOrganization(orgStore.currentOrganization)
 	}
-	pending.value = true
+	pending.value = false
 }, 500)
 </script>
 

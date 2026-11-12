@@ -11,6 +11,7 @@
 			subtitle="creating a new organization"
 			submit-btn-text="Submit edit"
 			:pending="pending"
+			:errors="formErrors"
 			@submit="createOrganization"
 		/>
 	</div>
@@ -26,15 +27,20 @@ definePageMeta({
 
 const orgStore = useOrganizationStore()
 const pending = useState('org-create-pending', () => false)
+const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-create-form-errors')
 
-const createOrganization = useDebounceFn(async (editedStore: Schema<'CreateOrganizationRequest'>) => {
-	console.log('form:', editedStore)
+const createOrganization = useDebounceFn(async (newOrgForm: Schema<'CreateOrganizationRequest'>) => {
 	pending.value = true
-	const newOrganization = await orgStore.createNewOrganization(editedStore)
+	const result = await orgStore.createNewOrganization(newOrgForm)
+	if (result.status === 'success') {
+		console.log(result)
+		orgStore.currentSelectedOrganizationId = result.data.id
+		navigateTo('/settings')
+	}
+	else if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
 	pending.value = false
-	console.log(newOrganization)
-	navigateTo('/settings')
-	// TODO: navigate to new Organization when response type is fixed.
 }, 500)
 </script>
 

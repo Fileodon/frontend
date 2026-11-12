@@ -15,7 +15,7 @@
 		<p
 			v-for="(error, idx) in errors"
 			:key="idx"
-			class="validator-hint hidden"
+			class="text-sm text-error"
 		>
 			{{ error }}
 		</p>
@@ -29,7 +29,11 @@ interface FormInput {
 	errors: string[] | undefined
 	info: string
 }
-defineProps<FormInput>()
+const { errors } = defineProps<FormInput>()
+
+watch(() => errors, (newVal) => {
+	console.log(newVal)
+})
 </script>
 
 <style></style>

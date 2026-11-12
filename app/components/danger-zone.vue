@@ -2,7 +2,7 @@
 	<h3 class="font-bold text-error">
 		{{ title }}
 	</h3>
-	<label class="card border-error-content/75 border-4 ">
+	<label class="card border-error/75 border-2 ">
 		<div class="card-body">
 			<div>
 				<slot />
