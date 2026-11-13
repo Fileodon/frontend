@@ -112,6 +112,10 @@ export const useOrganizationStore = defineStore('organization', () => {
 		}
 	}
 
+	function hasPermissions(permission: string): boolean {
+		return !!organizationPermissions.value?.find(p => p.name == permission)
+	}
+
 	return {
 		currentOrganization,
 		userOrganizations,
@@ -122,5 +126,6 @@ export const useOrganizationStore = defineStore('organization', () => {
 		currentOrganizationPending,
 		userOrganizationsPending,
 		organizationPermissions,
+		hasPermissions,
 	}
 })

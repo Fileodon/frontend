@@ -3,7 +3,7 @@ export const useRoleStore = defineStore('roles', () => {
 
 	const organizationStore = useOrganizationStore()
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
-	const { data: roles } = useLazyApi('/organization/{organizationId}/role', {
+	const { data: roles, refresh: refreshRoles } = useLazyApi('/organization/{organizationId}/role', {
 		method: 'GET',
 		path: {
 			organizationId: orgId,
@@ -20,6 +20,13 @@ export const useRoleStore = defineStore('roles', () => {
 					organizationId: orgId.value,
 				},
 				body: newRole,
+				onResponse: (response) => {
+					if (!response.response.ok || response.error?.message) {
+						alert(response.error?.message)
+						return
+					}
+					refreshRoles()
+				},
 			})
 			return {
 				status: 'success',
@@ -40,6 +47,13 @@ export const useRoleStore = defineStore('roles', () => {
 					id: role.id,
 				},
 				body: role,
+				onResponse: (response) => {
+					if (!response.response.ok || response.error?.message) {
+						alert(response.error?.message)
+						return
+					}
+					refreshRoles()
+				},
 			})
 			return {
 				status: 'success',
@@ -50,9 +64,27 @@ export const useRoleStore = defineStore('roles', () => {
 			return handleApiFormError(err)
 		}
 	}
+
+	async function deleteRole(role: Schema<'GetRoleResponse'>) {
+		await $api('/organization/{organizationId}/role/{id}', {
+			method: 'DELETE',
+			path: {
+				organizationId: orgId.value,
+				id: role.id.toString(),
+			},
+			onResponse: (response) => {
+				if (!response.response.ok || response.error?.message) {
+					alert(response.error?.message)
+					return
+				}
+				refreshRoles()
+			},
+		})
+	}
 	return {
 		roles,
 		createNewRole,
 		updateRole,
+		deleteRole,
 	}
 })

@@ -14,7 +14,7 @@
 						Total roles
 					</div>
 					<div class="stat-value font-normal">
-						{{ mockRoles.length }}
+						{{ roleStore.roles?.length }}
 					</div>
 					<div class="stat-desc">
 						The total amount of roles in "Orgname"
@@ -27,7 +27,7 @@
 						Custom roles
 					</div>
 					<div class="stat-value text-success font-normal">
-						{{ mockRoles.filter(r => r.type == MockStatus.CUSTOM).length }}
+						{{ roleStore.roles?.filter(r => r.isSystemRole === false).length }}
 					</div>
 					<div class="stat-desc">
 						Custom made roles
@@ -44,7 +44,10 @@
 					class="w-sm rounded-md border border-gray-600 px-2.5 outline-0 bg-black/35"
 				>
 				<div class="ml-auto">
-					<button class="btn btn-soft btn-accent p-[0.6rem]">
+					<button
+						class="btn btn-soft btn-accent p-[0.6rem]"
+						@click="toggleCreateRole"
+					>
 						Create new
 						<!-- Syntes evt create new bare skal pushe en ny til in memory staten og så åbne edit? så hvis man trykker close eller remove bliver den bare ikke sendt? -->
 					</button>
@@ -72,7 +75,8 @@
 							</td>
 							<td>
 								<button
-									class="btn btn-sm btn-info"
+									:disabled="role.isSystemRole"
+									class="btn btn-sm btn-ghost btn-info"
 									@click="editUser(role)"
 								>
 									Edit
@@ -83,14 +87,26 @@
 							<td colspan="3">
 								<forms-organization-roles
 									:role="role"
-									:permissions="mockPermissions"
+									:errors="formErrors"
+									:permissions="permissionStore.permissions ?? []"
 									@close="clearCurrentUserEdit"
-									@submit-role="() => console.log('save role permissions')"
-									@remove-role="() => console.log('remove role')"
+									@submit-role="updateRole"
+									@remove-role="deleteRole"
 								/>
 							</td>
 						</tr>
 					</template>
+					<tr v-show="creatingNewRole">
+						<td colspan="3">
+							<forms-organization-roles
+								:errors="formErrors"
+								:permissions="permissionStore.permissions ?? []"
+								@close="toggleCreateRole"
+								@submit-role="createRole"
+								@remove-role="deleteRole"
+							/>
+						</td>
+					</tr>
 				</tbody>
 			</table>
 		</table-card>
@@ -98,42 +114,23 @@
 </template>
 
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core'
+
 definePageMeta({
 	title: 'Roles',
 	breadcrumbs: ['index'],
 })
 
 const roleStore = useRoleStore()
-
-enum MockStatus {
-	SYSTEM = 'system',
-	CUSTOM = 'custom',
-}
-export type permission = 'users.edit' | 'user.view' | 'connections.edit' | 'connections.view'
-export interface MockRole {
-	id: number
-	name: string
-	type: MockStatus
-	user_count: number
-	permissions: permission[]
-}
-const mockPermissions = useState<permission[]>('mock-permissions', () => [
-	'users.edit',
-	'user.view',
-	'connections.edit',
-	'connections.view',
-])
-const mockRoles: MockRole[] = [
-	{ id: 1, name: 'admin', type: MockStatus.SYSTEM, user_count: 1, permissions: ['connections.edit', 'connections.view', 'user.view', 'users.edit'] },
-	{ id: 2, name: 'editor', type: MockStatus.SYSTEM, user_count: 2, permissions: ['connections.edit', 'connections.view', 'user.view'] },
-	{ id: 3, name: 'viewer', type: MockStatus.SYSTEM, user_count: 3, permissions: ['connections.view', 'user.view'] },
-	{ id: 4, name: 'guest', type: MockStatus.CUSTOM, user_count: 0, permissions: [] },
-]
+const permissionStore = usePermissionStore()
 
 const queryString = useState('users-query-string', () => '')
-const currentRoleEdit = useState<MockRole | undefined>('current-role-edit', () => undefined)
+const currentRoleEdit = useState<Schema<'GetRoleResponse'> | null>('current-role-edit')
+const pending = useState('role-api-pending', () => false)
+const creatingNewRole = useState('creating-new-role', () => false)
+const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-edit-form-errors')
 
-async function editUser(role: MockRole) {
+async function editUser(role: Schema<'GetRoleResponse'>) {
 	if (currentRoleEdit.value?.id == role.id) {
 		clearCurrentUserEdit()
 		return
@@ -143,8 +140,42 @@ async function editUser(role: MockRole) {
 }
 
 async function clearCurrentUserEdit() {
-	currentRoleEdit.value = undefined
+	currentRoleEdit.value = null
 }
+
+async function toggleCreateRole() {
+	creatingNewRole.value = !creatingNewRole.value
+}
+
+const createRole = useDebounceFn(async (newRole: Schema<'CreateRoleRequest'>) => {
+	pending.value = true
+	const result = await roleStore.createNewRole(newRole)
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
+	toggleCreateRole()
+	pending.value = false
+})
+
+const updateRole = useDebounceFn(async (editedRole: Schema<'EditRoleRequest'>) => {
+	pending.value = true
+	const result = await roleStore.updateRole(editedRole)
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
+	clearCurrentUserEdit()
+	pending.value = false
+}, 500)
+
+const deleteRole = useDebounceFn(async (deleteRole: Schema<'GetRoleResponse'>) => {
+	pending.value = true
+	const confirm = window.confirm(`Are you sure you  want to delete role "${deleteRole.name}"`)
+	if (confirm === true) {
+		await roleStore.deleteRole(deleteRole)
+	}
+	clearCurrentUserEdit()
+	pending.value = false
+}, 500)
 </script>
 
 <style scoped>
