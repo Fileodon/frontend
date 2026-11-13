@@ -32,7 +32,10 @@
 					class="w-sm rounded-md border border-gray-600 px-2.5 outline-0 bg-black/35"
 				>
 				<div class="ml-auto">
-					<button class="btn btn-soft btn-accent p-[0.6rem]">
+					<button
+						class="btn btn-soft btn-accent p-[0.6rem]"
+						@click="inviteModal?.show()"
+					>
 						<!-- <Icon name="material-symbols-light:add" /> --> Invite
 					</button>
 				</div>
@@ -101,7 +104,24 @@
 				</div>
 			</template>
 		</table-card>
-		<!-- User edit modal -->
+		<form-modal
+			id="invite_user_modal"
+			ref="invite-user-modal"
+		>
+			<card-form>
+				<template #header>
+					<h3>Invite a user to your organization</h3>
+				</template>
+				<template #body>
+					<forms-organization-user-invite
+						:roles="roleStore.roles ?? []"
+						:errors="formErrors"
+						:pending="pending"
+						@submit="inviteUser"
+					/>
+				</template>
+			</card-form>
+		</form-modal>
 	</div>
 </template>
 
@@ -110,6 +130,8 @@ definePageMeta({
 	title: 'Users',
 	breadcrumbs: ['index'],
 })
+
+const inviteModal = useTemplateRef('invite-user-modal')
 
 const organizationStore = useOrganizationStore()
 const userOrganizationStore = useUserOrganizationStore()
@@ -149,6 +171,21 @@ async function submitEditUser(user: Schema<'EditUserOrganizationRequest'>) {
 	}
 	pending.value = false
 	clearCurrentUserEdit()
+}
+
+async function inviteUser(invite: Schema<'CreateUserOrganizationRequest'>) {
+	pending.value = true
+	const result = await userOrganizationStore.inviteUser({
+		...invite,
+		organizationId: organizationStore.currentSelectedOrganizationId,
+	})
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+		pending.value = false
+		return
+	}
+	pending.value = false
+	inviteModal.value?.close()
 }
 
 async function removeUser(user: Schema<'GetUserOrganizationResponse'>) {
