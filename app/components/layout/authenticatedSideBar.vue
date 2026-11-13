@@ -2,10 +2,20 @@
 	<div class="hidden sm:flex sm:w-52 h-full shrink-0 border-r border-r-neutral-200 flex-col overflow-y-auto">
 		<div class="flex items-center justify-center h-24">
 			<NuxtLink :to="'/'">
-				<Icon
-					name="custom-icons:fileodon-haj"
-					size="2rem"
-				/>
+				<div class="hover-3d">
+					<Icon
+						name="custom-icons:fileodon-haj"
+						size="3rem"
+					/>
+					<div />
+					<div />
+					<div />
+					<div />
+					<div />
+					<div />
+					<div />
+					<div />
+				</div>
 			</NuxtLink>
 		</div>
 		<div>

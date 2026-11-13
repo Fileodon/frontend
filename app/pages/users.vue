@@ -1,9 +1,10 @@
 <template>
-	<div>
+	<views-page-loading v-if="userOrganizationStore.pendingOrganizationUsers" />
+	<div v-else>
 		<layout-header
 			title="Users"
 			header="Manage Users"
-			description="Manage organisation users"
+			:description="`Manage ${organizationStore.currentOrganization?.orgName} users`"
 		/>
 		<section
 			id="stats"
@@ -15,10 +16,10 @@
 						Total users
 					</div>
 					<div class="stat-value font-normal">
-						<p>{{ mockUsers.length }}</p>
+						<p>{{ userOrganizationStore.organizationUsers?.length }}</p>
 					</div>
 					<div class="stat-desc">
-						In Cool
+						In {{ organizationStore.currentOrganization?.orgName }}
 					</div>
 				</div>
 			</div>
@@ -32,7 +33,10 @@
 					class="w-sm rounded-md border border-gray-600 px-2.5 outline-0 bg-black/35"
 				>
 				<div class="ml-auto">
-					<button class="btn btn-soft btn-accent p-[0.6rem]">
+					<button
+						class="btn btn-soft btn-accent p-[0.6rem]"
+						@click="inviteModal?.show()"
+					>
 						<!-- <Icon name="material-symbols-light:add" /> --> Invite
 					</button>
 				</div>
@@ -50,18 +54,17 @@
 				</thead>
 				<tbody>
 					<template
-						v-for="user in mockUsers"
+						v-for="user in userOrganizationStore.organizationUsers"
 						:key="user.id"
 					>
 						<tr
 							class="resource-table-row"
 						>
-							<td>{{ user.username }}</td>
+							<td>{{ user.userName }}</td>
 							<td>{{ user.role?.name }}</td>
 							<td>
 								<button
 									class="btn btn-sm btn-info"
-									:disabled="!mockCurrentUserPermissions.includes('edit')"
 									@click="editUser(user)"
 								>
 									Edit
@@ -76,7 +79,8 @@
 							>
 								<forms-organization-user
 									:user="user"
-									:roles="mockRoles"
+									:roles="roleStore.roles ?? []"
+									:errors="formErrors"
 									@remove-user="removeUser"
 									@save-changes="submitEditUser"
 									@close="clearCurrentUserEdit"
@@ -88,7 +92,7 @@
 			</table>
 			<template #footer>
 				<p class="text-gray-500">
-					Showing {{ mockUsers.length }} out of {{ mockUsers.length }} users
+					Showing {{ userOrganizationStore.organizationUsers?.length }} out of {{ userOrganizationStore.organizationUsers?.length }} users
 				</p>
 				<div class="join">
 					<!-- TODO: Impementer pagination -->
@@ -101,7 +105,25 @@
 				</div>
 			</template>
 		</table-card>
-		<!-- User edit modal -->
+		<form-modal
+			id="invite_user_modal"
+			ref="invite-user-modal"
+		>
+			<card-form>
+				<template #header>
+					<h3>Invite a user to your organization</h3>
+				</template>
+				<template #body>
+					<forms-organization-user-invite
+						ref="invite-user-form"
+						:roles="roleStore.roles ?? []"
+						:errors="formErrors"
+						:pending="pending"
+						@submit="inviteUser"
+					/>
+				</template>
+			</card-form>
+		</form-modal>
 	</div>
 </template>
 
@@ -111,42 +133,19 @@ definePageMeta({
 	breadcrumbs: ['index'],
 })
 
-export interface MockUser {
-	id: number
-	username: string
-	role?: MockRole
-}
+const inviteModal = useTemplateRef('invite-user-modal')
+const inviteForm = useTemplateRef('invite-user-form')
 
-export interface MockRole {
-	id: number
-	name: string
-}
-
-const mockRoles: MockRole[] = [
-	{ id: 1, name: 'admin' },
-	{ id: 2, name: 'editor' },
-	{ id: 3, name: 'viewer' },
-	{ id: 4, name: 'guest' },
-]
-
-const mockUsers = useState<MockUser[]>('mock-users', () => [
-	{ id: 1, username: 'Jakob Espersen', role: mockRoles[0] },
-	{ id: 2, username: 'Sebastian JenseN?', role: mockRoles[1] },
-	{ id: 3, username: 'Tobias Tobiassen', role: mockRoles[1] },
-	{ id: 4, username: 'Nicklas LobaDK', role: mockRoles[2] },
-	{ id: 5, username: 'Flemming lære', role: mockRoles[3] },
-])
-
-const mockCurrentUserPermissions = useState<string[]>('mock-current-user-permissions', () => [
-	'edit',
-	'view',
-])
+const organizationStore = useOrganizationStore()
+const userOrganizationStore = useUserOrganizationStore()
+const roleStore = useRoleStore()
 
 const queryString = useState('users-query-string', () => '')
+const pending = useState('users-api-pending', () => false)
+const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-edit-form-errors')
+const currentUserEdit = useState<Schema<'GetUserOrganizationResponse'> | undefined>('current-user-edit', () => undefined)
 
-const currentUserEdit = useState<MockUser | undefined>('current-user-edit', () => undefined)
-
-async function editUser(user: MockUser) {
+async function editUser(user: Schema<'GetUserOrganizationResponse'>) {
 	if (currentUserEdit.value?.id == user.id) {
 		clearCurrentUserEdit()
 		return
@@ -155,7 +154,7 @@ async function editUser(user: MockUser) {
 	await nextTick()
 }
 
-async function submitEditUser(user: MockUser) {
+async function submitEditUser(user: Schema<'EditUserOrganizationRequest'>) {
 	// TODO validate stuff maybe
 	if (currentUserEdit.value === undefined || user.id !== currentUserEdit.value.id) {
 		alert('error tried to submit without edit set')
@@ -166,21 +165,42 @@ async function submitEditUser(user: MockUser) {
 		return
 	}
 
-	const originaluserindex = mockUsers.value.findIndex(u => u.id === currentUserEdit.value?.id)
-	if (originaluserindex < 0) {
+	pending.value = true
+	const result = await userOrganizationStore.updateUserOrganization(user)
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+		pending.value = false
 		return
 	}
-	mockUsers.value[originaluserindex] = user
+	formErrors.value = undefined
+	pending.value = false
 	clearCurrentUserEdit()
 }
 
-async function removeUser(user: MockUser) {
+async function inviteUser(invite: Schema<'CreateUserOrganizationRequest'>) {
+	pending.value = true
+	const result = await userOrganizationStore.inviteUser({
+		...invite,
+		organizationId: organizationStore.currentSelectedOrganizationId,
+	})
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+		pending.value = false
+		return
+	}
+	inviteForm.value?.clearForm()
+	formErrors.value = undefined
+	pending.value = false
+	inviteModal.value?.close()
+}
+
+async function removeUser(user: Schema<'GetUserOrganizationResponse'>) {
 	if (currentUserEdit.value === undefined || user.id !== currentUserEdit.value.id) {
 		alert('error tried to remove without edit set')
 		return
 	}
 
-	mockUsers.value = mockUsers.value.filter(u => u.id !== user.id)
+	// TODO Call api
 	clearCurrentUserEdit()
 }
 

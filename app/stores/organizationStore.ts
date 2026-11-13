@@ -14,13 +14,17 @@ export const useOrganizationStore = defineStore('organization', () => {
 		path: {
 			organizationId: currentSelectedOrganizationId,
 		},
-		onResponseError: (err) => {
-			localStorage.removeItem('currentOrganizationId')
-			if (err.response.status === 404) {
-				localStorage.removeItem('currentOrganizationId')
-			}
-		},
+		watch: [currentSelectedOrganizationId],
+		// immediate: currentSelectedOrganizationId.value > 0,
+		// onResponseError: (err) => {
+		// 	localStorage.removeItem('currentOrganizationId')
+		// 	if (err.response.status === 404) {
+		// 		localStorage.removeItem('currentOrganizationId')
+		// 	}
+		// },
 	})
+
+	const organizationPermissions = computed(() => currentOrganization.value?.permissions)
 
 	const { data: userOrganizations, refresh: refreshUserOrganizations, pending: userOrganizationsPending } = useLazyApi('/userorganization', {
 		method: 'GET',
@@ -33,16 +37,15 @@ export const useOrganizationStore = defineStore('organization', () => {
 		}
 	})
 
-	watch(userOrganizations, () => {
-		if (currentOrganization.value) return
-
+	watch(userOrganizations, (newVal) => {
+		if (!newVal) return
 		const previousOrganizationId = localStorage.getItem('currentOrganizationId')?.trim()
 		if (previousOrganizationId && Number(previousOrganizationId)) {
 			currentSelectedOrganizationId.value = Number(previousOrganizationId)
 		}
 		else
 			trySetCurrentOrganizationId()
-	})
+	}, { immediate: true })
 
 	async function createNewOrganization(newOrg: Schema<'CreateOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
 		try {
@@ -110,6 +113,10 @@ export const useOrganizationStore = defineStore('organization', () => {
 		}
 	}
 
+	function hasPermissions(permission: string): boolean {
+		return !!organizationPermissions.value?.find(p => p.name == permission)
+	}
+
 	return {
 		currentOrganization,
 		userOrganizations,
@@ -119,5 +126,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 		deleteOrganization,
 		currentOrganizationPending,
 		userOrganizationsPending,
+		organizationPermissions,
+		hasPermissions,
 	}
 })

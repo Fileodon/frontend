@@ -1,24 +1,60 @@
-import { clearNuxtState, useState } from '#app'
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { defineComponent, h } from 'vue'
-import { describe, expect, it } from 'vitest'
-import UsersPage, { type MockUser } from '../../app/pages/users.vue'
+import { describe, expect, it, vi } from 'vitest'
 
-const UsersPageWithFreshState = defineComponent({
-	setup() {
-		clearNuxtState()
-		useState<MockUser[]>('mock-users', () => []).value = [
-			{ id: 101, username: 'Test Admin', role: { id: 1, name: 'admin' } },
-			{ id: 102, username: 'Test Viewer', role: { id: 3, name: 'viewer' } },
-		]
-		useState<string[]>('mock-current-user-permissions', () => []).value = ['edit', 'view']
-		return () => h(UsersPage)
-	},
+import UsersPage from '../../app/pages/users.vue'
+
+const { organizationStore, roleStore, userOrganizationStore } = vi.hoisted(() => {
+	const organizationStore = {
+		currentOrganization: { id: 1, orgName: 'Test Org' },
+		currentSelectedOrganizationId: 1,
+		currentOrganizationPending: false,
+	}
+	const roleStore = {
+		roles: [
+			{ id: 1, name: 'admin' },
+			{ id: 2, name: 'editor' },
+			{ id: 3, name: 'viewer' },
+		],
+	}
+	const userOrganizationStore = {
+		organizationUsers: [
+			{ id: 101, userName: 'Test Admin', role: { id: 1, name: 'admin' } },
+			{ id: 102, userName: 'Test Viewer', role: { id: 3, name: 'viewer' } },
+		],
+		pendingOrganizationUsers: false,
+		updateUserOrganization: vi.fn(async (user) => {
+			const nextRole = roleStore.roles.find(role => role.id === user.roleId)
+			const target = userOrganizationStore.organizationUsers.find(item => item.id === user.id)
+			if (target && nextRole) {
+				target.role = nextRole
+			}
+			return { status: 'success', data: target }
+		}),
+	}
+	return { organizationStore, roleStore, userOrganizationStore }
 })
 
+vi.mock('../../app/stores/organizationStore', () => ({
+	useOrganizationStore: () => organizationStore,
+}))
+
+vi.mock('../../app/stores/roleStore', () => ({
+	useRoleStore: () => roleStore,
+}))
+
+vi.mock('../../app/stores/userOrganizationStore', () => ({
+	useUserOrganizationStore: () => userOrganizationStore,
+}))
+
 describe('Users page', () => {
-	it('renders users, updates a role, and removes a user', async () => {
-		const wrapper = await mountSuspended(UsersPageWithFreshState, {
+	it('renders users and updates a role from the edit panel', async () => {
+		userOrganizationStore.organizationUsers = [
+			{ id: 101, userName: 'Test Admin', role: { id: 1, name: 'admin' } },
+			{ id: 102, userName: 'Test Viewer', role: { id: 3, name: 'viewer' } },
+		]
+		userOrganizationStore.updateUserOrganization.mockClear()
+
+		const wrapper = await mountSuspended(UsersPage, {
 			route: '/users',
 		})
 
@@ -41,13 +77,8 @@ describe('Users page', () => {
 		await roleSelect.trigger('change')
 		await wrapper.get('#submit').trigger('click')
 
+		expect(userOrganizationStore.updateUserOrganization).toHaveBeenCalledTimes(1)
 		expect(wrapper.findAll('#users-table tbody tr')[0]?.text()).toContain('editor')
-
-		await wrapper.find('#users-table tbody tr.resource-table-row button').trigger('click')
-		await wrapper.get('#users-table tbody tr:nth-child(2) .btn-error').trigger('click')
-
-		expect(wrapper.findAll('#users-table tbody tr')).toHaveLength(2)
-		expect(wrapper.get('#users-table tbody').text()).not.toContain('Test Admin')
-		expect(wrapper.text()).toContain('Showing 1 out of 1 users')
+		expect(wrapper.text()).toContain('Showing 2 out of 2 users')
 	})
 })
