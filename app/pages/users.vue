@@ -1,5 +1,6 @@
 <template>
-	<div>
+	<views-page-loading v-if="userOrganizationStore.pendingOrganizationUsers" />
+	<div v-else>
 		<layout-header
 			title="Users"
 			header="Manage Users"
@@ -114,6 +115,7 @@
 				</template>
 				<template #body>
 					<forms-organization-user-invite
+						ref="invite-user-form"
 						:roles="roleStore.roles ?? []"
 						:errors="formErrors"
 						:pending="pending"
@@ -132,6 +134,7 @@ definePageMeta({
 })
 
 const inviteModal = useTemplateRef('invite-user-modal')
+const inviteForm = useTemplateRef('invite-user-form')
 
 const organizationStore = useOrganizationStore()
 const userOrganizationStore = useUserOrganizationStore()
@@ -169,6 +172,7 @@ async function submitEditUser(user: Schema<'EditUserOrganizationRequest'>) {
 		pending.value = false
 		return
 	}
+	formErrors.value = undefined
 	pending.value = false
 	clearCurrentUserEdit()
 }
@@ -184,6 +188,8 @@ async function inviteUser(invite: Schema<'CreateUserOrganizationRequest'>) {
 		pending.value = false
 		return
 	}
+	inviteForm.value?.clearForm()
+	formErrors.value = undefined
 	pending.value = false
 	inviteModal.value?.close()
 }

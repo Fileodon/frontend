@@ -1,5 +1,6 @@
 <template>
-	<div>
+	<views-page-loading v-if="roleStore.rolesPending || !roleStore.roles" />
+	<div v-else>
 		<layout-header
 			title="Roles"
 			header="Manage organization roles"

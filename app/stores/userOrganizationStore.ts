@@ -85,7 +85,7 @@ export const useUserOrganizationStore = defineStore('user-organization', () => {
 
 	return {
 		organizationUsers,
-		pendingOrganizationUsers,
+		pendingOrganizationUsers: computed(() => pendingOrganizationUsers.value || organizationStore.currentOrganizationPending),
 		inviteUser,
 		updateUserOrganization,
 		removeUserOrganization,

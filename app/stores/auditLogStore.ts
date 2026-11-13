@@ -18,7 +18,7 @@ export const useAuditLogStore = defineStore('audit-log', () => {
 
 	return {
 		allOrganizationAuditLogs,
-		auditLogsPending,
+		auditLogsPending: computed(() => (auditLogsPending.value || organizationStore.currentOrganizationPending)),
 		orgId,
 	}
 })

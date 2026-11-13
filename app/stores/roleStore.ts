@@ -3,7 +3,7 @@ export const useRoleStore = defineStore('roles', () => {
 
 	const organizationStore = useOrganizationStore()
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
-	const { data: roles, refresh: refreshRoles } = useLazyApi('/organization/{organizationId}/role', {
+	const { data: roles, refresh: refreshRoles, pending: rolesPending } = useLazyApi('/organization/{organizationId}/role', {
 		method: 'GET',
 		path: {
 			organizationId: orgId,
@@ -83,6 +83,7 @@ export const useRoleStore = defineStore('roles', () => {
 	}
 	return {
 		roles,
+		rolesPending,
 		createNewRole,
 		updateRole,
 		deleteRole,

@@ -11,7 +11,7 @@
 					v-model="inviteForm.email"
 					type="email"
 					class="input input-md input-bordered w-full outline-0 bg-base-300"
-
+					:disabled="pending"
 					placeholder="user@fileodon.dev"
 				>
 			</form-input>
@@ -24,6 +24,7 @@
 				<select
 					id="role-form-input-select"
 					v-model="inviteForm.roleId"
+					:disabled="pending"
 					class="select w-fit"
 				>
 					<option
@@ -38,6 +39,7 @@
 			<div class="flex justify-end">
 				<button
 					class="btn btn-soft btn-accent"
+					:disabled="pending"
 					@click.prevent="submit"
 				>
 					Invite
@@ -56,7 +58,7 @@ defineProps<{
 const emit = defineEmits<{
 	(e: 'submit', form: Schema<'CreateUserOrganizationRequest'>): Promise<void>
 }>()
-const { dirtyObject: inviteForm } = useForm<Schema<'CreateUserOrganizationRequest'>>({
+const { dirtyObject: inviteForm, reset } = useForm<Schema<'CreateUserOrganizationRequest'>>({
 	email: '',
 	roleId: '',
 	organizationId: -1,
@@ -65,6 +67,11 @@ const { dirtyObject: inviteForm } = useForm<Schema<'CreateUserOrganizationReques
 async function submit() {
 	await emit('submit', inviteForm.value)
 }
+
+function clearForm() {
+	reset()
+}
+defineExpose({ clearForm })
 </script>
 
 <style scoped>

@@ -14,12 +14,14 @@ export const useOrganizationStore = defineStore('organization', () => {
 		path: {
 			organizationId: currentSelectedOrganizationId,
 		},
-		onResponseError: (err) => {
-			localStorage.removeItem('currentOrganizationId')
-			if (err.response.status === 404) {
-				localStorage.removeItem('currentOrganizationId')
-			}
-		},
+		watch: [currentSelectedOrganizationId],
+		// immediate: currentSelectedOrganizationId.value > 0,
+		// onResponseError: (err) => {
+		// 	localStorage.removeItem('currentOrganizationId')
+		// 	if (err.response.status === 404) {
+		// 		localStorage.removeItem('currentOrganizationId')
+		// 	}
+		// },
 	})
 
 	const organizationPermissions = computed(() => currentOrganization.value?.permissions)
@@ -35,16 +37,15 @@ export const useOrganizationStore = defineStore('organization', () => {
 		}
 	})
 
-	watch(userOrganizations, () => {
-		if (currentOrganization.value) return
-
+	watch(userOrganizations, (newVal) => {
+		if (!newVal) return
 		const previousOrganizationId = localStorage.getItem('currentOrganizationId')?.trim()
 		if (previousOrganizationId && Number(previousOrganizationId)) {
 			currentSelectedOrganizationId.value = Number(previousOrganizationId)
 		}
 		else
 			trySetCurrentOrganizationId()
-	})
+	}, { immediate: true })
 
 	async function createNewOrganization(newOrg: Schema<'CreateOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
 		try {
