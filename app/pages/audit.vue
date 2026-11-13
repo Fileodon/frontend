@@ -1,6 +1,5 @@
 <template>
 	<views-page-loading v-if="auditLogStore.auditLogsPending" />
-
 	<div v-else>
 		<layout-header
 			title="Audit"
