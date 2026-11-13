@@ -94,8 +94,7 @@ const emit = defineEmits<{
 }>()
 
 async function submitForm() {
-	if (role === undefined) {
-		alert('skrt')
+	if (!role) {
 		const newRole: Schema<'CreateRoleRequest'> = {
 			name: roleForm.value.name,
 			permissionMask: roleForm.value.permissions.reduce((mask, permission) => mask | Number(permission.bitValue), 0),

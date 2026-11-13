@@ -102,8 +102,7 @@
 								:errors="formErrors"
 								:permissions="permissionStore.permissions ?? []"
 								@close="toggleCreateRole"
-								@submit-role="createRole"
-								@remove-role="deleteRole"
+								@create-role="createRole"
 							/>
 						</td>
 					</tr>
@@ -149,13 +148,14 @@ async function toggleCreateRole() {
 
 const createRole = useDebounceFn(async (newRole: Schema<'CreateRoleRequest'>) => {
 	pending.value = true
+	alert('creating')
 	const result = await roleStore.createNewRole(newRole)
 	if (result.status === 'bad_request') {
 		formErrors.value = result.data.errors
 	}
 	toggleCreateRole()
 	pending.value = false
-})
+}, 500)
 
 const updateRole = useDebounceFn(async (editedRole: Schema<'EditRoleRequest'>) => {
 	pending.value = true
