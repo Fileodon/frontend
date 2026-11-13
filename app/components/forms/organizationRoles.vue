@@ -74,7 +74,7 @@
 const { role, permissions } = defineProps<{
 	role?: Schema<'GetRoleResponse'>
 	permissions: Schema<'GetPermissionResponse'>[]
-	errors: Schema<'ValidationProblemDetails'>['errors']
+	errors: Schema<'ValidationProblemDetails'>['errors'] | undefined
 }>()
 
 const { dirtyObject: roleForm } = useForm<Schema<'GetRoleResponse'>>(role ?? {

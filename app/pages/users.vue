@@ -3,7 +3,7 @@
 		<layout-header
 			title="Users"
 			header="Manage Users"
-			description="Manage organisation users"
+			:description="`Manage ${organizationStore.currentOrganization?.orgName} users`"
 		/>
 		<section
 			id="stats"
@@ -18,7 +18,7 @@
 						<p>{{ userOrganizationStore.organizationUsers?.length }}</p>
 					</div>
 					<div class="stat-desc">
-						In Cool
+						In {{ organizationStore.currentOrganization?.orgName }}
 					</div>
 				</div>
 			</div>
@@ -73,13 +73,14 @@
 							<td
 								colspan="3"
 							>
-								<!-- <forms-organization-user
+								<forms-organization-user
 									:user="user"
-									:roles="mockRoles"
+									:roles="roleStore.roles ?? []"
+									:errors="formErrors"
 									@remove-user="removeUser"
 									@save-changes="submitEditUser"
 									@close="clearCurrentUserEdit"
-								/> -->
+								/>
 							</td>
 						</tr>
 					</template>
@@ -110,10 +111,13 @@ definePageMeta({
 	breadcrumbs: ['index'],
 })
 
+const organizationStore = useOrganizationStore()
 const userOrganizationStore = useUserOrganizationStore()
+const roleStore = useRoleStore()
 
 const queryString = useState('users-query-string', () => '')
-
+const pending = useState('users-api-pending', () => false)
+const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-edit-form-errors')
 const currentUserEdit = useState<Schema<'GetUserOrganizationResponse'> | undefined>('current-user-edit', () => undefined)
 
 async function editUser(user: Schema<'GetUserOrganizationResponse'>) {
@@ -136,7 +140,14 @@ async function submitEditUser(user: Schema<'EditUserOrganizationRequest'>) {
 		return
 	}
 
-	// TODO submit edit via api
+	pending.value = true
+	const result = await userOrganizationStore.updateUserOrganization(user)
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+		pending.value = false
+		return
+	}
+	pending.value = false
 	clearCurrentUserEdit()
 }
 

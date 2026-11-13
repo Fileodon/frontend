@@ -6,7 +6,7 @@
 			class="flex flex-row justify-between"
 		>
 			<h3 class="text-lg font-bold">
-				Currently managing {{ dirtyUser.username }}
+				Currently managing {{ user.userName }}
 			</h3>
 			<button
 				class="btn btn-xs rounded"
@@ -42,7 +42,7 @@
 			<button
 				id="submit"
 				class="btn btn-sm btn-success"
-				@click="emit('saveChanges', dirtyUser)"
+				@click="submitForm"
 			>
 				Submit changes
 			</button>
@@ -57,20 +57,27 @@
 </template>
 
 <script setup lang="ts">
-import type { MockRole, MockUser } from '~/pages/users.vue'
-
 const props = defineProps<{
-	user: MockUser
-	roles: MockRole[]
+	user: Schema<'GetUserOrganizationResponse'>
+	errors: Schema<'ValidationProblemDetails'>['errors'] | undefined
+	roles: Schema<'GetRoleResponse'>[]
 }>()
 
 const emit = defineEmits<{
-	removeUser: [user: MockUser]
-	saveChanges: [user: MockUser] // Implementer her og på remove at den skal sende den korrekte DTO retur
+	removeUser: [user: Schema<'GetUserOrganizationResponse'>]
+	saveChanges: [user: Schema<'EditUserOrganizationRequest'>] // Implementer her og på remove at den skal sende den korrekte DTO retur
 	close: []
 }>()
 
 const { dirtyObject: dirtyUser } = useForm(props.user)
+
+async function submitForm() {
+	const edit: Schema<'EditUserOrganizationRequest'> = {
+		id: dirtyUser.value.id,
+		roleId: dirtyUser.value.role.id,
+	}
+	emit('saveChanges', edit)
+}
 </script>
 
 <style scoped>
