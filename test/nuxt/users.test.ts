@@ -1,6 +1,8 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 
+import UsersPage from '../../app/pages/users.vue'
+
 const { organizationStore, roleStore, userOrganizationStore } = vi.hoisted(() => {
 	const organizationStore = {
 		currentOrganization: { id: 1, orgName: 'Test Org' },
@@ -43,8 +45,6 @@ vi.mock('../../app/stores/roleStore', () => ({
 vi.mock('../../app/stores/userOrganizationStore', () => ({
 	useUserOrganizationStore: () => userOrganizationStore,
 }))
-
-import UsersPage from '../../app/pages/users.vue'
 
 describe('Users page', () => {
 	it('renders users and updates a role from the edit panel', async () => {
