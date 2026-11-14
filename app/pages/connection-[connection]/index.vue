@@ -69,7 +69,6 @@
 							</button>
 
 							<ul
-
 								:id="`popover-row-${index}`"
 								class="dropdown menu rounded-box bg-base-300 shadow-sm m-1 overflow-visible"
 								popover
@@ -122,12 +121,27 @@
 				</tbody>
 			</table>
 		</table-card>
+		<form-modal
+			id="upload_files_modal"
+			ref="upload-files-modal"
+		>
+			<card-form>
+				<template #header>
+					<h3>Upload file</h3>
+				</template>
+				<template #body>
+					<p>hello world!</p>
+				</template>
+			</card-form>
+		</form-modal>
 	</div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute()
 const router = useRouter()
+
+const uploadModal = useTemplateRef('upload-files-modal')
 
 const connectionId = computed(() => {
 	try {
