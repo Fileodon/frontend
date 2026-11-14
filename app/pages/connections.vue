@@ -116,26 +116,12 @@
 						</td>
 						<td>
 							<div v-if="item.status == 'Accepted'">
-								<div class="dropdown">
-									<div
-										tabindex="0"
-										role="button"
-										class="btn-ghost hover:cursor-pointer m-1"
-									>
-										<Icon name="material-symbols-light:more-vert" />
-									</div>
-									<ul
-										tabindex="-1"
-										class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 border-gray-600 border shadow-sm"
-									>
-										<li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35">
-											<a>Item 1</a>
-										</li>
-										<li class="border-gray-600 border rounded p-0.5 mb-1 bg-black/35">
-											<a>Item 2</a>
-										</li>
-									</ul>
-								</div>
+								<button
+									class="btn btn-sm btn-info btn-link"
+									@click="handleViewDetails(item)"
+								>
+									View
+								</button>
 							</div>
 							<div v-else-if="item.status == 'Pending'">
 								<button
@@ -212,6 +198,10 @@ function getStatusClasses(action: Schema<'SFTPConnectionStatus'>) {
 			return { badge: 'badge-info', indicator: 'status-info' }
 		}
 	}
+}
+
+function handleViewDetails(con: Schema<'BaseSFTPConnectionGetResponse'>) {
+	navigateTo(`/connection-${con.id}`)
 }
 
 const updateConnectionStatus = useDebounceFn(async (status: Schema<'SFTPConnectionStatusUpdateRequest'>) => {
