@@ -6,6 +6,7 @@
 			header="Directory list"
 			description="Manage files"
 		/>
+
 		<table-card>
 			<template #head>
 				<div class="breadcrumbs text-sm select-none max-w-fit">
@@ -25,6 +26,15 @@
 						</li>
 					</ul>
 				</div>
+				<button
+					class="btn btn-active btn-sm ms-auto btn-square"
+					lang="en"
+					@click="showUploadModal"
+				>
+					<Icon
+						name="material-symbols-light:add"
+					/>
+				</button>
 				<!-- Maybe add share path? -->
 			</template>
 			<table class="table">
@@ -32,6 +42,7 @@
 					<tr class="bg-base-200">
 						<td>File name</td>
 						<td>Updated</td>
+						<td>Size</td>
 						<td>Last modified</td>
 						<td />
 					</tr>
@@ -46,17 +57,18 @@
 								<Icon
 									v-if="row.isDirectory"
 									name="material-symbols-light:folder-outline-rounded"
-									size="1rem"
+									size="1.5rem"
 								/>
 								<Icon
 									v-else
 									name="material-symbols-light:draft-outline-rounded"
-									size="1rem"
+									size="1.5rem"
 								/>
 								{{ row.relativeName }}
 							</div>
 						</td>
 						<td>Maybe the name of the user in the latest audit log?</td>
+						<td>{{ (Number(row.size) / 1024).toFixed(2) }}mb</td>
 						<td>{{ new Date(row.lastWriteTime).toUTCString() }}</td>
 						<td v-if="!row.isDirectory">
 							<button
@@ -75,14 +87,15 @@
 								:style="{ positionAnchor: `--row-action-anchor-${index}` }"
 							>
 								<li>
-									<div
+									<NuxtLink
 										class="tooltip tooltip-left"
 										data-tip="Open file in browser"
+										:to="`/connection-${route.params.connection}/${row.relativeName}`"
 									>
 										<Icon
 											name="material-symbols-light:file-open-outline-rounded"
 										/>
-									</div>
+									</NuxtLink>
 								</li>
 								<li>
 									<div
@@ -130,7 +143,42 @@
 					<h3>Upload file</h3>
 				</template>
 				<template #body>
-					<p>hello world!</p>
+					<form-input
+						id="file-path"
+						label="Path"
+						info=""
+						:errors="[]"
+					>
+						<input
+							ref="upload-files-path-input"
+							v-model="uploadPath"
+							class="input input-md input-bordered outline-0"
+							type="text"
+							:disabled="pending"
+						>
+					</form-input>
+					<form-input
+						id="upload-files"
+						label="Upload files"
+						info=""
+						:errors="[]"
+					>
+						<input
+							ref="upload-files-input"
+							class="file-input"
+							type="file"
+							multiple
+							:disabled="pending"
+						>
+					</form-input>
+					<button
+						id="upload-files"
+						class="btn btn-dash"
+						:disabled="pending"
+						@click="uploadFilesDebounce"
+					>
+						Upload
+					</button>
 				</template>
 			</card-form>
 		</form-modal>
@@ -138,14 +186,20 @@
 </template>
 
 <script setup lang="ts">
+import { useDebounceFn } from '@vueuse/core'
+
+definePageMeta({
+	title: 'Connection',
+	breadcrumbs: ['index', 'connections'],
+})
 const route = useRoute()
 const router = useRouter()
 
 const uploadModal = useTemplateRef('upload-files-modal')
+const fileInput = useTemplateRef('upload-files-input')
 
 const connectionId = computed(() => {
 	try {
-		console.log(route.params)
 		return Number(`${route.params.connection}`)
 	}
 	catch (err) {
@@ -154,7 +208,10 @@ const connectionId = computed(() => {
 	}
 })
 console.log(route.query.routePath)
-const { data, initialPending, changeDir, currentDir } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
+const { data, initialPending, changeDir, currentDir, uploadFiles } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
+
+const pending = useState('upload-files-pending', () => false)
+const uploadPath = useState('form-file-upload-path', () => currentDir.value)
 
 watchEffect(() => {
 	router.replace({ path: route.path, query: { routePath: currentDir.value } })
@@ -187,6 +244,23 @@ const breadcrumbs = computed(() => {
 		}
 		))
 	return breadcrumbItems
+})
+
+async function showUploadModal() {
+	uploadPath.value = currentDir.value
+	await nextTick()
+	uploadModal.value?.show()
+}
+
+const uploadFilesDebounce = useDebounceFn(async () => {
+	pending.value = true
+	if (!fileInput.value?.files || fileInput.value?.files.length <= 0) {
+		alert('you havent chosen anything is this a bug?')
+		return
+	}
+	await uploadFiles(fileInput.value?.files, uploadPath.value)
+	uploadModal.value?.close()
+	pending.value = false
 })
 </script>
 

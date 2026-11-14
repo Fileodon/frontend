@@ -30,8 +30,18 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 		currentDir.value = dir
 	}
 
-	async function uploadFiles(files: File[]) {
+	async function uploadFiles(files: FileList, basePath: string): Promise<ApiFormResponse<Schema<'SFTPActionUploadResponse'>>> {
 		try {
+			const file: File[] = []
+			for (let i = 0; i < files.length; i++) {
+				if (!files?.item(i)) continue
+				try {
+					file.push(files?.item(i) as File)
+				}
+				catch (e) {
+					console.log(e)
+				}
+			}
 			const response = await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/upload', {
 				method: 'post',
 				path: {
@@ -39,23 +49,27 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 					organizationid: orgId.value,
 				},
 				body: {
-					Files: files.map(file => file.name),
-					RemoteFilePaths: '',
+					Files: file.map(file => file.name),
+					RemoteFilePaths: basePath,
 				},
 				bodySerializer() {
 					const formRequest = new FormData()
 					for (const file of files) {
 						formRequest.append('Files', file)
-						formRequest.append('RemoteFilePaths', `${currentDir.value}/${file.name}`)
+						formRequest.append('RemoteFilePaths', `${basePath}/${file.name}`)
 					}
 					return formRequest
 				},
 			})
 			console.log('Maybe listen to', response.jobId)
 			refreshList()
+			return {
+				status: 'success',
+				data: response,
+			}
 		}
 		catch (err) {
-			return err
+			return handleApiFormError(err)
 		}
 	}
 
