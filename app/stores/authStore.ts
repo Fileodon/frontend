@@ -121,7 +121,7 @@ export const useAuthStore = defineStore('auth', () => {
 				credentials: 'include',
 			})
 
-			accessJWT.value = null // Fjern token fra cookie og state
+			accessJWT.value = undefined // Nulstil accessJWT
 			tokenExpiry.value = null // Nulstil token-udløbstidspunktet
 			await refreshAuthMe() // Opdater brugerdata efter logout
 			await navigateTo('/auth')
