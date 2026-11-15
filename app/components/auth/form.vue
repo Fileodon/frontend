@@ -91,21 +91,36 @@
 						aria-label="Password"
 						class="input input-bordered w-full"
 					>
+					<input
+						v-model="registerForm.confirmPassword"
+						type="password"
+						autocomplete="new-password"
+						placeholder="Confirm Password"
+						aria-label="Confirm Password"
+						class="input input-bordered w-full"
+					> <br>
+					<p
+						v-if="confirmPassword.length > 0 && !passwordsMatch"
+						class="text-error text-sm"
+					>
+						Passwords do not match.
+					</p>
 				</div>
 
 				<button
 					v-if="view"
-					type="button"
+					type="submit"
 					class="btn btn-primary mt-auto w-full"
-					@click="emits('login', loginForm)"
+					@click.prevent="emits('login', loginForm)"
 				>
 					Login
 				</button>
 				<button
 					v-else
-					type="button"
+					type="submit"
 					class="btn btn-primary mt-auto w-full"
-					@click="emits('register', registerForm)"
+					:disabled="!passwordsMatch || !registerForm.password"
+					@click.prevent="emits('register', registerForm)"
 				>
 					Register
 				</button>
@@ -167,10 +182,17 @@ const registerForm = useState<Schema<'RegisterRequest'>>('auth-form-register', (
 	username: '',
 	email: '',
 	password: '',
+	confirmPassword: '',
 }))
 
 function setView(value: boolean) {
 	if (view.value === value) return
 	view.value = value
 }
+
+const confirmPassword = ref('')
+
+const passwordsMatch = computed(() =>
+	registerForm.value.password === registerForm.value.confirmPassword,
+)
 </script>
