@@ -115,9 +115,20 @@ export const useAuthStore = defineStore('auth', () => {
 	}
 
 	async function logout() {
-		// TODO call logout to remove refresh cookie
-		accessJWT.value = undefined
-		navigateTo('/auth')
+		try {
+			await $api('/auth/logout', {
+				method: 'post',
+				credentials: 'include',
+			})
+
+			accessJWT.value = null // Fjern token fra cookie og state
+			tokenExpiry.value = null // Nulstil token-udløbstidspunktet
+			await refreshAuthMe() // Opdater brugerdata efter logout
+			await navigateTo('/auth')
+		}
+		catch (error) {
+			console.error('Error occurred while logging out:', error)
+		}
 	}
 
 	return {
