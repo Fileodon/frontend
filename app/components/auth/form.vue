@@ -38,9 +38,10 @@
 				</button>
 			</div>
 
-			<section
+			<form
 				class="min-h-68 flex flex-col"
 				aria-live="polite"
+				@submit.prevent="handleSubmit"
 			>
 				<div
 					v-if="view"
@@ -142,7 +143,7 @@
 						>Login</NuxtLink>
 					</p>
 				</section>
-			</section>
+			</form>
 
 			<section
 				v-if="errors && Object.keys(errors).length > 0"
@@ -195,4 +196,13 @@ const confirmPassword = ref('')
 const passwordsMatch = computed(() =>
 	registerForm.value.password === registerForm.value.confirmPassword,
 )
+
+function handleSubmit() {
+	if (view.value) {
+		emits('login', loginForm.value)
+	}
+	else if (passwordsMatch.value && registerForm.value.password) {
+		emits('register', registerForm.value)
+	}
+}
 </script>

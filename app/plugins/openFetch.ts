@@ -9,7 +9,6 @@ export default defineNuxtPlugin((nuxtApp) => {
 		const authStore = useAuthStore()
 		if (context.response.status === 401) {
 			authStore.refresh()
-			// If refresh is successfull, should we call the thing that failed?
 		}
 	})
 })

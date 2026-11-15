@@ -10,6 +10,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useDebounceFn } from '@vueuse/core'
+
 definePageMeta({
 	layout: 'un-authenticated',
 	middleware: ['guest'],
@@ -32,18 +34,18 @@ watch([() => route.query, form], ([newQuery, newForm]) => {
 	}
 }, { deep: true })
 
-async function handleRegister(registerForm: Schema<'RegisterRequest'>) {
+const handleRegister = useDebounceFn(async (registerForm: Schema<'RegisterRequest'>) => {
 	const result = await authStore.register(registerForm)
 	errors.value = result.errors
-}
+}, 500)
 
-async function handleLogin(loginForm: Schema<'LoginRequest'>) {
+const handleLogin = useDebounceFn(async (loginForm: Schema<'LoginRequest'>) => {
 	const result = await authStore.login(loginForm)
 	if (result.success) {
 		return navigateTo('/test')
 	}
 	errors.value = result.errors
-}
+}, 500)
 </script>
 
 <style scoped></style>
