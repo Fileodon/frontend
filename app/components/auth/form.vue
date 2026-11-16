@@ -204,7 +204,7 @@
 const view = ref(true)
 
 defineProps<{
-	errors: Schema<'ValidationProblemDetails'>['errors']
+	errors: Schema<'ValidationProblemDetails'>['errors'] | undefined
 }>()
 const emits = defineEmits<{
 	login: [form: Schema<'LoginRequest'>]
