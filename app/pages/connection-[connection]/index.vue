@@ -41,7 +41,7 @@
 				<thead>
 					<tr class="bg-base-200">
 						<td>File name</td>
-						<td>Updated</td>
+						<!-- <td>Updated</td> -->
 						<td>Size</td>
 						<td>Last modified</td>
 						<td />
@@ -51,6 +51,7 @@
 					<tr
 						v-for="(row, index) in sortedDataByIsDirectory"
 						:key="index"
+						class="table-row"
 					>
 						<td>
 							<div class="flex flex-row gap-2 items-center">
@@ -67,7 +68,7 @@
 								{{ row.relativeName }}
 							</div>
 						</td>
-						<td>Maybe the name of the user in the latest audit log?</td>
+						<!-- <td>Maybe the name of the user in the latest audit log?</td> -->
 						<td>{{ (Number(row.size) / 1024).toFixed(2) }}mb</td>
 						<td>{{ new Date(row.lastWriteTime).toUTCString() }}</td>
 						<td v-if="!row.isDirectory">
@@ -75,7 +76,7 @@
 								class="flex items-center justify-center"
 								:popovertarget="`popover-row-${index}`"
 								:style="{ anchorName: `--row-action-anchor-${index}` }"
-								:disabled="!row.hasAccess"
+								:disabled="false"
 							>
 								<Icon name="material-symbols-light:more-vert" />
 							</button>
@@ -123,8 +124,7 @@
 						<td v-else>
 							<button
 								class="btn btn-sm btn-info btn-link"
-								:disabled="!row.hasAccess"
-
+								:disabled="false"
 								@click="changeDir(row.absoluteName)"
 							>
 								View
@@ -218,12 +218,12 @@ watchEffect(() => {
 })
 
 const sortedDataByIsDirectory = computed(() => {
-	const folders = data.value?.filter(r => r.isDirectory === true) as Schema<'SFTPActionListFilesResponse'>[]
-	const files = data.value?.filter(r => r.isDirectory === false) as Schema<'SFTPActionListFilesResponse'>[]
+	const folders = data.value?.files?.filter(r => r.isDirectory === true) as Schema<'SFTPFileInfo'>[]
+	const files = data.value?.files?.filter(r => r.isDirectory === false) as Schema<'SFTPFileInfo'>[]
 	return [
 		...(folders ?? []),
 		...(files ?? []),
-	] as Schema<'SFTPActionListFilesResponse'>[]
+	] as Schema<'SFTPFileInfo'>[]
 })
 
 const breadcrumbs = computed(() => {
