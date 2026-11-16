@@ -1,5 +1,5 @@
 # Installations guide af Fileodon lokal opsætning
-Denne guide er til hvis du bare vil køre projektet uden viden omkring det. Hvis du oplever fejl eller mangler noget læs README.md
+Denne guide er til hvis du bare vil køre projektet uden viden omkring det.
 
 ### Forudsætninger
 * Node js
