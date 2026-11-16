@@ -15,6 +15,7 @@
 		<p
 			v-for="(error, idx) in errors"
 			:key="idx"
+			role="alert"
 			class="text-sm text-error"
 		>
 			{{ error }}

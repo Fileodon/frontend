@@ -2,10 +2,6 @@ import { defineStore } from 'pinia'
 import { emailValidation } from '~/utils/validation/email'
 import { passwordValidation } from '~/utils/validation/password'
 
-interface IErrorResponse {
-	success: boolean
-	errors?: Record<string, string>
-}
 const accessTokenCookieName = 'accessToken'
 // This store has the purpose of handling all interaction with auth endpoints, and provide authentification for the rest of the application.
 export const useAuthStore = defineStore('auth', () => {
@@ -32,60 +28,65 @@ export const useAuthStore = defineStore('auth', () => {
 
 	const { data: user, refresh: refreshAuthMe } = useLazyApi('/auth/me', {
 		server: false,
-		enabled: !!accessJWT.value,
+		// enabled: !!accessJWT.value,
 		watch: [accessJWT],
+		// immediate: !!accessJWT,
 	})
 
-	async function login(form: Schema<'LoginRequest'>): Promise<IErrorResponse> {
+	async function login(form: Schema<'LoginRequest'>): Promise<ApiFormResponse<undefined>> {
 		const emailError = emailValidation(form.email ?? '')
 		if (emailError) {
-			return { success: false, errors: { email: emailError } }
+			const errors: Schema<'ValidationProblemDetails'> = { errors: { email: [emailError] } }
+			return { status: 'bad_request', data: errors }
 		}
 		const passwordError = passwordValidation(form.password ?? '')
 		if (passwordError) {
-			return { success: false, errors: { password: passwordError } }
+			return { status: 'bad_request', data: { errors: { password: [passwordError] } } }
 		}
-		const response = await $api('/auth', {
-			method: 'POST',
-			credentials: 'include',
-			body: form,
-		})
-		if (!response.accessToken) {
-			alert('login faild skill issue?')
-			return { success: false, errors: { noToken: 'could not generate token' } }
+		try {
+			const response = await $api('/auth', {
+				method: 'POST',
+				credentials: 'include',
+				body: form,
+			})
+			if (!response.accessToken) {
+				alert('login faild skill issue?')
+				return { status: 'bad_request', data: { errors: { noToken: ['could not generate token'] } } }
+			}
+			await handleAuthSuccessResponse(response)
+			await nextTick()
+			return { status: 'success', data: undefined }
 		}
-		await handleAuthSuccessResponse(response)
-		refreshAuthMe()
-		return { success: true, errors: {} }
+		catch (err) {
+			return handleApiFormError(err)
+		}
 	}
 
-	async function register(form: Schema<'RegisterRequest'>): Promise<IErrorResponse> {
+	async function register(form: Schema<'RegisterRequest'>): Promise<ApiFormResponse<undefined>> {
 		if (form.username && form.username?.trim().length <= 0) {
-			return { success: false, errors: { username: 'The username cannot be empty' } }
+			const errors: Schema<'ValidationProblemDetails'> = { errors: { username: ['The username cannot be empty'] } }
+			return { status: 'bad_request', data: errors }
 		}
 		const emailError = emailValidation(form.email ?? '')
 		if (emailError) {
-			return { success: false, errors: { email: emailError } }
+			return { status: 'bad_request', data: { errors: { email: [emailError] } } }
 		}
 		const passwordError = passwordValidation(form.password ?? '')
 		if (passwordError) {
-			return { success: false, errors: { password: passwordError } }
+			return { status: 'bad_request', data: { errors: { password: [passwordError] } } }
 		}
-		await $api('/auth/register', {
-			method: 'post',
-			credentials: 'include',
-			body: form,
-			onResponse: (res) => {
-				if (res.response.ok) {
-					alert('you are now registered gang shit')
-					navigateTo('/auth')
-				}
-				else {
-					alert('epic registration fails')
-				}
-			},
-		})
-		return { success: true, errors: {} }
+		try {
+			const response = await $api('/auth/register', {
+				method: 'post',
+				credentials: 'include',
+				body: form,
+
+			})
+			return { status: 'success', data: response }
+		}
+		catch (err) {
+			return handleApiFormError(err)
+		}
 	}
 
 	async function refresh() {
@@ -115,9 +116,21 @@ export const useAuthStore = defineStore('auth', () => {
 	}
 
 	async function logout() {
-		// TODO call logout to remove refresh cookie
-		accessJWT.value = undefined
-		navigateTo('/auth')
+		try {
+			await $api('/auth/logout', {
+				method: 'post',
+				credentials: 'include',
+				ignoreResponseError: true,
+			})
+
+			accessJWT.value = undefined // Nulstil accessJWT
+			tokenExpiry.value = null // Nulstil token-udløbstidspunktet
+			// await refreshAuthMe() // Opdater brugerdata efter logout
+			await navigateTo('/auth')
+		}
+		catch (error) {
+			console.error('Error occurred while logging out:', error)
+		}
 	}
 
 	return {

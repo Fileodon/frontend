@@ -38,74 +38,127 @@
 				</button>
 			</div>
 
-			<section
+			<form
 				class="min-h-68 flex flex-col"
 				aria-live="polite"
+				@submit.prevent="handleSubmit"
 			>
 				<div
-					v-if="view"
-					class="flex flex-col gap-4"
+					class="flex flex-col gap-4 mb-4"
 				>
-					<input
-						v-model="loginForm.email"
-						type="email"
-						autocomplete="email"
-						placeholder="Email"
-						aria-label="Email"
-						class="input input-bordered w-full"
+					<template
+						v-if="view"
 					>
-					<input
-						v-model="loginForm.password"
-						type="password"
-						autocomplete="current-password"
-						placeholder="Password"
-						aria-label="Password"
-						class="input input-bordered w-full"
+						<form-input
+							id="login-email"
+							label="Email"
+							info=""
+							:errors="errors?.Email"
+						>
+							<input
+								v-model="loginForm.email"
+								type="email"
+								autocomplete="email"
+								placeholder="Email"
+								aria-label="Email"
+								class="form-text-input"
+							>
+						</form-input>
+						<form-input
+							id="login-password"
+							label="Password"
+							info=""
+							:errors="errors?.Password"
+						>
+							<input
+								v-model="loginForm.password"
+								type="password"
+								autocomplete="current-password"
+								placeholder="Password"
+								aria-label="Password"
+								class="form-text-input"
+							>
+						</form-input>
+					</template>
+					<template
+						v-else
 					>
+						<form-input
+							id="register-username"
+							label="Username"
+							info=""
+							:errors="errors?.Username"
+						>
+							<input
+								v-model="registerForm.username"
+								type="text"
+								autocomplete="username"
+								placeholder="Username"
+								aria-label="Username"
+								class="form-text-input"
+							>
+						</form-input>
+						<form-input
+							id="register-email"
+							label="Email"
+							info=""
+							:errors="errors?.Email"
+						>
+							<input
+								v-model="registerForm.email"
+								autocomplete="email"
+								type="email"
+								placeholder="Email"
+								aria-label="Email"
+								class="form-text-input"
+							>
+						</form-input>
+						<form-input
+							id="register-password"
+							label="Password"
+							info=""
+							:errors="errors?.Password"
+						>
+							<input
+								v-model="registerForm.password"
+								type="password"
+								autocomplete="new-password"
+								placeholder="Password"
+								aria-label="Password"
+								class="form-text-input"
+							>
+						</form-input>
+						<form-input
+							id="register-username"
+							label="Username"
+							info=""
+							:errors="errors?.ConfirmPassword"
+						>
+							<input
+								v-model="registerForm.confirmPassword"
+								type="password"
+								autocomplete="new-password"
+								placeholder="Confirm Password"
+								aria-label="Confirm Password"
+								class="form-text-input"
+							>
+						</form-input>
+					</template>
 				</div>
-				<div
-					v-else
-					class="flex flex-col gap-4"
-				>
-					<input
-						v-model="registerForm.username"
-						type="text"
-						autocomplete="username"
-						placeholder="Username"
-						aria-label="Username"
-						class="input input-bordered w-full"
-					>
-					<input
-						v-model="registerForm.email"
-						autocomplete="email"
-						type="email"
-						placeholder="Email"
-						aria-label="Email"
-						class="input input-bordered w-full"
-					>
-					<input
-						v-model="registerForm.password"
-						type="password"
-						autocomplete="new-password"
-						placeholder="Password"
-						aria-label="Password"
-						class="input input-bordered w-full"
-					>
-				</div>
-
 				<button
 					v-if="view"
-					type="button"
+					type="submit"
 					class="btn btn-primary mt-auto w-full"
-					@click="emits('login', loginForm)"
+					@click.prevent="emits('login', loginForm)"
 				>
 					Login
 				</button>
 				<button
 					v-else
-					type="button"
+					type="submit"
 					class="btn btn-primary mt-auto w-full"
-					@click="emits('register', registerForm)"
+					:disabled="!registerForm.password"
+					@click.prevent="handleSubmit()"
 				>
 					Register
 				</button>
@@ -127,7 +180,7 @@
 						>Login</NuxtLink>
 					</p>
 				</section>
-			</section>
+			</form>
 
 			<section
 				v-if="errors && Object.keys(errors).length > 0"
@@ -150,7 +203,9 @@
 <script setup lang="ts">
 const view = ref(true)
 
-defineProps<{ errors: Record<string, string> | null | undefined }>()
+defineProps<{
+	errors: Schema<'ValidationProblemDetails'>['errors'] | undefined
+}>()
 const emits = defineEmits<{
 	login: [form: Schema<'LoginRequest'>]
 	register: [form: Schema<'RegisterRequest'>]
@@ -167,10 +222,20 @@ const registerForm = useState<Schema<'RegisterRequest'>>('auth-form-register', (
 	username: '',
 	email: '',
 	password: '',
+	confirmPassword: '',
 }))
 
 function setView(value: boolean) {
 	if (view.value === value) return
 	view.value = value
+}
+
+function handleSubmit() {
+	if (view.value) {
+		emits('login', loginForm.value)
+	}
+	else if (registerForm.value.password) {
+		emits('register', registerForm.value)
+	}
 }
 </script>
