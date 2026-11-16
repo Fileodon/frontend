@@ -29,6 +29,10 @@ h5 {
   @apply m-2.5 rounded border border-base-100 bg-neutral/35;
 }
 
+@utility form-text-input {
+	@apply input w-full outline-0 bg-base-300
+}
+
 @utility select {
 	@apply outline-0
 }

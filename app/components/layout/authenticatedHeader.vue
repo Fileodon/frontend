@@ -58,7 +58,9 @@
 						@click="authStore.logout"
 					>
 						<Icon name="material-symbols-light:logout" />
-						<p>Logout</p>
+						<button @click.prevent="authStore.logout">
+							Logout
+						</button>
 					</li>
 				</ul>
 			</div>

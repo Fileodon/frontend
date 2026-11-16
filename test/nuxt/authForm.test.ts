@@ -5,7 +5,7 @@ import AuthForm from '../../app/components/auth/form.vue'
 describe('AuthForm', () => {
 	it('submits the login form values', async () => {
 		const wrapper = await mountSuspended(AuthForm, {
-			props: { errors: null },
+			props: { errors: undefined },
 		})
 
 		expect(wrapper.text()).toContain('Welcome back')
@@ -21,7 +21,7 @@ describe('AuthForm', () => {
 
 	it('switches to registration and submits the registration form values', async () => {
 		const wrapper = await mountSuspended(AuthForm, {
-			props: { errors: null },
+			props: { errors: undefined },
 		})
 
 		await wrapper.get('button[aria-pressed="false"]').trigger('click')
@@ -30,20 +30,22 @@ describe('AuthForm', () => {
 		await wrapper.get('input[aria-label="Username"]').setValue('new-user')
 		await wrapper.get('input[aria-label="Email"]').setValue('new@example.com')
 		await wrapper.get('input[aria-label="Password"]').setValue('secret123')
+		await wrapper.get('input[aria-label="Confirm Password"]').setValue('secret123')
 		await wrapper.get('button.btn-primary').trigger('click')
 
 		expect(wrapper.emitted('register')?.[0]?.[0]).toEqual({
 			username: 'new-user',
 			email: 'new@example.com',
 			password: 'secret123',
+			confirmPassword: 'secret123',
 		})
 	})
 
 	it('shows supplied validation errors', async () => {
 		const wrapper = await mountSuspended(AuthForm, {
-			props: { errors: { email: 'Email is invalid' } },
+			props: { errors: { email: ['Email is invalid'] } },
 		})
 
-		expect(wrapper.get('[role="alert"]').text()).toContain('email: Email is invalid')
+		expect(wrapper.get('[role="alert"]').text()).toContain('Email is invalid')
 	})
 })

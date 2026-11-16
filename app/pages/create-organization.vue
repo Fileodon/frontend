@@ -34,7 +34,7 @@ const createOrganization = useDebounceFn(async (newOrgForm: Schema<'CreateOrgani
 	const result = await orgStore.createNewOrganization(newOrgForm)
 	if (result.status === 'success') {
 		console.log(result)
-		orgStore.currentSelectedOrganizationId = result.data.id
+		orgStore.currentSelectedOrganizationId = Number(result.data?.id)
 		navigateTo('/settings')
 	}
 	else if (result.status === 'bad_request') {
