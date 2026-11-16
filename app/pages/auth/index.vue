@@ -2,7 +2,7 @@
 	<div class="flex min-h-screen flex-1 flex-col items-center justify-center p-4">
 		<auth-form
 			ref="auth-form"
-			:errors="errors"
+			:errors="formErrors"
 			@register="handleRegister"
 			@login="handleLogin"
 		/>
@@ -20,8 +20,8 @@ const route = useRoute()
 
 const authStore = useAuthStore()
 
-const errors = ref<Record<string, string>>()
 const form = useTemplateRef('auth-form')
+const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-create-form-errors')
 
 watch([() => route.query, form], ([newQuery, newForm]) => {
 	if (!newForm) return
@@ -36,15 +36,22 @@ watch([() => route.query, form], ([newQuery, newForm]) => {
 
 const handleRegister = useDebounceFn(async (registerForm: Schema<'RegisterRequest'>) => {
 	const result = await authStore.register(registerForm)
-	errors.value = result.errors
+	if (result.status === 'success') {
+		return navigateTo('/auth', { replace: true })
+	}
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
 }, 500)
 
 const handleLogin = useDebounceFn(async (loginForm: Schema<'LoginRequest'>) => {
 	const result = await authStore.login(loginForm)
-	if (result.success) {
+	if (result.status === 'success') {
 		return navigateTo('/test')
 	}
-	errors.value = result.errors
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
 }, 500)
 </script>
 

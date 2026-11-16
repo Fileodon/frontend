@@ -2,10 +2,6 @@ import { defineStore } from 'pinia'
 import { emailValidation } from '~/utils/validation/email'
 import { passwordValidation } from '~/utils/validation/password'
 
-interface IErrorResponse {
-	success: boolean
-	errors?: Record<string, string>
-}
 const accessTokenCookieName = 'accessToken'
 // This store has the purpose of handling all interaction with auth endpoints, and provide authentification for the rest of the application.
 export const useAuthStore = defineStore('auth', () => {
@@ -32,8 +28,9 @@ export const useAuthStore = defineStore('auth', () => {
 
 	const { data: user, refresh: refreshAuthMe } = useLazyApi('/auth/me', {
 		server: false,
-		enabled: !!accessJWT.value,
+		// enabled: !!accessJWT.value,
 		watch: [accessJWT],
+		// immediate: !!accessJWT,
 	})
 
 	async function login(form: Schema<'LoginRequest'>): Promise<ApiFormResponse<undefined>> {
@@ -44,7 +41,7 @@ export const useAuthStore = defineStore('auth', () => {
 		}
 		const passwordError = passwordValidation(form.password ?? '')
 		if (passwordError) {
-			return { status: 'bad_request', data: { errors: { password: passwordError } } }
+			return { status: 'bad_request', data: { errors: { password: [passwordError] } } }
 		}
 		try {
 			const response = await $api('/auth', {
@@ -54,10 +51,10 @@ export const useAuthStore = defineStore('auth', () => {
 			})
 			if (!response.accessToken) {
 				alert('login faild skill issue?')
-				return { status: 'bad_request', data: { errors: { noToken: 'could not generate token' } } }
+				return { status: 'bad_request', data: { errors: { noToken: ['could not generate token'] } } }
 			}
 			await handleAuthSuccessResponse(response)
-			refreshAuthMe()
+			await nextTick()
 			return { status: 'success', data: undefined }
 		}
 		catch (err) {
@@ -72,11 +69,11 @@ export const useAuthStore = defineStore('auth', () => {
 		}
 		const emailError = emailValidation(form.email ?? '')
 		if (emailError) {
-			return { status: 'bad_request', data: { errors: { email: emailError } } }
+			return { status: 'bad_request', data: { errors: { email: [emailError] } } }
 		}
 		const passwordError = passwordValidation(form.password ?? '')
 		if (passwordError) {
-			return { status: 'bad_request', data: { errors: { password: passwordError } } }
+			return { status: 'bad_request', data: { errors: { password: [passwordError] } } }
 		}
 		try {
 			const response = await $api('/auth/register', {
@@ -123,11 +120,12 @@ export const useAuthStore = defineStore('auth', () => {
 			await $api('/auth/logout', {
 				method: 'post',
 				credentials: 'include',
+				ignoreResponseError: true,
 			})
 
 			accessJWT.value = undefined // Nulstil accessJWT
 			tokenExpiry.value = null // Nulstil token-udløbstidspunktet
-			await refreshAuthMe() // Opdater brugerdata efter logout
+			// await refreshAuthMe() // Opdater brugerdata efter logout
 			await navigateTo('/auth')
 		}
 		catch (error) {
