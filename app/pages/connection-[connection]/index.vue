@@ -6,7 +6,6 @@
 			header="Directory list"
 			description="Manage files"
 		/>
-
 		<table-card>
 			<template #head>
 				<div class="breadcrumbs text-sm select-none max-w-fit">
@@ -113,6 +112,7 @@
 									<div
 										class="tooltip tooltip-left"
 										data-tip="Delete file"
+										@click="deleteFileDebounce(row)"
 									>
 										<Icon
 											name="material-symbols-light:delete-outline-rounded"
@@ -209,7 +209,7 @@ const connectionId = computed(() => {
 	}
 })
 console.log(route.query.routePath)
-const { data, initialPending, changeDir, currentDir, uploadFiles, downloadFile } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
+const { data, initialPending, changeDir, currentDir, uploadFiles, downloadFile, deleteFile } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
 
 const pending = useState('upload-files-pending', () => false)
 const uploadPath = useState('form-file-upload-path', () => currentDir.value)
@@ -267,6 +267,13 @@ const uploadFilesDebounce = useDebounceFn(async () => {
 const downloadFileDebounce = useDebounceFn(async (path: string) => {
 	pending.value = true
 	await downloadFile(path)
+	pending.value = false
+}, 500)
+const deleteFileDebounce = useDebounceFn(async (row: Schema<'SFTPFileInfo'>) => {
+	const confirm = window.confirm(`Are you sure you want to delete ${row.relativeName}?`)
+	if (!confirm) return
+	pending.value = true
+	await deleteFile(row.absoluteName)
 	pending.value = false
 }, 500)
 </script>

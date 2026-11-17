@@ -74,14 +74,6 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 		}
 	}
 
-	// function editFile(file: Schema<'IFormFile'>) {
-	// 	alert('asdsd')
-	// }
-
-	// function viewFile(file: Schema<'IFormFile'>) {
-
-	// }
-
 	async function downloadFile(remoteFilePath: string) {
 		try {
 			await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
@@ -157,9 +149,24 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 		}
 	}
 
-	// async function deleteFile(file: Schema<'IFormFile'>) {
-	// 	// const confirm = window.confirm(`Are you sure you want to delete ${file.fullName}?`)
-	// }
+	async function deleteFile(path: string) {
+		try {
+			await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/delete', {
+				method: 'DELETE',
+				path: {
+					organizationid: orgId.value,
+					sftpconnectionid: sftpConnectionId,
+				},
+				query: {
+					remoteFilePath: path,
+				},
+			})
+			refreshList()
+		}
+		catch (err) {
+			console.log('SOmething epicly failed', err)
+		}
+	}
 
 	return {
 		data,
@@ -167,14 +174,12 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 		status,
 		changeDir,
 		currentDir,
-		// editFile,
-		// viewFile,
 		uploadFiles,
 		refreshList,
 		initialPending: computed(() => organizationStore.userOrganizationsPending || (sftpConnectionsPending.value && !data.value)),
 		sftpConnectionsPending,
 		downloadFile,
 		downloadFileToText,
-		// deleteFile,
+		deleteFile,
 	}
 }
