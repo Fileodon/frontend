@@ -6,6 +6,15 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 
 	const currentDir = ref<string>(initialDir)
 
+	const { data: connection, refresh: refreshConnection } = useLazyApi('/organization/{organizationid}/sftpconnection/{sftpconnectionid}/detailed', {
+		method: 'get',
+		path: {
+			sftpconnectionid: sftpConnectionId,
+			organizationid: orgId,
+		},
+		watch: [orgId],
+	})
+
 	const { data: list, error: listErrors, status: listStatus, refresh: refreshList, pending: listPending } = useLazyApi('/organization/{organizationid}/sftpaction/{sftpconnectionid}/list',
 		{
 			method: 'get',
@@ -49,6 +58,26 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 		}
 	}
 
+	async function removeConnection(): Promise<ApiFormResponse<Schema<'SFTPConnectionDeleteResponse'>>> {
+		try {
+			const response = await $api('/organization/{organizationid}/sftpconnection/{sftpconnectionid}', {
+				method: 'DELETE',
+				path: {
+					organizationid: orgId.value,
+					sftpconnectionid: sftpConnectionId,
+				},
+
+			})
+			return {
+				status: 'success',
+				data: response,
+			}
+		}
+		catch (err) {
+			return handleApiFormError(err)
+		}
+	}
+
 	return {
 		list,
 		listErrors,
@@ -59,5 +88,8 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 		initialPending: computed(() => organizationStore.userOrganizationsPending || (listPending.value && !list.value)),
 		listPending,
 		updateConnection,
+		connection,
+		refreshConnection,
+		removeConnection,
 	}
 }

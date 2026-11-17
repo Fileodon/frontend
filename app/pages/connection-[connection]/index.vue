@@ -6,6 +6,50 @@
 			header="Directory list"
 			description="Manage files"
 		/>
+		<button
+			v-if="connection"
+			class="btn btn-outline btn-sm mb-2 w-fit"
+			@click="isEditingConnection = !isEditingConnection"
+		>
+			{{ isEditingConnection ? 'Exit' : 'Edit' }}
+			<Icon
+				name="material-symbols-light:edit-square-outline-rounded"
+			/>
+		</button>
+		<label
+			v-if="connection"
+			class="card card-border mb-4"
+		>
+			<div class="card-body flex flex-row justify-between bg-base-300 rounded">
+				<template v-if="isEditingConnection">
+					<forms-sftp-connection
+						submit-btn-text="Save changes"
+						:sftp-connection="connection"
+						:pending="pending"
+						:errors="formErrors"
+						@submit="updateConnectionDebounce"
+					/>
+				</template>
+				<template v-else>
+					<info-field
+						label="Display name"
+						:info="connection.displayName ?? 'no name'"
+					/>
+					<info-field
+						label="Host"
+						:info="connection.host ?? ''"
+					/>
+					<info-field
+						label="Port"
+						:info="`${connection.port}`"
+					/>
+					<info-field
+						label="Status"
+						:info="connection.status"
+					/>
+				</template>
+			</div>
+		</label>
 		<table-card>
 			<template #head>
 				<div class="breadcrumbs text-sm select-none max-w-fit">
@@ -135,6 +179,24 @@
 				</tbody>
 			</table>
 		</table-card>
+		<div class="flex flex-col gap-2 mt-12">
+			<danger-zone>
+				<div class="flex flex-row justify-between">
+					<div>
+						<p class="font-bold">
+							Delete this organization
+						</p>
+						<p>If you delete this connection, you will lose access to the server through fileodon. And will need to redo setup, if you want to regain access.</p>
+					</div>
+					<button
+						class="btn btn-error"
+						@click="deleteConnectionDebounce"
+					>
+						Delete this connection
+					</button>
+				</div>
+			</danger-zone>
+		</div>
 		<form-modal
 			id="upload_files_modal"
 			ref="upload-files-modal"
@@ -214,10 +276,12 @@ const connectionId = computed(() => {
 	}
 })
 console.log(route.query.routePath)
-const { list, initialPending, changeDir, currentDir, refreshList } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
+const { list, initialPending, changeDir, currentDir, refreshList, connection, refreshConnection, updateConnection, removeConnection } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
 const { uploadFiles, downloadFile, deleteFile } = useSftpActions(connectionId.value)
 const pending = useState('upload-files-pending', () => false)
 const uploadPath = useState('form-file-upload-path', () => currentDir.value)
+const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-create-form-errors')
+const isEditingConnection = useState('editing-connection', () => false)
 
 watchEffect(() => {
 	router.replace({ path: route.path, query: { routePath: currentDir.value } })
@@ -291,6 +355,37 @@ const deleteFileDebounce = useDebounceFn(async (row: Schema<'SFTPFileInfo'>) => 
 	pending.value = true
 	await deleteFile(row.absoluteName)
 	await refreshList()
+	pending.value = false
+}, 500)
+
+const updateConnectionDebounce = useDebounceFn(async (form: Schema<'SFTPConnectionUpdateRequest'>) => {
+	pending.value = true
+	const confirm = window.confirm('Are you sure?')
+	if (!confirm) {
+		pending.value = false
+		return
+	}
+	const result = await updateConnection(form)
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
+	else {
+		await refreshConnection()
+		isEditingConnection.value = false
+	}
+	pending.value = false
+}, 500)
+
+const deleteConnectionDebounce = useDebounceFn(async () => {
+	pending.value = true
+	const result = await removeConnection()
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
+	else {
+		navigateTo(`/connection`)
+		isEditingConnection.value = false
+	}
 	pending.value = false
 }, 500)
 </script>

@@ -1,13 +1,13 @@
 <template>
 	<div>
 		<form-input
-			id="conenction-name"
+			id="conenction-display-name"
 			label="Connection name"
 			info=""
-			:errors="errors?.Filename"
+			:errors="errors?.DisplayName"
 		>
 			<input
-				v-model="dirtyObject"
+				v-model="dirtyObject.displayName"
 				class="form-text-input"
 				type="text"
 				:disabled="pending"
@@ -15,7 +15,7 @@
 		</form-input>
 		<button
 			class="btn btn-warning mt-2"
-			:disabled="!isDirty"
+			:disabled="!isDirty || pending"
 			@click="submitForm"
 		>
 			{{ submitBtnText }}
