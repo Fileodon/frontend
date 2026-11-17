@@ -14,7 +14,7 @@
 			>
 		</form-input>
 		<button
-			class="btn btn-warning "
+			class="btn btn-warning mt-2"
 			:disabled="!isDirty"
 			@click="submitForm"
 		>

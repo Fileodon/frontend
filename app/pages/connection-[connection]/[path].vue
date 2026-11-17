@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<button
-			class="btn btn-soft btn-error w-xs"
+			class="btn btn-soft btn-link"
 			@click="returnToOverview"
 		>
-			Go back
+			{{ "<-Go back" }}
 		</button>
 		<layout-header
 			:title="name"
@@ -15,10 +15,10 @@
 			id="fil-content"
 		>
 			<button
-				class="btn btn-outline btn-sm mb-2"
+				class="btn btn-outline btn-sm mb-8"
 				@click="editName = !editName"
 			>
-				Rename
+				{{ editName ? 'Exit' : 'Rename' }}
 				<Icon
 					name="material-symbols-light:edit-square-outline-rounded"
 				/>
@@ -39,6 +39,19 @@
 			<div class="divider" />
 			<div class="flex flex-row gap-2">
 				<button
+					class="btn btn-outline btn-error btn-lg me-auto"
+					:disabled="pending"
+					@click="deleteFileDebounce"
+				>
+					<Icon
+						name="material-symbols-light:delete-outline-rounded"
+						size="2rem"
+					/>
+					<h5>
+						Delete
+					</h5>
+				</button>
+				<button
 					class="btn btn-outline btn-lg"
 					:disabled="pending"
 					@click="downloadFileDebounce"
@@ -52,16 +65,16 @@
 					</h5>
 				</button>
 				<button
-					class="btn btn-outline btn-error btn-lg ms-auto"
+					class="btn btn-outline btn-success btn-lg"
 					:disabled="pending"
-					@click="deleteFileDebounce"
+					@click="saveChangesToFile"
 				>
 					<Icon
-						name="material-symbols-light:delete-outline-rounded"
+						name="material-symbols-light:upload-rounded"
 						size="2rem"
 					/>
 					<h5>
-						Delete
+						Save changes
 					</h5>
 				</button>
 			</div>
@@ -124,8 +137,8 @@ const path = computed(() => `${route.params.path}`)
 const pending = useState('org-create-pending', () => false)
 const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-create-form-errors')
 
-const { content, fileName } = useSftpFile(connectionId.value, path.value)
-const { deleteFile, downloadFile, renameFile } = useSftpActions(connectionId.value)
+const { content, fileName, refreshFile } = useSftpFile(connectionId.value, path.value)
+const { deleteFile, downloadFile, renameFile, uploadFiles } = useSftpActions(connectionId.value)
 
 watchEffect(() => editCode.value = content.value as string) // kind of a hack, fordi respons typen er forkert.
 
@@ -173,6 +186,17 @@ const renameFileDebounce = useDebounceFn(async (form: Schema<'SFTPActionRenameRe
 	}
 	editName.value = false
 	navigateTo(`/connection-${route.params.connection}/${encodeURIComponent(form.newRemoteFilePath)}`)
+	pending.value = false
+}, 500)
+
+const saveChangesToFile = useDebounceFn(async () => {
+	pending.value = true
+	const file = new File([editCode.value], fileName.value, {
+		type: 'text/plain',
+	})
+	console.log(editCode.value, name.value)
+	await uploadFiles([file], name.value, true)
+	await refreshFile()
 	pending.value = false
 }, 500)
 </script>

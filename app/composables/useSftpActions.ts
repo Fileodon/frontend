@@ -4,18 +4,8 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 	const organizationStore = useOrganizationStore()
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
 
-	async function uploadFiles(files: FileList, basePath: string): Promise<ApiFormResponse<Schema<'SFTPActionUploadResponse'>>> {
+	async function uploadFiles(files: File[], basePath: string, pathIsFullPath = false): Promise<ApiFormResponse<Schema<'SFTPActionUploadResponse'>>> {
 		try {
-			const file: File[] = []
-			for (let i = 0; i < files.length; i++) {
-				if (!files?.item(i)) continue
-				try {
-					file.push(files?.item(i) as File)
-				}
-				catch (e) {
-					console.log(e)
-				}
-			}
 			const response = await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/upload', {
 				method: 'post',
 				path: {
@@ -23,14 +13,14 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 					organizationid: orgId.value,
 				},
 				body: {
-					Files: file.map(file => file.name),
+					Files: files.map(file => file.name),
 					RemoteFilePaths: basePath,
 				},
 				bodySerializer() {
 					const formRequest = new FormData()
 					for (const file of files) {
 						formRequest.append('Files', file)
-						formRequest.append('RemoteFilePaths', `${basePath}/${file.name}`)
+						formRequest.append('RemoteFilePaths', `${basePath}${pathIsFullPath ? '' : '/' + file.name}`)
 					}
 					formRequest.append('OverrideExisting', 'true')
 					return formRequest

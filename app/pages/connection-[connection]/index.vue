@@ -264,7 +264,17 @@ const uploadFilesDebounce = useDebounceFn(async () => {
 		alert('you havent chosen anything is this a bug?')
 		return
 	}
-	await uploadFiles(fileInput.value?.files, uploadPath.value)
+	const files: File[] = []
+	for (let i = 0; i < fileInput.value?.files.length; i++) {
+		if (!fileInput.value?.files?.item(i)) continue
+		try {
+			files.push(fileInput.value?.files?.item(i) as File)
+		}
+		catch (e) {
+			console.log(e)
+		}
+	}
+	await uploadFiles(files, uploadPath.value)
 	uploadModal.value?.close()
 	await refreshList()
 	pending.value = false
