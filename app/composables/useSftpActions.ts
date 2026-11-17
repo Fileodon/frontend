@@ -150,11 +150,32 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 		}
 	}
 
+	async function createDirectory(form: Schema<'SFTPActionCreateDirectoryRequest'>): Promise<ApiFormResponse<Schema<'SFTPActionCreateDirectoryResponse'>[]>> {
+		try {
+			const response = await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/create-directory', {
+				method: 'POST',
+				path: {
+					organizationid: orgId.value,
+					sftpconnectionid: sftpConnectionId,
+				},
+				body: form,
+			})
+			return {
+				status: 'success',
+				data: response,
+			}
+		}
+		catch (err) {
+			return handleApiFormError(err)
+		}
+	}
+
 	return {
 		deleteFile,
 		downloadFileToText,
 		downloadFile,
 		uploadFiles,
 		renameFile,
+		createDirectory,
 	}
 }

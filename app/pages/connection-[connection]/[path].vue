@@ -81,7 +81,7 @@
 		</section>
 		<section
 			id="file edit"
-			class="card w-full h-fit border border-base-300 bg-base-100 shadow-sm mt-5"
+			class="card w-full h-fit border border-base-300 bg-base-100 shadow-sm mt-6"
 		>
 			<section
 				id="table"

@@ -50,6 +50,39 @@
 				</template>
 			</div>
 		</label>
+		<div
+			class="flex flex-row gap-2 justify-end my-6"
+		>
+			<button
+				class="
+			btn
+			btn-outline
+			btn-lg"
+				:disabled="pending"
+				@click="showCreateDirectoryModal"
+			>
+				<Icon
+					name="material-symbols-light:file-save-outline-rounded"
+					size="2rem"
+				/>
+				<h5>
+					Create directory
+				</h5>
+			</button>
+			<button
+				class="btn btn-outline btn-lg"
+				:disabled="pending"
+				@click="showUploadModal"
+			>
+				<Icon
+					name="material-symbols-light:upload-rounded"
+					size="2rem"
+				/>
+				<h5>
+					upload
+				</h5>
+			</button>
+		</div>
 		<table-card>
 			<template #head>
 				<div class="breadcrumbs text-sm select-none max-w-fit">
@@ -245,6 +278,40 @@
 				</template>
 			</card-form>
 		</form-modal>
+		<form-modal
+			id="create-folder-modal"
+			ref="create-folder-modal"
+		>
+			<card-form>
+				<template #header>
+					<h3>Create a new folder</h3>
+				</template>
+				<template #body>
+					<form-input
+						id="folder-input"
+						label="New folder"
+						info="This folder will be created in the current directory"
+						:errors="[]"
+					>
+						<input
+							ref="new-folder-input"
+							v-model="createDirectoryForm.remoteDirectoryPath"
+							class="input input-md input-bordered outline-0"
+							type="text"
+							:disabled="pending"
+						>
+					</form-input>
+					<button
+						id="upload-files"
+						class="btn btn-dash"
+						:disabled="pending"
+						@click="createDirectoryDebounce"
+					>
+						Create
+					</button>
+				</template>
+			</card-form>
+		</form-modal>
 	</div>
 </template>
 
@@ -264,6 +331,7 @@ const route = useRoute()
 const router = useRouter()
 
 const uploadModal = useTemplateRef('upload-files-modal')
+const newFolderModal = useTemplateRef('create-folder-modal')
 const fileInput = useTemplateRef('upload-files-input')
 
 const connectionId = computed(() => {
@@ -277,11 +345,15 @@ const connectionId = computed(() => {
 })
 console.log(route.query.routePath)
 const { list, initialPending, changeDir, currentDir, refreshList, connection, refreshConnection, updateConnection, removeConnection } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
-const { uploadFiles, downloadFile, deleteFile } = useSftpActions(connectionId.value)
+const { uploadFiles, downloadFile, deleteFile, createDirectory } = useSftpActions(connectionId.value)
 const pending = useState('upload-files-pending', () => false)
 const uploadPath = useState('form-file-upload-path', () => currentDir.value)
+const { dirtyObject: createDirectoryForm, reset: resetDirectoryForm } = useForm<Schema<'SFTPActionCreateDirectoryRequest'>>({
+	remoteDirectoryPath: '',
+})
 const formErrors = useState<Schema<'ValidationProblemDetails'>['errors']>('org-create-form-errors')
 const isEditingConnection = useState('editing-connection', () => false)
+const isCreatingFolder = useState('creating-folder-connection', () => false)
 
 watchEffect(() => {
 	router.replace({ path: route.path, query: { routePath: currentDir.value } })
@@ -320,6 +392,12 @@ async function showUploadModal() {
 	uploadPath.value = currentDir.value
 	await nextTick()
 	uploadModal.value?.show()
+}
+
+async function showCreateDirectoryModal() {
+	resetDirectoryForm()
+	await nextTick()
+	newFolderModal.value?.show()
 }
 
 const uploadFilesDebounce = useDebounceFn(async () => {
@@ -384,7 +462,20 @@ const deleteConnectionDebounce = useDebounceFn(async () => {
 	}
 	else {
 		navigateTo(`/connection`)
-		isEditingConnection.value = false
+		pending.value = false
+	}
+	pending.value = false
+}, 500)
+
+const createDirectoryDebounce = useDebounceFn(async () => {
+	pending.value = true
+	const result = await createDirectory(createDirectoryForm.value)
+	if (result.status === 'bad_request') {
+		formErrors.value = result.data.errors
+	}
+	else {
+		refreshList()
+		isCreatingFolder.value = false
 	}
 	pending.value = false
 }, 500)
