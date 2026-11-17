@@ -186,6 +186,11 @@
 	</div>
 </template>
 
+<!--
+TODO
+Rename connection
+Create directory
+-->
 <script setup lang="ts">
 import { useDebounceFn } from '@vueuse/core'
 
@@ -209,8 +214,8 @@ const connectionId = computed(() => {
 	}
 })
 console.log(route.query.routePath)
-const { data, initialPending, changeDir, currentDir, uploadFiles, downloadFile, deleteFile } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
-
+const { data, initialPending, changeDir, currentDir, refreshList } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
+const { uploadFiles, downloadFile, deleteFile } = useSftpActions(connectionId.value)
 const pending = useState('upload-files-pending', () => false)
 const uploadPath = useState('form-file-upload-path', () => currentDir.value)
 
@@ -261,6 +266,7 @@ const uploadFilesDebounce = useDebounceFn(async () => {
 	}
 	await uploadFiles(fileInput.value?.files, uploadPath.value)
 	uploadModal.value?.close()
+	await refreshList()
 	pending.value = false
 }, 500)
 
@@ -274,6 +280,7 @@ const deleteFileDebounce = useDebounceFn(async (row: Schema<'SFTPFileInfo'>) => 
 	if (!confirm) return
 	pending.value = true
 	await deleteFile(row.absoluteName)
+	await refreshList()
 	pending.value = false
 }, 500)
 </script>
