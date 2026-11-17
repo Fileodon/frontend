@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import AuthForm from '../../app/components/auth/form.vue'
+import AuthForm from '../../app/components/forms/auth.vue/index.js'
 
 describe('AuthForm', () => {
 	it('submits the login form values', async () => {

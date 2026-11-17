@@ -1,6 +1,6 @@
 <template>
 	<div class="flex min-h-screen flex-1 flex-col items-center justify-center p-4">
-		<auth-form
+		<forms-auth
 			ref="auth-form"
 			:errors="formErrors"
 			:pending="pending"
