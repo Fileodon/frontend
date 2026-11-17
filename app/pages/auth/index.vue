@@ -41,6 +41,7 @@ const handleRegister = useDebounceFn(async (registerForm: Schema<'RegisterReques
 	const result = await authStore.register(registerForm)
 	if (result.status === 'success') {
 		form.value?.resetForm()
+		pending.value = false
 		return navigateTo('/auth', { replace: true })
 	}
 	if (result.status === 'bad_request') {
@@ -54,6 +55,7 @@ const handleLogin = useDebounceFn(async (loginForm: Schema<'LoginRequest'>) => {
 	const result = await authStore.login(loginForm)
 	if (result.status === 'success') {
 		form.value?.resetForm()
+		pending.value = false
 		return navigateTo('/test')
 	}
 	if (result.status === 'bad_request') {

@@ -5,3 +5,10 @@ export type ApiFormResponse<T>
 	= | { status: 'success', data?: T }
 		| { status: 'bad_request', data: Schema<'ValidationProblemDetails'> }
 		| { status: 'error', message: string }
+
+export interface Toast {
+	id: string
+	type: 'success' | 'info' | 'error'
+	message: string
+	timer?: number
+}
