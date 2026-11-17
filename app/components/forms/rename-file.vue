@@ -38,7 +38,6 @@ const emit = defineEmits<{
 const { dirtyObject, isDirty } = useForm(props.currentPath)
 
 async function submitForm() {
-	console.log('submit')
 	await emit('submit', {
 		oldRemoteFilePath: props.currentPath,
 		newRemoteFilePath: dirtyObject.value,

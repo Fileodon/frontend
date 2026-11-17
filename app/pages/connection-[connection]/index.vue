@@ -214,7 +214,7 @@ const connectionId = computed(() => {
 	}
 })
 console.log(route.query.routePath)
-const { data, initialPending, changeDir, currentDir, refreshList } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
+const { list, initialPending, changeDir, currentDir, refreshList } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
 const { uploadFiles, downloadFile, deleteFile } = useSftpActions(connectionId.value)
 const pending = useState('upload-files-pending', () => false)
 const uploadPath = useState('form-file-upload-path', () => currentDir.value)
@@ -224,8 +224,8 @@ watchEffect(() => {
 })
 
 const sortedDataByIsDirectory = computed(() => {
-	const folders = data.value?.files?.filter(r => r.isDirectory === true) as Schema<'SFTPFileInfo'>[]
-	const files = data.value?.files?.filter(r => r.isDirectory === false) as Schema<'SFTPFileInfo'>[]
+	const folders = list.value?.files?.filter(r => r.isDirectory === true) as Schema<'SFTPFileInfo'>[]
+	const files = list.value?.files?.filter(r => r.isDirectory === false) as Schema<'SFTPFileInfo'>[]
 	return [
 		...(folders ?? []),
 		...(files ?? []),
