@@ -1,10 +1,21 @@
 <template>
-	<div>
-		<div class="card card-border bg-info-content">
-			<h2>Approving yo dumbass account</h2>
-			<p>{{ route.query.userId }}</p>
-			<p>{{ route.query.token }}</p>
-		</div>
+	<div class="flex min-h-screen flex-1 flex-col items-center justify-center p-4">
+		<card-form>
+			<template #header>
+				<h2>Approving yo dumbass account</h2>
+			</template>
+			<template #body>
+				<div>
+					{{ route.query }}
+				</div>
+				<NuxtLink
+
+					class="btn btn-info"
+				>
+					Go to login
+				</NuxtLink>
+			</template>
+		</card-form>
 	</div>
 </template>
 
@@ -14,6 +25,8 @@ definePageMeta({
 })
 const { $api } = useNuxtApp()
 const route = useRoute()
+
+const verifiedSuccess = useState('verified-succes', () => false)
 
 onMounted(() => {
 	console.log(route.query)
@@ -32,6 +45,7 @@ async function approveEmail() {
 			},
 		})
 		console.log(response)
+		verifiedSuccess.value = true
 	}
 	catch (err) {
 		const errors = handleApiFormError(err)

@@ -53,7 +53,7 @@
 							id="login-email"
 							label="Email"
 							info=""
-							:errors="errors?.Email"
+							:errors="errors?.email"
 						>
 							<input
 								v-model="loginForm.email"
@@ -68,7 +68,7 @@
 							id="login-password"
 							label="Password"
 							info=""
-							:errors="errors?.Password"
+							:errors="errors?.password"
 						>
 							<input
 								v-model="loginForm.password"
@@ -102,7 +102,7 @@
 							id="register-email"
 							label="Email"
 							info=""
-							:errors="errors?.Email"
+							:errors="errors?.email"
 						>
 							<input
 								v-model="registerForm.email"
@@ -149,6 +149,7 @@
 					v-if="view"
 					type="submit"
 					class="btn btn-primary mt-auto w-full"
+					:disabled="pending"
 					@click.prevent="emits('login', loginForm)"
 				>
 					Login
@@ -157,7 +158,7 @@
 					v-else
 					type="submit"
 					class="btn btn-primary mt-auto w-full"
-					:disabled="!registerForm.password"
+					:disabled="!registerForm.password || pending"
 					@click.prevent="handleSubmit()"
 				>
 					Register
@@ -204,6 +205,7 @@
 const view = ref(true)
 
 defineProps<{
+	pending: boolean
 	errors: Schema<'ValidationProblemDetails'>['errors'] | undefined
 }>()
 const emits = defineEmits<{
@@ -211,23 +213,30 @@ const emits = defineEmits<{
 	register: [form: Schema<'RegisterRequest'>]
 }>()
 
-defineExpose({ setView })
+defineExpose({ setView, resetForm })
 
-const loginForm = useState<Schema<'LoginRequest'>>('auth-form-login', () => ({
+const initialLoginForm = {
 	email: '',
 	password: '',
-}))
+}
+const loginForm = useState<Schema<'LoginRequest'>>('auth-form-login', () => initialLoginForm)
 
-const registerForm = useState<Schema<'RegisterRequest'>>('auth-form-register', () => ({
+const initialRegisterForm = {
 	username: '',
 	email: '',
 	password: '',
 	confirmPassword: '',
-}))
+}
+const registerForm = useState<Schema<'RegisterRequest'>>('auth-form-register', () => initialRegisterForm)
 
 function setView(value: boolean) {
 	if (view.value === value) return
 	view.value = value
+}
+
+function resetForm() {
+	loginForm.value = initialLoginForm
+	registerForm.value = initialRegisterForm
 }
 
 function handleSubmit() {
