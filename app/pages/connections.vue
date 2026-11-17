@@ -29,7 +29,7 @@
 						Active
 					</div>
 					<div class="stat-value text-success font-normal">
-						01
+						{{ acceptedConnectionsCount }}
 					</div>
 					<div class="stat-desc">
 						Ready for file transerfs
@@ -42,23 +42,10 @@
 						Pending approval
 					</div>
 					<div class="stat-value text-warning font-normal">
-						01
+						{{ pendingConnectionsCount }}
 					</div>
 					<div class="stat-desc">
 						Review incoming requests
-					</div>
-				</div>
-			</div>
-			<div class="stats connection-stat">
-				<div class="stat">
-					<div class="stat-title">
-						Offline
-					</div>
-					<div class="stat-value text-error font-normal">
-						01
-					</div>
-					<div class="stat-desc">
-						Last checked {{ new Date().toLocaleString() }}
 					</div>
 				</div>
 			</div>
@@ -182,6 +169,13 @@ const sftpConnectionStore = useSftpConnectionStore()
 
 const newConnectionModal = useTemplateRef('connection-code-modal')
 const pending = useState('role-api-pending', () => false)
+
+const acceptedConnectionsCount = computed(() => {
+	return sftpConnectionStore.sftpConnections?.filter(con => con.status === 'Accepted').length ?? 0
+})
+const pendingConnectionsCount = computed(() => {
+	return sftpConnectionStore.sftpConnections?.filter(con => con.status === 'Pending').length ?? 0
+})
 
 function getStatusClasses(action: Schema<'SFTPConnectionStatus'>) {
 	switch (action) {
