@@ -149,7 +149,6 @@ async function toggleCreateRole() {
 
 const createRole = useDebounceFn(async (newRole: Schema<'CreateRoleRequest'>) => {
 	pending.value = true
-	alert('creating')
 	const result = await roleStore.createNewRole(newRole)
 	if (result.status === 'bad_request') {
 		formErrors.value = result.data.errors

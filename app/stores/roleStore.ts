@@ -9,7 +9,6 @@ export const useRoleStore = defineStore('roles', () => {
 			organizationId: orgId,
 		},
 		watch: [orgId],
-		immediate: !!orgId.value,
 	})
 
 	async function createNewRole(newRole: Schema<'CreateRoleRequest'>): Promise<ApiFormResponse<Schema<'GetRoleResponse'>>> {

@@ -37,11 +37,16 @@ interface IBreadcrumb {
 const resolvedBreadCrumbs = computed<IBreadcrumb[]>(() => {
 	const route = router.currentRoute
 	if (!route.value.meta.breadcrumbs || !routes.value) return []
-	const filtered = routes.value.filter(r => (route.value.meta.breadcrumbs as RouteRecordNameGeneric[])?.includes(r.name))
-	return filtered.map(f => ({
-		label: f.meta.title ?? f.name, // fallbacks to unique name - set title in page meta
-		route: f.path,
-	}) as IBreadcrumb)
+
+	const breadCrumbs = route.value.meta.breadcrumbs as RouteRecordNameGeneric[]
+
+	return breadCrumbs
+		.map(name => routes.value.find(r => r.name === name))
+		.filter((routeRecord): routeRecord is NonNullable<typeof routeRecord> => !!routeRecord)
+		.map(routeRecord => ({
+			label: routeRecord.meta.title ?? routeRecord.name,
+			route: routeRecord.path,
+		}) as IBreadcrumb)
 })
 </script>
 

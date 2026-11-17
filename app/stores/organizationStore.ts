@@ -14,7 +14,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 		path: {
 			organizationId: currentSelectedOrganizationId,
 		},
-		watch: [currentSelectedOrganizationId],
+		// watch: [currentSelectedOrganizationId],
 		// immediate: currentSelectedOrganizationId.value > 0,
 		// onResponseError: (err) => {
 		// 	localStorage.removeItem('currentOrganizationId')
