@@ -2,15 +2,19 @@
 	<div class="flex min-h-screen flex-1 flex-col items-center justify-center p-4">
 		<card-form>
 			<template #header>
-				<h2>Approving yo dumbass account</h2>
+				<h2>{{ verifiedSuccess ? 'Confirmed': 'Attempting confirm' }}</h2>
 			</template>
 			<template #body>
-				<div>
-					{{ route.query }}
-				</div>
-				<NuxtLink
+				<Icon
+					v-show="!verifiedSuccess"
+					name="custom-icons:fileodon-haj"
+					class="animate-pulse self-center"
+				/>
 
+				<NuxtLink
+					v-show="verifiedSuccess"
 					class="btn btn-info"
+					to="/auth"
 				>
 					Go to login
 				</NuxtLink>
@@ -29,7 +33,6 @@ const route = useRoute()
 const verifiedSuccess = useState('verified-succes', () => false)
 
 onMounted(() => {
-	console.log(route.query)
 	if (route.query.userId && route.query.token) {
 		approveEmail()
 	}
