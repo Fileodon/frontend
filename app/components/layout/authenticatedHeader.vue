@@ -45,7 +45,8 @@
 					popover
 					style="position-anchor:--avatar-anchor-1"
 				>
-					<p>Info about user</p>
+					<p><b>Email:</b> {{ authStore.user?.email }} </p>
+					<p><b>Verified:</b> {{ authStore.user?.isEmailConfirmed }} </p>
 					<li
 						class="flex flex-row items-center"
 						@click="navigateProfile"
@@ -58,7 +59,7 @@
 						@click="authStore.logout"
 					>
 						<Icon name="material-symbols-light:logout" />
-						<button @click.prevent="authStore.logout">
+						<button @click.prevent="logout">
 							Logout
 						</button>
 					</li>
@@ -74,6 +75,10 @@ const authStore = useAuthStore()
 
 function navigateProfile() {
 	alert('navigate profile')
+}
+
+async function logout() {
+	await authStore.logout()
 }
 </script>
 

@@ -89,6 +89,7 @@
 			</div>
 			<div class="divider -mx-2" />
 			<select
+				:key="orgStore.currentSelectedOrganizationId"
 				v-model="orgStore.currentSelectedOrganizationId"
 				class="select"
 			>
