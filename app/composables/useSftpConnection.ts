@@ -27,6 +27,7 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 
 	function changeDir(dir?: string | null) {
 		if (!dir) return
+		console.log(dir)
 		currentDir.value = dir
 	}
 
@@ -81,9 +82,80 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 
 	// }
 
-	// function downloadFile(file: ISftpFile) {
+	async function downloadFile(remoteFilePath: string) {
+		try {
+			await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
+				method: 'GET',
+				responseType: 'blob',
+				path: {
+					organizationid: orgId.value,
+					sftpconnectionid: sftpConnectionId,
+				},
+				query: {
+					remoteFilePath,
+				},
+				onResponse: (res) => {
+					const response = res.response
+					if (!response.ok) {
+						if (res.error) {
+							alert(res.error.message)
+						}
+						else {
+							alert('download failes with no error')
+						}
+						return
+					}
 
-	// }
+					const disposition = response.headers.get('content-disposition')
+					const match = disposition?.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i)
+					const filename = match ? decodeURIComponent(match[1] ?? match[0]) : 'download'
+					const url = URL.createObjectURL(response._data as Blob)
+					const a = document.createElement('a')
+					a.href = url
+					a.download = filename
+					document.body.appendChild(a)
+					a.click()
+					a.remove()
+					URL.revokeObjectURL(url)
+				},
+			})
+		}
+		catch (err) {
+			console.log('SOmething epicly failed', err)
+		}
+	}
+
+	async function downloadFileToText(remoteFilePath: string) {
+		try {
+			const response = await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
+				method: 'GET',
+				responseType: 'text',
+				path: {
+					organizationid: orgId.value,
+					sftpconnectionid: sftpConnectionId,
+				},
+				query: {
+					remoteFilePath,
+				},
+				onResponse: (res) => {
+					const response = res.response
+					if (!response.ok) {
+						if (res.error) {
+							alert(res.error.message)
+						}
+						else {
+							alert('download failes with no error')
+						}
+						return
+					}
+				},
+			})
+			console.log(response)
+		}
+		catch (err) {
+			console.log('SOmething epicly failed', err)
+		}
+	}
 
 	// async function deleteFile(file: Schema<'IFormFile'>) {
 	// 	// const confirm = window.confirm(`Are you sure you want to delete ${file.fullName}?`)
@@ -101,7 +173,8 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 		refreshList,
 		initialPending: computed(() => organizationStore.userOrganizationsPending || (sftpConnectionsPending.value && !data.value)),
 		sftpConnectionsPending,
-		// downloadFile,
+		downloadFile,
+		downloadFileToText,
 		// deleteFile,
 	}
 }

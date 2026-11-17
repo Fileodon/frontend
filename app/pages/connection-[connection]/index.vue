@@ -91,7 +91,7 @@
 									<NuxtLink
 										class="tooltip tooltip-left"
 										data-tip="Open file in browser"
-										:to="`/connection-${route.params.connection}/${row.relativeName}`"
+										:to="`/connection-${route.params.connection}/${encodeURIComponent(row.absoluteName)}`"
 									>
 										<Icon
 											name="material-symbols-light:file-open-outline-rounded"
@@ -102,6 +102,7 @@
 									<div
 										class="tooltip tooltip-left"
 										data-tip="Download file"
+										@click="downloadFileDebounce(row.absoluteName)"
 									>
 										<Icon
 											name="material-symbols-light:file-save-outline-rounded"
@@ -208,7 +209,7 @@ const connectionId = computed(() => {
 	}
 })
 console.log(route.query.routePath)
-const { data, initialPending, changeDir, currentDir, uploadFiles } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
+const { data, initialPending, changeDir, currentDir, uploadFiles, downloadFile } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
 
 const pending = useState('upload-files-pending', () => false)
 const uploadPath = useState('form-file-upload-path', () => currentDir.value)
@@ -261,7 +262,13 @@ const uploadFilesDebounce = useDebounceFn(async () => {
 	await uploadFiles(fileInput.value?.files, uploadPath.value)
 	uploadModal.value?.close()
 	pending.value = false
-})
+}, 500)
+
+const downloadFileDebounce = useDebounceFn(async (path: string) => {
+	pending.value = true
+	await downloadFile(path)
+	pending.value = false
+}, 500)
 </script>
 
 <style scoped>
