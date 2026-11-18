@@ -325,7 +325,7 @@ import { useDebounceFn } from '@vueuse/core'
 
 definePageMeta({
 	title: 'Connection',
-	breadcrumbs: ['index', 'connections'],
+	breadcrumbs: ['home', 'connections'],
 })
 const route = useRoute()
 const router = useRouter()

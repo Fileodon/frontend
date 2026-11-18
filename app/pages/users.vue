@@ -8,9 +8,10 @@
 		/>
 		<section
 			id="stats"
-			class="w-full h-fit flex flex-row"
+			class="w-full h-fit flex flex-row mb-4"
 		>
-			<div class="stats connection-stat">
+			<div />
+			<div class="stats">
 				<div class="stat">
 					<div class="stat-title">
 						Total users
@@ -30,7 +31,7 @@
 					v-model="queryString"
 					type="search"
 					placeholder="Search..."
-					class="w-sm rounded-md border border-gray-600 px-2.5 outline-0 bg-black/35"
+					class="w-sm input input-md input-bordered outline-0 bg-base-300"
 				>
 				<div class="ml-auto">
 					<button
@@ -130,7 +131,7 @@
 <script setup lang="ts">
 definePageMeta({
 	title: 'Users',
-	breadcrumbs: ['index'],
+	breadcrumbs: ['home'],
 })
 
 const inviteModal = useTemplateRef('invite-user-modal')

@@ -11,7 +11,7 @@
 				<input
 					type="checkbox"
 					class="theme-controller"
-					value="retro"
+					value="fantasy"
 				>
 				<!-- sun icon -->
 				<Icon

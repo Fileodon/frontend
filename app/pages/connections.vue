@@ -8,9 +8,9 @@
 		/>
 		<section
 			id="cards"
-			class="w-full pt-5 h-fit flex flex-row"
+			class="w-full py-4 h-fit flex flex-row gap-2"
 		>
-			<div class="stats connection-stat">
+			<div class="stats">
 				<div class="stat">
 					<div class="stat-title">
 						Total connections
@@ -23,7 +23,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="stats connection-stat">
+			<div class="stats">
 				<div class="stat">
 					<div class="stat-title">
 						Active
@@ -36,7 +36,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="stats connection-stat">
+			<div class="stats">
 				<div class="stat">
 					<div class="stat-title">
 						Pending approval
@@ -162,7 +162,7 @@ import { useSftpConnectionStore } from '~/stores/sftpConnectionStore'
 
 definePageMeta({
 	title: 'Connections',
-	breadcrumbs: ['index'],
+	breadcrumbs: ['home'],
 })
 
 const sftpConnectionStore = useSftpConnectionStore()

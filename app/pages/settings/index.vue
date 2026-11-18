@@ -45,7 +45,7 @@ import { useDebounceFn } from '@vueuse/core'
 
 definePageMeta({
 	title: 'Settings',
-	breadcrumbs: ['index'],
+	breadcrumbs: ['home'],
 })
 
 const orgStore = useOrganizationStore()

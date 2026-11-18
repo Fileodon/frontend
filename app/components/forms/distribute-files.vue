@@ -70,6 +70,7 @@
 import { useDebounceFn } from '@vueuse/core'
 
 const sftpConnectionStore = useSftpConnectionStore()
+const toastStore = useToastStore()
 
 const pending = useState('upload-files-pending', () => false)
 const fileInput = useTemplateRef('upload-files-input')
@@ -96,6 +97,7 @@ const distributeFilesDebounce = useDebounceFn(async () => {
 	pending.value = true
 	if (!fileInput.value?.files || fileInput.value?.files.length <= 0) {
 		alert('you havent chosen anything is this a bug?')
+		pending.value = false
 		return
 	}
 	const files: File[] = []
@@ -108,9 +110,18 @@ const distributeFilesDebounce = useDebounceFn(async () => {
 			console.log(e)
 		}
 	}
-	await sftpConnectionStore.distributeFiles(files, form.value)
-	// uploadModal.value?.close()
-	// await refreshList()
+	const result = await sftpConnectionStore.distributeFiles(files, form.value)
+	if (result.status === 'bad_request') {
+		alert('failed')
+	}
+	else if (result.status === 'success') {
+		selectedConnections.value = []
+		toastStore.addToast({
+			type: 'success',
+			message: 'distribution ongoing',
+		})
+	}
+
 	pending.value = false
 }, 500)
 </script>

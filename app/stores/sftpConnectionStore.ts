@@ -49,7 +49,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 		}
 	}
 
-	async function distributeFiles(files: File[], locations: Schema<'SFTPActionDistributeLocation'>[]) {
+	async function distributeFiles(files: File[], locations: Schema<'SFTPActionDistributeLocation'>[]): Promise<ApiFormResponse<Schema<'SFTPActionDistributeResponse'>>> {
 		try {
 			const response = await $api('/organization/{organizationid}/sftpaction/distribute', {
 				method: 'post',
@@ -71,7 +71,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 					return formRequest
 				},
 			})
-			console.log('Maybe listen to', response.jobId)
+
 			return {
 				status: 'success',
 				data: response,

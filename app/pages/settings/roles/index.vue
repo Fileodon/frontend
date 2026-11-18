@@ -118,7 +118,7 @@ import { useDebounceFn } from '@vueuse/core'
 
 definePageMeta({
 	title: 'Roles',
-	breadcrumbs: ['index'],
+	breadcrumbs: ['home', 'settings'],
 })
 
 const roleStore = useRoleStore()
