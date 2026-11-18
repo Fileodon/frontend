@@ -1,0 +1,2 @@
+API_BASE_URL="http://localhost:5283/api"
+API_OPENAPI_PATH="http://localhost:5283/openapi/v1.json"

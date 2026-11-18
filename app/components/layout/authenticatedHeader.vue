@@ -1,0 +1,85 @@
+<template>
+	<header class="navbar bg-base-100 border-b border-b-neutral-200">
+		<div class="flex-1">
+			<div>
+				<BreadCrumbs :previous-pages="['home', 'connections']" />
+			</div>
+		</div>
+		<div class="flex flex-row items-center gap-2">
+			<label class="swap swap-rotate">
+				<!-- this hidden checkbox controls the state -->
+				<input
+					type="checkbox"
+					class="theme-controller"
+					value="fantasy"
+				>
+				<!-- sun icon -->
+				<Icon
+					name="material-symbols-light:light-mode-outline"
+					class="swap-off size-5"
+				/>
+				<!-- moon icon -->
+				<Icon
+					name="material-symbols-light:dark-mode-outline"
+					class="swap-on size-5"
+				/>
+			</label>
+
+			<!-- Avatar and dropdown -->
+			<div class="flex flex-row gap-2 items-center justify-center">
+				<div class="avatar avatar-placeholder">
+					<div class="rounded-full bg-accent-content text-accent w-8 border border-accent/50 ">
+						<span class="text-sm">{{ authStore.user?.username?.slice(0, 2).toUpperCase() }}</span>
+					</div>
+				</div>
+				<button
+					popovertarget="avatar-popover"
+					style="anchor-name:--avatar-anchor-1"
+					class="flex items-center justify-center"
+				>
+					<Icon name="material-symbols-light:keyboard-arrow-down" />
+				</button>
+				<ul
+					id="avatar-popover"
+					class="dropdown menu w-52 rounded-box bg-base-100 shadow-sm mt-1"
+					popover
+					style="position-anchor:--avatar-anchor-1"
+				>
+					<p><b>Email:</b> {{ authStore.user?.email }} </p>
+					<p><b>Verified:</b> {{ authStore.user?.isEmailConfirmed }} </p>
+					<li
+						class="flex flex-row items-center"
+						@click="navigateProfile"
+					>
+						<Icon name="material-symbols-light:person-outline-rounded" />
+						<p>Profile settings</p>
+					</li>
+					<li
+						class="flex flex-row items-center"
+						@click="authStore.logout"
+					>
+						<Icon name="material-symbols-light:logout" />
+						<button @click.prevent="logout">
+							Logout
+						</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</header>
+</template>
+
+<script setup lang="ts">
+// TODO implement loading states and skeleton loaders
+const authStore = useAuthStore()
+
+function navigateProfile() {
+	alert('navigate profile')
+}
+
+async function logout() {
+	await authStore.logout()
+}
+</script>
+
+<style scoped></style>

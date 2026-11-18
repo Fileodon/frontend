@@ -1,9 +1,51 @@
 @import "tailwindcss";
+
 @plugin "daisyui" {
-  themes: retro --default, dark --prefersdark;
+  themes: fantasy --default, dark --prefersdark;
   root: ":root";
-  include: ;
-  exclude: ;
-  prefix: ;
   logs: true;
 }
+
+
+h1 {
+  @apply text-5xl
+}
+h2 {
+	@apply text-3xl
+}
+h3 {
+	@apply text-2xl
+}
+h4 {
+	@apply text-xl
+}
+
+
+h5 {
+  @apply text-lg
+}
+
+@utility stat {
+  @apply w-fit rounded-xl  bg-base-300;
+}
+
+@utility form-text-input {
+	@apply input w-full outline-0 bg-base-200
+}
+
+@utility select {
+	@apply outline-0
+}
+
+@utility resource-table {
+	@apply table bg-base-200 border border-gray-600 text-center
+}
+
+@utility resource-table-row {
+	@apply hover:bg-gray-600/50
+}
+
+/* 
+@utility menu-active {
+    @apply bg-primary-content text-primary
+} */
