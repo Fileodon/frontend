@@ -31,6 +31,41 @@
 						<Icon name="material-symbols-light:cable" />
 						Connections
 					</NuxtLink>
+					<ul>
+						<li>
+							<button
+								:class="isActive('settings-roles') ? 'menu-active' : ''"
+								@click="distributeForm?.show()"
+							>
+								Distribute
+							</button>
+						</li>
+						<li>
+							<button
+								class="justify-between"
+								:aria-expanded="activeConnectionsOpen"
+								@click="activeConnectionsOpen = !activeConnectionsOpen"
+							>
+								Active connections
+								<Icon
+									name="material-symbols-light:keyboard-arrow-down-rounded"
+									:class="activeConnectionsOpen ? 'rotate-180 transition-transform' : 'transition-transform'"
+								/>
+							</button>
+							<ul v-show="activeConnectionsOpen">
+								<li
+									v-for="con in activeConnections"
+									:key="con.id"
+								>
+									<NuxtLink
+										:to="`/connection-${con.id}`"
+									>
+										{{ con.displayName }}
+									</NuxtLink>
+								</li>
+							</ul>
+						</li>
+					</ul>
 				</li>
 				<li>
 					<NuxtLink
@@ -115,6 +150,12 @@
 			</button>
 		</div>
 	</div>
+	<form-modal
+		id="file_distribution_modal"
+		ref="file-distribution-modal"
+	>
+		<forms-distribute-files />
+	</form-modal>
 </template>
 
 <script setup lang="ts">
@@ -123,6 +164,12 @@ import type { RouteRecordNameGeneric } from 'vue-router'
 const route = useRoute()
 
 const orgStore = useOrganizationStore()
+const sftpConnectionStore = useSftpConnectionStore()
+
+const activeConnections = computed(() => sftpConnectionStore.sftpConnections?.filter(con => con.status === 'Accepted'))
+const activeConnectionsOpen = ref(false)
+
+const distributeForm = useTemplateRef('file-distribution-modal')
 
 function isActive(name: RouteRecordNameGeneric): boolean {
 	return route.name === name
