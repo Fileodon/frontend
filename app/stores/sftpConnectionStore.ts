@@ -13,6 +13,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 		},
 		watch: [orgId],
 		immediate: !!orgId.value,
+		key: CacheKeys.SFTP_CONNECTIONS,
 	})
 
 	async function generateCode() {
@@ -48,10 +49,44 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 		}
 	}
 
+	async function distributeFiles(files: File[], locations: Schema<'SFTPActionDistributeLocation'>[]) {
+		try {
+			const response = await $api('/organization/{organizationid}/sftpaction/distribute', {
+				method: 'post',
+				path: {
+					organizationid: orgId.value,
+				},
+				body: {
+					Files: files.map(file => file.name),
+					Locations: locations,
+				},
+				bodySerializer() {
+					const formRequest = new FormData()
+					for (const file of files) {
+						formRequest.append('Files', file)
+					}
+					for (const location of locations) {
+						formRequest.append('Locations', JSON.stringify([location]))
+					}
+					return formRequest
+				},
+			})
+			console.log('Maybe listen to', response.jobId)
+			return {
+				status: 'success',
+				data: response,
+			}
+		}
+		catch (err) {
+			return handleApiFormError(err)
+		}
+	}
+
 	return {
 		sftpConnectionsPending: computed(() => sftpConnectionsPending.value || organizationStore.currentOrganizationPending),
 		sftpConnections,
 		generateCode,
 		updateStatus,
+		distributeFiles,
 	}
 })
