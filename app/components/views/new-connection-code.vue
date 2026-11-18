@@ -18,12 +18,6 @@
 				:description="`This code expires in ${expiresIn}`"
 				copy
 			/>
-			<info-field
-				label="Organization Id"
-				:info="`${generatedCode.organizationId}`"
-				description="Copy this for use with the CLI"
-				copy
-			/>
 		</div>
 		<button
 			class="btn btn-warning"
