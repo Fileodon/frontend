@@ -238,13 +238,6 @@ npm test
 - Standardværdier for hosted API ligger i `nuxt.config.ts`
 - Commit aldrig rigtige credentials, tokens eller private miljøværdier
 
-## 🤝 Bidrag
-
-1. Opret en feature branch
-2. Hold ændringer fokuserede og følg projektets Vue- og TypeScript-stil
-3. Tilføj eller opdatér Vitest-tests for ændret adfærd
-4. Kør lint, tests og en produktionsbuild
-5. Åbn en pull request med en kort beskrivelse og dokumentér verificeringen
 
 ---
 
