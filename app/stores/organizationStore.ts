@@ -8,12 +8,15 @@ export const useOrganizationStore = defineStore('organization', () => {
 		if (newVal <= 0) return
 		localStorage.setItem('currentOrganizationId', `${newVal}`)
 	})
+	const authStore = useAuthStore()
+	const isLoggedIn = computed(() => authStore.isLoggedIn)
 
 	const { data: currentOrganization, pending: currentOrganizationPending } = useLazyApi('/organization/{organizationId}', {
 		method: 'GET',
 		path: {
 			organizationId: currentSelectedOrganizationId,
 		},
+		watch: [isLoggedIn],
 		// watch: [currentSelectedOrganizationId],
 		// immediate: currentSelectedOrganizationId.value > 0,
 		// onResponseError: (err) => {
@@ -28,6 +31,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 
 	const { data: userOrganizations, refresh: refreshUserOrganizations, pending: userOrganizationsPending } = useLazyApi('/userorganization', {
 		method: 'GET',
+		watch: [isLoggedIn],
 	})
 
 	onMounted(() => {
@@ -62,7 +66,6 @@ export const useOrganizationStore = defineStore('organization', () => {
 		catch (err) {
 			return handleApiFormError(err)
 		}
-		// refresh()
 	}
 
 	async function editOrganization(editOrganization: Schema<'EditOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
