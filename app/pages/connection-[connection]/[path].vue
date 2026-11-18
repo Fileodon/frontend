@@ -111,7 +111,7 @@ import { useDebounceFn } from '@vueuse/core'
 
 definePageMeta({
 	title: 'File editor',
-	breadcrumbs: ['index', 'connection-connection'],
+	breadcrumbs: ['home', 'connection-connection'],
 })
 
 const route = useRoute()

@@ -12,3 +12,6 @@ export interface Toast {
 	message: string
 	timer?: number
 }
+export enum CacheKeys {
+	SFTP_CONNECTIONS = 'sftp-connections',
+}

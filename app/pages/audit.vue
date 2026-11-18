@@ -121,7 +121,7 @@
 <script lang="ts" setup>
 definePageMeta({
 	title: 'Connections',
-	breadcrumbs: ['index'],
+	breadcrumbs: ['home'],
 })
 const auditLogStore = useAuditLogStore()
 

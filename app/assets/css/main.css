@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @plugin "daisyui" {
-  themes: retro --default, dark --prefersdark;
+  themes: fantasy --default, dark --prefersdark;
   root: ":root";
   logs: true;
 }
@@ -25,12 +25,12 @@ h5 {
   @apply text-lg
 }
 
-@utility connection-stat {
-  @apply m-2.5 rounded border border-base-100 bg-neutral/35;
+@utility stat {
+  @apply w-fit rounded-xl  bg-base-300;
 }
 
 @utility form-text-input {
-	@apply input w-full outline-0 bg-base-300
+	@apply input w-full outline-0 bg-base-200
 }
 
 @utility select {
@@ -38,7 +38,7 @@ h5 {
 }
 
 @utility resource-table {
-	@apply table bg-black/35 border border-gray-600 text-center
+	@apply table bg-base-200 border border-gray-600 text-center
 }
 
 @utility resource-table-row {

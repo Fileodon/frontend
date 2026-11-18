@@ -56,7 +56,7 @@ const handleLogin = useDebounceFn(async (loginForm: Schema<'LoginRequest'>) => {
 	if (result.status === 'success') {
 		form.value?.resetForm()
 		pending.value = false
-		return navigateTo('/test')
+		return navigateTo('/home')
 	}
 	if (result.status === 'bad_request') {
 		formErrors.value = result.data.errors
