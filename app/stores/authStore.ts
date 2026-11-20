@@ -133,6 +133,22 @@ export const useAuthStore = defineStore('auth', () => {
 		}
 	}
 
+	async function resendEmailConfirm() {
+		try {
+			if (!user.value?.email) return
+			const response = await $api('/auth/email/request-confirmation', {
+				method: 'POST',
+				body: {
+					email: user.value.email,
+				},
+			})
+			console.log(response)
+		}
+		catch (err) {
+			console.log('error', err)
+		}
+	}
+
 	return {
 		accessJWT: readonly(accessJWT),
 		user: readonly(user),
@@ -141,5 +157,6 @@ export const useAuthStore = defineStore('auth', () => {
 		register,
 		refresh,
 		logout,
+		resendEmailConfirm,
 	}
 })

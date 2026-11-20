@@ -47,6 +47,13 @@
 				>
 					<p><b>Email:</b> {{ authStore.user?.email }} </p>
 					<p><b>Verified:</b> {{ authStore.user?.isEmailConfirmed }} </p>
+					<button
+						v-if="authStore.user?.isEmailConfirmed === false"
+						class="btn btn-accent btn-xs btn-outline"
+						@click="authStore.resendEmailConfirm()"
+					>
+						Resend email verify
+					</button>
 					<li
 						class="flex flex-row items-center"
 						@click="navigateProfile"
