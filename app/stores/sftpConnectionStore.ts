@@ -3,6 +3,7 @@ import type { FetchError } from 'ofetch'
 export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 	const { $api } = useNuxtApp()
 
+	const { isLoggedIn } = storeToRefs(useAuthStore())
 	const organizationStore = useOrganizationStore()
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
 
@@ -11,8 +12,8 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 		path: {
 			organizationid: orgId,
 		},
-		watch: [orgId],
-		immediate: !!orgId.value,
+		watch: [orgId, isLoggedIn],
+		immediate: orgId.value > 0,
 		key: CacheKeys.SFTP_CONNECTIONS,
 	})
 
@@ -66,7 +67,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 						formRequest.append('Files', file)
 					}
 					for (const location of locations) {
-						formRequest.append('Locations', JSON.stringify([location]))
+						formRequest.append('Locations', JSON.stringify(location))
 					}
 					return formRequest
 				},

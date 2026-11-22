@@ -1,14 +1,14 @@
 export const useUserOrganizationStore = defineStore('user-organization', () => {
 	const { $api } = useNuxtApp()
-	const organizationStore = useOrganizationStore()
-	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
+	const { isLoggedIn } = storeToRefs(useAuthStore())
+	const { currentSelectedOrganizationId: orgId, currentOrganizationPending } = storeToRefs(useOrganizationStore())
 
 	const { data: organizationUsers, pending: pendingOrganizationUsers, refresh: refreshOrganisationUsers } = useLazyApi('/api/userorganization/organization/{organizationId}/userorganization', {
 		method: 'GET',
 		path: {
 			organizationId: orgId,
 		},
-		watch: [orgId],
+		watch: [orgId, isLoggedIn],
 		immediate: !!orgId.value,
 	})
 
@@ -85,10 +85,9 @@ export const useUserOrganizationStore = defineStore('user-organization', () => {
 
 	return {
 		organizationUsers,
-		pendingOrganizationUsers: computed(() => pendingOrganizationUsers.value || organizationStore.currentOrganizationPending),
+		pendingOrganizationUsers: computed(() => pendingOrganizationUsers.value || currentOrganizationPending.value),
 		inviteUser,
 		updateUserOrganization,
 		removeUserOrganization,
-
 	}
 })

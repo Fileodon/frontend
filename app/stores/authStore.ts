@@ -89,24 +89,40 @@ export const useAuthStore = defineStore('auth', () => {
 		}
 	}
 
+	const ongoingRefresh = ref(false)
 	async function refresh() {
-		await $api('/api/auth/refresh', {
-			method: 'post',
-			credentials: 'include',
-			ignoreResponseError: true,
-			onResponse: async (res) => {
-				if (res.response.ok) {
-					console.log(res.response._data)
-					await handleAuthSuccessResponse(res.response._data)
-					await nextTick()
-					await refreshAuthMe()
-				}
-				else {
-					console.log('add some logout')
-					logout()
-				}
-			},
-		})
+		try {
+			await nextTick()
+			if (ongoingRefresh.value === true) {
+				console.log('refreshOngoing returning')
+				return
+			}
+			ongoingRefresh.value = true
+			await $api('/api/auth/refresh', {
+				method: 'post',
+				credentials: 'include',
+				ignoreResponseError: true,
+				onResponse: async (res) => {
+					if (res.response.ok) {
+						console.log(res.response._data)
+						await handleAuthSuccessResponse(res.response._data)
+						await nextTick()
+						await refreshAuthMe()
+					}
+					else {
+						console.log('add some logout')
+						logout()
+					}
+				},
+			})
+		}
+		catch (err) {
+			console.log('refresh error', err)
+		}
+		finally {
+			await nextTick()
+			ongoingRefresh.value = false
+		}
 	}
 
 	async function handleAuthSuccessResponse(response: Schema<'AuthResponse'>) {

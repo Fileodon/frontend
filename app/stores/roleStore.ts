@@ -1,14 +1,14 @@
 export const useRoleStore = defineStore('roles', () => {
 	const { $api } = useNuxtApp()
+	const { isLoggedIn } = storeToRefs(useAuthStore())
+	const { currentSelectedOrganizationId: orgId } = storeToRefs(useOrganizationStore())
 
-	const organizationStore = useOrganizationStore()
-	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
 	const { data: roles, refresh: refreshRoles, pending: rolesPending } = useLazyApi('/api/organization/{organizationId}/role', {
 		method: 'GET',
 		path: {
 			organizationId: orgId,
 		},
-		watch: [orgId],
+		watch: [orgId, isLoggedIn],
 	})
 
 	async function createNewRole(newRole: Schema<'CreateRoleRequest'>): Promise<ApiFormResponse<Schema<'GetRoleResponse'>>> {

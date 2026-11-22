@@ -1,15 +1,14 @@
 export const useOrganizationStore = defineStore('organization', () => {
 	// const currentOrganizationIdPick = ref<Schema<'GetOrganizationRequest'>['id']>(1)
 	const { $api } = useNuxtApp()
-
+	console.log('this runssss')
 	const currentSelectedOrganizationId = ref<number>(0)
 
 	watch(currentSelectedOrganizationId, (newVal) => {
 		if (newVal <= 0) return
 		localStorage.setItem('currentOrganizationId', `${newVal}`)
 	})
-	const authStore = useAuthStore()
-	const isLoggedIn = computed(() => authStore.isLoggedIn)
+	const { isLoggedIn } = storeToRefs(useAuthStore())
 
 	const { data: currentOrganization, pending: currentOrganizationPending } = useLazyApi('/api/organization/{organizationId}', {
 		method: 'GET',
@@ -35,6 +34,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 	})
 
 	onMounted(() => {
+		console.log('this runs')
 		const previousOrganizationId = localStorage.getItem('currentOrganizationId')
 		if (previousOrganizationId && Number(previousOrganizationId)) {
 			currentSelectedOrganizationId.value = Number(previousOrganizationId)

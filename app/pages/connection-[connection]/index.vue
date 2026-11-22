@@ -236,6 +236,7 @@
 		>
 			<card-form>
 				<template #header>
+					{{ route.query.routePath }}
 					<h3>Upload file</h3>
 				</template>
 				<template #body>
@@ -327,6 +328,7 @@ definePageMeta({
 	title: 'Connection',
 	breadcrumbs: ['home', 'connections'],
 })
+
 const route = useRoute()
 const router = useRouter()
 
@@ -343,7 +345,7 @@ const connectionId = computed(() => {
 		return -1
 	}
 })
-console.log(route.query.routePath)
+
 const { list, initialPending, changeDir, currentDir, refreshList, connection, refreshConnection, updateConnection, removeConnection } = useSftpConnection(connectionId.value, `${route.query.routePath ?? '/home/fileodon'}`)
 const { uploadFiles, downloadFile, deleteFile, createDirectory } = useSftpActions(connectionId.value)
 const pending = useState('upload-files-pending', () => false)
