@@ -170,6 +170,8 @@ const sftpConnectionStore = useSftpConnectionStore()
 const newConnectionModal = useTemplateRef('connection-code-modal')
 const pending = useState('role-api-pending', () => false)
 
+usePolling(sftpConnectionStore.refreshSftpConnections)
+
 const acceptedConnectionsCount = computed(() => {
 	return sftpConnectionStore.sftpConnections?.filter(con => con.status === 'Accepted').length ?? 0
 })

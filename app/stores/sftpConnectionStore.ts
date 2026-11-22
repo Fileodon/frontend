@@ -7,7 +7,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 	const organizationStore = useOrganizationStore()
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
 
-	const { data: sftpConnections, pending: sftpConnectionsPending } = useLazyApi('/api/organization/{organizationid}/sftpconnection/all', {
+	const { data: sftpConnections, pending: sftpConnectionsPending, refresh: refreshSftpConnections } = useLazyApi('/api/organization/{organizationid}/sftpconnection/all', {
 		method: 'GET',
 		path: {
 			organizationid: orgId,
@@ -84,10 +84,11 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 	}
 
 	return {
-		sftpConnectionsPending: computed(() => sftpConnectionsPending.value || organizationStore.currentOrganizationPending),
+		sftpConnectionsPending: computed(() => (sftpConnectionsPending.value && !sftpConnections.value) || organizationStore.currentOrganizationPending),
 		sftpConnections,
 		generateCode,
 		updateStatus,
 		distributeFiles,
+		refreshSftpConnections,
 	}
 })

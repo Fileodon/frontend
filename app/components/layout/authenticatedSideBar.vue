@@ -19,7 +19,11 @@
 			</NuxtLink>
 		</div>
 		<div>
-			<ul class="menu rounded-box w-full">
+			<PageLoading v-if="isMissingOrg" />
+			<ul
+				v-else
+				class="menu rounded-box w-full"
+			>
 				<p class="mb-2 text-gray-400">
 					ORGANIZATION
 				</p>
@@ -160,11 +164,16 @@
 
 <script setup lang="ts">
 import type { RouteRecordNameGeneric } from 'vue-router'
+import PageLoading from '../views/page-loading.vue'
 
 const route = useRoute()
 
 const orgStore = useOrganizationStore()
 const sftpConnectionStore = useSftpConnectionStore()
+
+const isMissingOrg = computed(() => {
+	return !orgStore.currentOrganization
+})
 
 const activeConnections = computed(() => sftpConnectionStore.sftpConnections?.filter(con => con.status === 'Accepted'))
 const activeConnectionsOpen = ref(false)
