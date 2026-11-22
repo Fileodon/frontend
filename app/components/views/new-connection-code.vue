@@ -4,7 +4,7 @@
 			To connect a new server to fileodon. Download the CLI on the server you wish to connect, and use the generated code to validate the connection. <br>
 			Read more <NuxtLink
 				class="underline"
-				to="/"
+				to="https://github.com/Fileodon/CLI/blob/main/InstallationGuide.md"
 			>here</NuxtLink>
 		</p>
 		<div

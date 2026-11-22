@@ -362,7 +362,11 @@ watchEffect(() => {
 })
 
 const sortedDataByIsDirectory = computed(() => {
-	const folders = list.value?.files?.filter(r => r.isDirectory === true) as Schema<'SFTPFileInfo'>[]
+	const folders = list.value?.files?.filter(r => r.isDirectory === true).sort((a, b) => {
+		if (a.relativeName === '..') return -1
+		if (b.relativeName === '..') return 1
+		return 0
+	}) as Schema<'SFTPFileInfo'>[]
 	const files = list.value?.files?.filter(r => r.isDirectory === false) as Schema<'SFTPFileInfo'>[]
 	return [
 		...(folders ?? []),
