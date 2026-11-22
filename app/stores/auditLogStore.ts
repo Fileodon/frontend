@@ -4,7 +4,7 @@ export const useAuditLogStore = defineStore('audit-log', () => {
 
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
 
-	const { data: allOrganizationAuditLogs, pending: auditLogsPending } = useLazyApi('/auditlog/all/{organizationId}', {
+	const { data: allOrganizationAuditLogs, pending: auditLogsPending } = useLazyApi('/api/auditlog/all/{organizationId}', {
 		method: 'GET',
 		path: {
 			organizationId: orgId,

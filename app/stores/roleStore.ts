@@ -3,7 +3,7 @@ export const useRoleStore = defineStore('roles', () => {
 
 	const organizationStore = useOrganizationStore()
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
-	const { data: roles, refresh: refreshRoles, pending: rolesPending } = useLazyApi('/organization/{organizationId}/role', {
+	const { data: roles, refresh: refreshRoles, pending: rolesPending } = useLazyApi('/api/organization/{organizationId}/role', {
 		method: 'GET',
 		path: {
 			organizationId: orgId,
@@ -13,7 +13,7 @@ export const useRoleStore = defineStore('roles', () => {
 
 	async function createNewRole(newRole: Schema<'CreateRoleRequest'>): Promise<ApiFormResponse<Schema<'GetRoleResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationId}/role', {
+			const response = await $api('/api/organization/{organizationId}/role', {
 				method: 'POST',
 				path: {
 					organizationId: orgId.value,
@@ -39,7 +39,7 @@ export const useRoleStore = defineStore('roles', () => {
 
 	async function updateRole(role: Schema<'EditRoleRequest'>): Promise<ApiFormResponse<Schema<'GetRoleResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationId}/role/{id}', {
+			const response = await $api('/api/organization/{organizationId}/role/{id}', {
 				method: 'PUT',
 				path: {
 					organizationId: orgId.value,
@@ -65,7 +65,7 @@ export const useRoleStore = defineStore('roles', () => {
 	}
 
 	async function deleteRole(role: Schema<'GetRoleResponse'>) {
-		await $api('/organization/{organizationId}/role/{id}', {
+		await $api('/api/organization/{organizationId}/role/{id}', {
 			method: 'DELETE',
 			path: {
 				organizationId: orgId.value,

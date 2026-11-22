@@ -6,7 +6,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 	const organizationStore = useOrganizationStore()
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
 
-	const { data: sftpConnections, pending: sftpConnectionsPending } = useLazyApi('/organization/{organizationid}/sftpconnection/all', {
+	const { data: sftpConnections, pending: sftpConnectionsPending } = useLazyApi('/api/organization/{organizationid}/sftpconnection/all', {
 		method: 'GET',
 		path: {
 			organizationid: orgId,
@@ -18,7 +18,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 
 	async function generateCode() {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpconnection/requestcode', {
+			const response = await $api('/api/organization/{organizationid}/sftpconnection/requestcode', {
 				method: 'POST',
 				path: {
 					organizationid: orgId.value,
@@ -34,7 +34,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 
 	async function updateStatus(form: Schema<'SFTPConnectionStatusUpdateRequest'>) {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpconnection/status', {
+			const response = await $api('/api/organization/{organizationid}/sftpconnection/status', {
 				method: 'PATCH',
 				path: {
 					organizationid: orgId.value,
@@ -51,7 +51,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 
 	async function distributeFiles(files: File[], locations: Schema<'SFTPActionDistributeLocation'>[]): Promise<ApiFormResponse<Schema<'SFTPActionDistributeResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpaction/distribute', {
+			const response = await $api('/api/organization/{organizationid}/sftpaction/distribute', {
 				method: 'post',
 				path: {
 					organizationid: orgId.value,

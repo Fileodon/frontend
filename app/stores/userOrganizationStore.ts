@@ -3,7 +3,7 @@ export const useUserOrganizationStore = defineStore('user-organization', () => {
 	const organizationStore = useOrganizationStore()
 	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
 
-	const { data: organizationUsers, pending: pendingOrganizationUsers, refresh: refreshOrganisationUsers } = useLazyApi('/organization/{organizationId}/userorganization', {
+	const { data: organizationUsers, pending: pendingOrganizationUsers, refresh: refreshOrganisationUsers } = useLazyApi('/api/userorganization/organization/{organizationId}/userorganization', {
 		method: 'GET',
 		path: {
 			organizationId: orgId,
@@ -14,7 +14,7 @@ export const useUserOrganizationStore = defineStore('user-organization', () => {
 
 	async function inviteUser(userInvite: Schema<'CreateUserOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetUserOrganizationResponse'>>> {
 		try {
-			await $api('/organization/{organizationId}/userorganization', {
+			await $api('/api/userorganization/organization/{organizationId}/userorganization', {
 				method: 'POST',
 				path: {
 					organizationId: orgId.value,
@@ -32,7 +32,7 @@ export const useUserOrganizationStore = defineStore('user-organization', () => {
 
 	async function updateUserOrganization(updatedUser: Schema<'EditUserOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetUserOrganizationResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationId}/userorganization/{id}', {
+			const response = await $api('/api/userorganization/organization/{organizationId}/userorganization/{id}', {
 				method: 'PUT',
 				path: {
 					organizationId: orgId.value,
@@ -59,7 +59,7 @@ export const useUserOrganizationStore = defineStore('user-organization', () => {
 
 	async function removeUserOrganization(id: Schema<'GetUserOrganizationResponse'>['id']) {
 		try {
-			const response = await $api('/organization/{organizationId}/userorganization/{id}', {
+			const response = await $api('/api/userorganization/organization/{organizationId}/userorganization/{id}', {
 				method: 'DELETE',
 				path: {
 					organizationId: orgId.value,

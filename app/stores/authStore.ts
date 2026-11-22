@@ -26,7 +26,7 @@ export const useAuthStore = defineStore('auth', () => {
 		},
 	})
 
-	const { data: user, refresh: refreshAuthMe } = useLazyApi('/auth/me', {
+	const { data: user, refresh: refreshAuthMe } = useLazyApi('/api/auth/me', {
 		server: false,
 		// enabled: !!accessJWT.value,
 		watch: [accessJWT],
@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('auth', () => {
 			return { status: 'bad_request', data: { errors: { password: [passwordError] } } }
 		}
 		try {
-			const response = await $api('/auth', {
+			const response = await $api('/api/auth', {
 				method: 'POST',
 				credentials: 'include',
 				body: form,
@@ -76,7 +76,7 @@ export const useAuthStore = defineStore('auth', () => {
 			return { status: 'bad_request', data: { errors: { password: [passwordError] } } }
 		}
 		try {
-			const response = await $api('/auth/register', {
+			const response = await $api('/api/auth/register', {
 				method: 'post',
 				credentials: 'include',
 				body: form,
@@ -90,7 +90,7 @@ export const useAuthStore = defineStore('auth', () => {
 	}
 
 	async function refresh() {
-		await $api('/auth/refresh', {
+		await $api('/api/auth/refresh', {
 			method: 'post',
 			credentials: 'include',
 			ignoreResponseError: true,
@@ -117,7 +117,7 @@ export const useAuthStore = defineStore('auth', () => {
 
 	async function logout() {
 		try {
-			await $api('/auth/logout', {
+			await $api('/api/auth/logout', {
 				method: 'post',
 				credentials: 'include',
 				ignoreResponseError: true,
@@ -136,7 +136,7 @@ export const useAuthStore = defineStore('auth', () => {
 	async function resendEmailConfirm() {
 		try {
 			if (!user.value?.email) return
-			const response = await $api('/auth/email/request-confirmation', {
+			const response = await $api('/api/auth/email/request-confirmation', {
 				method: 'POST',
 				body: {
 					email: user.value.email,
