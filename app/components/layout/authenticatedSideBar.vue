@@ -38,7 +38,6 @@
 					<ul>
 						<li>
 							<button
-								:class="isActive('settings-roles') ? 'menu-active' : ''"
 								@click="distributeForm?.show()"
 							>
 								Distribute
