@@ -14,4 +14,5 @@ export interface Toast {
 }
 export enum CacheKeys {
 	SFTP_CONNECTIONS = 'sftp-connections',
+	ORGANIZATION = 'organization',
 }

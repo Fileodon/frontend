@@ -83,6 +83,13 @@
 									<p v-else-if="key === 'timestamp'">
 										{{ new Date(item.timestamp).toUTCString() }}
 									</p>
+									<NuxtLink
+										v-else-if="key === 'resource'"
+										:to="getResourceNavigation(item)"
+										class="link"
+									>
+										resource
+									</NuxtLink>
 									<p v-else>
 										{{ item[key] }}
 									</p>
@@ -128,10 +135,11 @@ definePageMeta({
 })
 const auditLogStore = useAuditLogStore()
 
-type AuditTableHeaders = Partial<Record<keyof Schema<'AuditLogDTO'>, string>>
+type AuditTableHeaders = Partial<Record<keyof Schema<'AuditLogDTO'> | 'resource', string>>
 
 const headers = useState<AuditTableHeaders>('audit-log-table-headers', () => ({
 	actorName: 'User',
+	resource: 'Resource',
 	action: 'Action',
 	timestamp: 'Timestamp',
 }))
@@ -156,6 +164,21 @@ function getStatusClasses(action: string) {
 		} default: {
 			return { badge: 'badge-info', indicator: 'status-info' }
 		}
+	}
+}
+
+function getResourceNavigation(row: Schema<'AuditLogDTO'>) {
+	if (row.organizationId != null) {
+		return '/settings'
+	}
+	else if (row.roleId != null) {
+		return '/settings/roles'
+	}
+	else if (row.sftpConnectionId != null) {
+		return '/connection-' + row.sftpConnectionId
+	}
+	else {
+		return '/notfound'
 	}
 }
 </script>

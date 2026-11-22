@@ -4,8 +4,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 	const { $api } = useNuxtApp()
 
 	const { isLoggedIn } = storeToRefs(useAuthStore())
-	const organizationStore = useOrganizationStore()
-	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
+	const { currentSelectedOrganizationId: orgId, currentOrganizationPending } = storeToRefs(useOrganizationStore())
 
 	const { data: sftpConnections, pending: sftpConnectionsPending, refresh: refreshSftpConnections } = useLazyApi('/api/organization/{organizationid}/sftpconnection/all', {
 		method: 'GET',
@@ -66,9 +65,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 					for (const file of files) {
 						formRequest.append('Files', file)
 					}
-					for (const location of locations) {
-						formRequest.append('Locations', JSON.stringify(location))
-					}
+					formRequest.append('Locations[]', JSON.stringify(locations))
 					return formRequest
 				},
 			})
@@ -84,7 +81,7 @@ export const useSftpConnectionStore = defineStore('sftp-connections', () => {
 	}
 
 	return {
-		sftpConnectionsPending: computed(() => (sftpConnectionsPending.value && !sftpConnections.value) || organizationStore.currentOrganizationPending),
+		sftpConnectionsPending: computed(() => (sftpConnectionsPending.value && !sftpConnections.value) || currentOrganizationPending.value),
 		sftpConnections,
 		generateCode,
 		updateStatus,

@@ -19,7 +19,15 @@
 			</NuxtLink>
 		</div>
 		<div>
-			<PageLoading v-if="isMissingOrg" />
+			<PageLoading v-if="orgStore.currentOrganizationPending" />
+			<ul
+				v-else-if="isMissingOrg"
+				class="menu rounded-box w-full"
+			>
+				<p class="mb-2 text-gray-400">
+					No org
+				</p>
+			</ul>
 			<ul
 				v-else
 				class="menu rounded-box w-full"

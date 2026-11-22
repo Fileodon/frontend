@@ -6,6 +6,7 @@ const accessTokenCookieName = 'accessToken'
 // This store has the purpose of handling all interaction with auth endpoints, and provide authentification for the rest of the application.
 export const useAuthStore = defineStore('auth', () => {
 	const { $api } = useNuxtApp()
+	const toastStore = useToastStore()
 	const tokenExpiry = ref()
 	// This is the short lived token
 	const accessJWTRef = ref<string | null | undefined>(useCookie(accessTokenCookieName).value)
@@ -48,6 +49,13 @@ export const useAuthStore = defineStore('auth', () => {
 				method: 'POST',
 				credentials: 'include',
 				body: form,
+				onResponseError: (res) => {
+					console.log(res.response._data)
+					toastStore.addToast({
+						message: res.response._data,
+						type: 'error',
+					})
+				},
 			})
 			if (!response.accessToken) {
 				alert('login faild skill issue?')
@@ -58,6 +66,7 @@ export const useAuthStore = defineStore('auth', () => {
 			return { status: 'success', data: undefined }
 		}
 		catch (err) {
+			console.log(err)
 			return handleApiFormError(err)
 		}
 	}
@@ -81,6 +90,10 @@ export const useAuthStore = defineStore('auth', () => {
 				credentials: 'include',
 				body: form,
 
+			})
+			toastStore.addToast({
+				message: 'registered',
+				type: 'success',
 			})
 			return { status: 'success', data: response }
 		}
@@ -142,6 +155,7 @@ export const useAuthStore = defineStore('auth', () => {
 			accessJWT.value = undefined // Nulstil accessJWT
 			tokenExpiry.value = null // Nulstil token-udløbstidspunktet
 			// await refreshAuthMe() // Opdater brugerdata efter logout
+			localStorage.removeItem('currentOrganizationId') // THis is not clean at all
 			await navigateTo('/auth')
 		}
 		catch (error) {

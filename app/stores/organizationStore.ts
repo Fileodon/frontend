@@ -1,13 +1,13 @@
 export const useOrganizationStore = defineStore('organization', () => {
 	// const currentOrganizationIdPick = ref<Schema<'GetOrganizationRequest'>['id']>(1)
 	const { $api } = useNuxtApp()
-	console.log('this runssss')
-	const currentSelectedOrganizationId = ref<number>(0)
+	const currentSelectedOrganizationId = ref<number>(-1)
 
 	watch(currentSelectedOrganizationId, (newVal) => {
 		if (newVal <= 0) return
 		localStorage.setItem('currentOrganizationId', `${newVal}`)
 	})
+
 	const { isLoggedIn } = storeToRefs(useAuthStore())
 
 	const { data: currentOrganization, pending: currentOrganizationPending } = useLazyApi('/api/organization/{organizationId}', {
@@ -15,15 +15,9 @@ export const useOrganizationStore = defineStore('organization', () => {
 		path: {
 			organizationId: currentSelectedOrganizationId,
 		},
-		watch: [isLoggedIn],
-		// watch: [currentSelectedOrganizationId],
-		// immediate: currentSelectedOrganizationId.value > 0,
-		// onResponseError: (err) => {
-		// 	localStorage.removeItem('currentOrganizationId')
-		// 	if (err.response.status === 404) {
-		// 		localStorage.removeItem('currentOrganizationId')
-		// 	}
-		// },
+		watch: [isLoggedIn, currentSelectedOrganizationId],
+		enabled: computed(() => currentSelectedOrganizationId.value > 0),
+		key: CacheKeys.ORGANIZATION,
 	})
 
 	const organizationPermissions = computed(() => currentOrganization.value?.permissions)
@@ -34,7 +28,6 @@ export const useOrganizationStore = defineStore('organization', () => {
 	})
 
 	onMounted(() => {
-		console.log('this runs')
 		const previousOrganizationId = localStorage.getItem('currentOrganizationId')
 		if (previousOrganizationId && Number(previousOrganizationId)) {
 			currentSelectedOrganizationId.value = Number(previousOrganizationId)

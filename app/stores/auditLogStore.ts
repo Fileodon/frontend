@@ -1,10 +1,9 @@
 export const useAuditLogStore = defineStore('audit-log', () => {
 	// const { $api } = useNuxtApp()
-	const organizationStore = useOrganizationStore()
+	const { isLoggedIn } = storeToRefs(useAuthStore())
+	const { currentSelectedOrganizationId: orgId, currentOrganizationPending } = storeToRefs(useOrganizationStore())
 
-	const orgId = computed(() => organizationStore.currentSelectedOrganizationId)
-
-	const { data: allOrganizationAuditLogs, pending: auditLogsPending } = useLazyApi('/api/auditlog/all/{organizationId}', {
+	const { data: allOrganizationAuditLogs, pending: auditLogsPending } = useLazyApi('/api/organization/{organizationId}/auditlog/all', {
 		method: 'GET',
 		path: {
 			organizationId: orgId,
@@ -12,13 +11,14 @@ export const useAuditLogStore = defineStore('audit-log', () => {
 		query: {
 			filter: 'none',
 		},
-		watch: [orgId],
-		immediate: !!orgId.value,
+		watch: [orgId, isLoggedIn],
+		enabled: isLoggedIn,
+		immediate: orgId.value > 0,
 	})
 
 	return {
 		allOrganizationAuditLogs,
-		auditLogsPending: computed(() => (auditLogsPending.value || organizationStore.currentOrganizationPending)),
+		auditLogsPending: computed(() => (auditLogsPending.value || currentOrganizationPending.value)),
 		orgId,
 	}
 })
