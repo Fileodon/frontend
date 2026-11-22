@@ -7,8 +7,8 @@
 			description="Manage your SFTP servers and review incoming connection requests"
 		/>
 		<section
-			id="cards"
-			class="w-full py-4 h-fit flex flex-row gap-2"
+			id="stats"
+			class="stat-section"
 		>
 			<div class="stats">
 				<div class="stat">

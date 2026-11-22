@@ -8,6 +8,7 @@
 		/>
 		<section
 			id="stats"
+			class="stat-section"
 		>
 			<div class="stats connection-stat">
 				<div class="stat">
