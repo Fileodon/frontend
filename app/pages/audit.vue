@@ -97,8 +97,11 @@
 								</td>
 							</tr>
 							<tr v-show="viewingAuditLogInfo?.id == item.id">
-								<td :colspan="Object.entries(headers).length + 1">
-									<div class="flex flex-col gap-6 w-full py-8">
+								<td
+									:colspan="Object.entries(headers).length + 1"
+									class="w-full "
+								>
+									<div class="flex flex-col gap-6 py-8 w-full min-w-0">
 										<info-field
 											label="Old values"
 											:info="item.oldData ?? 'none'"
