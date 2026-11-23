@@ -83,6 +83,13 @@
 									<p v-else-if="key === 'timestamp'">
 										{{ new Date(item.timestamp).toUTCString() }}
 									</p>
+									<NuxtLink
+										v-else-if="key === 'resource'"
+										:to="getResourceNavigation(item)"
+										class="link"
+									>
+										resource
+									</NuxtLink>
 									<p v-else>
 										{{ item[key] }}
 									</p>
@@ -97,8 +104,11 @@
 								</td>
 							</tr>
 							<tr v-show="viewingAuditLogInfo?.id == item.id">
-								<td :colspan="Object.entries(headers).length + 1">
-									<div class="flex flex-col gap-6 w-full py-8">
+								<td
+									:colspan="Object.entries(headers).length + 1"
+									class="w-full "
+								>
+									<div class="flex flex-col gap-6 py-8 w-full min-w-0">
 										<info-field
 											label="Old values"
 											:info="item.oldData ?? 'none'"
@@ -125,10 +135,11 @@ definePageMeta({
 })
 const auditLogStore = useAuditLogStore()
 
-type AuditTableHeaders = Partial<Record<keyof Schema<'AuditLogDTO'>, string>>
+type AuditTableHeaders = Partial<Record<keyof Schema<'AuditLogDTO'> | 'resource', string>>
 
 const headers = useState<AuditTableHeaders>('audit-log-table-headers', () => ({
 	actorName: 'User',
+	resource: 'Resource',
 	action: 'Action',
 	timestamp: 'Timestamp',
 }))
@@ -153,6 +164,21 @@ function getStatusClasses(action: string) {
 		} default: {
 			return { badge: 'badge-info', indicator: 'status-info' }
 		}
+	}
+}
+
+function getResourceNavigation(row: Schema<'AuditLogDTO'>) {
+	if (row.organizationId != null) {
+		return '/settings'
+	}
+	else if (row.roleId != null) {
+		return '/settings/roles'
+	}
+	else if (row.sftpConnectionId != null) {
+		return '/connection-' + row.sftpConnectionId
+	}
+	else {
+		return '/notfound'
 	}
 }
 </script>

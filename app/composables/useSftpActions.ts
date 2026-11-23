@@ -6,7 +6,7 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 
 	async function uploadFiles(files: File[], basePath: string, pathIsFullPath = false): Promise<ApiFormResponse<Schema<'SFTPActionUploadResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/upload', {
+			const response = await $api('/api/organization/{organizationid}/sftpaction/{sftpconnectionid}/upload', {
 				method: 'post',
 				path: {
 					sftpconnectionid: sftpConnectionId,
@@ -39,7 +39,7 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 
 	async function downloadFile(remoteFilePath: string) {
 		try {
-			await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
+			await $api('/api/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
 				method: 'GET',
 				responseType: 'blob',
 				path: {
@@ -82,7 +82,7 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 
 	async function downloadFileToText(remoteFilePath: string) {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
+			const response = await $api('/api/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
 				method: 'GET',
 				responseType: 'text',
 				path: {
@@ -114,7 +114,7 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 
 	async function deleteFile(path: string) {
 		try {
-			await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/delete', {
+			await $api('/api/organization/{organizationid}/sftpaction/{sftpconnectionid}/delete', {
 				method: 'DELETE',
 				path: {
 					organizationid: orgId.value,
@@ -132,7 +132,7 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 
 	async function renameFile(form: Schema<'SFTPActionRenameRequest'>): Promise<ApiFormResponse<Schema<'SFTPActionRenameResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/rename', {
+			const response = await $api('/api/organization/{organizationid}/sftpaction/{sftpconnectionid}/rename', {
 				method: 'PUT',
 				path: {
 					organizationid: orgId.value,
@@ -152,7 +152,7 @@ export default function useSftpActions(sftpConnectionId: Schema<'BaseSFTPConnect
 
 	async function createDirectory(form: Schema<'SFTPActionCreateDirectoryRequest'>): Promise<ApiFormResponse<Schema<'SFTPActionCreateDirectoryResponse'>[]>> {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpaction/{sftpconnectionid}/create-directory', {
+			const response = await $api('/api/organization/{organizationid}/sftpaction/{sftpconnectionid}/create-directory', {
 				method: 'POST',
 				path: {
 					organizationid: orgId.value,

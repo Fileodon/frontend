@@ -1,13 +1,16 @@
 <template>
-	<div class="flex flex-col text-left w-full">
+	<div class="flex flex-col text-left w-full min-w-0">
 		<label
 			class="font-bold"
 			:for="label.toLowerCase()"
 		>
 			{{ label }}
 		</label>
-		<div class="flex flex-row justify-between items-center ">
-			<h5 :name="label.toLowerCase()">
+		<div class="flex flex-row justify-between items-center min-w-0">
+			<h5
+				:name="label.toLowerCase()"
+				class="min-w-0 break-all"
+			>
 				{{ info }}
 			</h5>
 			<button

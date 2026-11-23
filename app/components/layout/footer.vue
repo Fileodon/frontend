@@ -3,11 +3,10 @@
 		<footer class="footer sm:footer-horizontal border-t-accent border-t-2 text-neutral-content p-2">
 			<aside>
 				<NuxtLink to="/">
-					<img
-						src="/fileodon-haj-1.svg"
-						class="w-auto h-4"
-						alt=""
-					>
+					<Icon
+						name="custom-icons:fileodon-haj"
+						size="1rem"
+					/>
 				</NuxtLink>
 			</aside>
 			<nav>

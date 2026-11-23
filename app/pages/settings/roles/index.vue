@@ -8,6 +8,7 @@
 		/>
 		<section
 			id="stats"
+			class="stat-section"
 		>
 			<div class="stats connection-stat">
 				<div class="stat">
@@ -18,7 +19,7 @@
 						{{ roleStore.roles?.length }}
 					</div>
 					<div class="stat-desc">
-						The total amount of roles in "Orgname"
+						The total amount of roles in {{ organizationStore.currentOrganization?.orgName }}
 					</div>
 				</div>
 			</div>
@@ -121,6 +122,7 @@ definePageMeta({
 	breadcrumbs: ['home', 'settings'],
 })
 
+const organizationStore = useOrganizationStore()
 const roleStore = useRoleStore()
 const permissionStore = usePermissionStore()
 

@@ -6,6 +6,7 @@ const accessTokenCookieName = 'accessToken'
 // This store has the purpose of handling all interaction with auth endpoints, and provide authentification for the rest of the application.
 export const useAuthStore = defineStore('auth', () => {
 	const { $api } = useNuxtApp()
+	const toastStore = useToastStore()
 	const tokenExpiry = ref()
 	// This is the short lived token
 	const accessJWTRef = ref<string | null | undefined>(useCookie(accessTokenCookieName).value)
@@ -26,7 +27,7 @@ export const useAuthStore = defineStore('auth', () => {
 		},
 	})
 
-	const { data: user, refresh: refreshAuthMe } = useLazyApi('/auth/me', {
+	const { data: user, refresh: refreshAuthMe } = useLazyApi('/api/auth/me', {
 		server: false,
 		// enabled: !!accessJWT.value,
 		watch: [accessJWT],
@@ -44,10 +45,17 @@ export const useAuthStore = defineStore('auth', () => {
 			return { status: 'bad_request', data: { errors: { password: [passwordError] } } }
 		}
 		try {
-			const response = await $api('/auth', {
+			const response = await $api('/api/auth', {
 				method: 'POST',
 				credentials: 'include',
 				body: form,
+				onResponseError: (res) => {
+					console.log(res.response._data)
+					toastStore.addToast({
+						message: res.response._data,
+						type: 'error',
+					})
+				},
 			})
 			if (!response.accessToken) {
 				alert('login faild skill issue?')
@@ -58,6 +66,7 @@ export const useAuthStore = defineStore('auth', () => {
 			return { status: 'success', data: undefined }
 		}
 		catch (err) {
+			console.log(err)
 			return handleApiFormError(err)
 		}
 	}
@@ -76,11 +85,15 @@ export const useAuthStore = defineStore('auth', () => {
 			return { status: 'bad_request', data: { errors: { password: [passwordError] } } }
 		}
 		try {
-			const response = await $api('/auth/register', {
+			const response = await $api('/api/auth/register', {
 				method: 'post',
 				credentials: 'include',
 				body: form,
 
+			})
+			toastStore.addToast({
+				message: 'registered',
+				type: 'success',
 			})
 			return { status: 'success', data: response }
 		}
@@ -89,24 +102,40 @@ export const useAuthStore = defineStore('auth', () => {
 		}
 	}
 
+	const ongoingRefresh = ref(false)
 	async function refresh() {
-		await $api('/auth/refresh', {
-			method: 'post',
-			credentials: 'include',
-			ignoreResponseError: true,
-			onResponse: async (res) => {
-				if (res.response.ok) {
-					console.log(res.response._data)
-					await handleAuthSuccessResponse(res.response._data)
-					await nextTick()
-					await refreshAuthMe()
-				}
-				else {
-					console.log('add some logout')
-					logout()
-				}
-			},
-		})
+		try {
+			await nextTick()
+			if (ongoingRefresh.value === true) {
+				console.log('refreshOngoing returning')
+				return
+			}
+			ongoingRefresh.value = true
+			await $api('/api/auth/refresh', {
+				method: 'post',
+				credentials: 'include',
+				ignoreResponseError: true,
+				onResponse: async (res) => {
+					if (res.response.ok) {
+						console.log(res.response._data)
+						await handleAuthSuccessResponse(res.response._data)
+						await nextTick()
+						await refreshAuthMe()
+					}
+					else {
+						console.log('add some logout')
+						logout()
+					}
+				},
+			})
+		}
+		catch (err) {
+			console.log('refresh error', err)
+		}
+		finally {
+			await nextTick()
+			ongoingRefresh.value = false
+		}
 	}
 
 	async function handleAuthSuccessResponse(response: Schema<'AuthResponse'>) {
@@ -117,7 +146,7 @@ export const useAuthStore = defineStore('auth', () => {
 
 	async function logout() {
 		try {
-			await $api('/auth/logout', {
+			await $api('/api/auth/logout', {
 				method: 'post',
 				credentials: 'include',
 				ignoreResponseError: true,
@@ -126,10 +155,27 @@ export const useAuthStore = defineStore('auth', () => {
 			accessJWT.value = undefined // Nulstil accessJWT
 			tokenExpiry.value = null // Nulstil token-udløbstidspunktet
 			// await refreshAuthMe() // Opdater brugerdata efter logout
+			localStorage.removeItem('currentOrganizationId') // THis is not clean at all
 			await navigateTo('/auth')
 		}
 		catch (error) {
 			console.error('Error occurred while logging out:', error)
+		}
+	}
+
+	async function resendEmailConfirm() {
+		try {
+			if (!user.value?.email) return
+			const response = await $api('/api/auth/email/request-confirmation', {
+				method: 'POST',
+				body: {
+					email: user.value.email,
+				},
+			})
+			console.log(response)
+		}
+		catch (err) {
+			console.log('error', err)
 		}
 	}
 
@@ -141,5 +187,6 @@ export const useAuthStore = defineStore('auth', () => {
 		register,
 		refresh,
 		logout,
+		resendEmailConfirm,
 	}
 })

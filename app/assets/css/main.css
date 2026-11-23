@@ -45,6 +45,10 @@ h5 {
 	@apply hover:bg-gray-600/50
 }
 
+@utility stat-section {
+	@apply w-full py-4 h-fit flex flex-row gap-2
+}
+
 /* 
 @utility menu-active {
     @apply bg-primary-content text-primary

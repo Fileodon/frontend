@@ -40,7 +40,7 @@ onMounted(() => {
 
 async function approveEmail() {
 	try {
-		const response = await $api('/auth/email/confirm', {
+		const response = await $api('/api/auth/email/confirm', {
 			method: 'POST',
 			body: {
 				userId: `${route.query.userId}`,
