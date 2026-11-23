@@ -129,9 +129,9 @@
 							>
 						</form-input>
 						<form-input
-							id="register-username"
-							label="Username"
-							info=""
+							id="register-password-confirm"
+							label="Password confirm"
+							info="Must match Password"
 							:errors="errors?.ConfirmPassword"
 						>
 							<input

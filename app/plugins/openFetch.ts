@@ -19,8 +19,9 @@ export default defineNuxtPlugin((nuxtApp) => {
 		}
 		else if (!ignoredErrorCodes.has(response.status)) {
 			// Dette er ikke optimalt, men jeg har ikke mere tid :(
-			await callOnce(`${context.request}-${response.statusText}`, () => toastStore.addToast({
-				message: 'Action failed with: ' + response.statusText,
+			const statusText = response.statusText || JSON.stringify(response._data)
+			await callOnce(`${context.request}-${statusText}`, () => toastStore.addToast({
+				message: 'Action failed with: ' + statusText,
 				type: 'error',
 			}), { mode: 'render' })
 		}

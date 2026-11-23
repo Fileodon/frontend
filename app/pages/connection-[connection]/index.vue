@@ -217,7 +217,7 @@
 				<div class="flex flex-row justify-between">
 					<div>
 						<p class="font-bold">
-							Delete this organization
+							Delete this connection
 						</p>
 						<p>If you delete this connection, you will lose access to the server through fileodon. And will need to redo setup, if you want to regain access.</p>
 					</div>
@@ -407,11 +407,11 @@ async function showCreateDirectoryModal() {
 }
 
 const uploadFilesDebounce = useDebounceFn(async () => {
-	pending.value = true
 	if (!fileInput.value?.files || fileInput.value?.files.length <= 0) {
 		alert('you havent chosen anything is this a bug?')
 		return
 	}
+	pending.value = true
 	const files: File[] = []
 	for (let i = 0; i < fileInput.value?.files.length; i++) {
 		if (!fileInput.value?.files?.item(i)) continue
@@ -462,6 +462,11 @@ const updateConnectionDebounce = useDebounceFn(async (form: Schema<'SFTPConnecti
 
 const deleteConnectionDebounce = useDebounceFn(async () => {
 	pending.value = true
+	const confirm = window.confirm(`Do you want to delete ${connection.value?.displayName}`)
+	if (confirm === false) {
+		pending.value = false
+		return
+	}
 	const result = await removeConnection()
 	if (result.status === 'bad_request') {
 		formErrors.value = result.data.errors
