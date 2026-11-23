@@ -1,35 +1,28 @@
 export const useOrganizationStore = defineStore('organization', () => {
 	// const currentOrganizationIdPick = ref<Schema<'GetOrganizationRequest'>['id']>(1)
 	const { $api } = useNuxtApp()
-
-	const currentSelectedOrganizationId = ref<number>(0)
+	const currentSelectedOrganizationId = ref<number>(-1)
 
 	watch(currentSelectedOrganizationId, (newVal) => {
 		if (newVal <= 0) return
 		localStorage.setItem('currentOrganizationId', `${newVal}`)
 	})
-	const authStore = useAuthStore()
-	const isLoggedIn = computed(() => authStore.isLoggedIn)
 
-	const { data: currentOrganization, pending: currentOrganizationPending } = useLazyApi('/organization/{organizationId}', {
+	const { isLoggedIn } = storeToRefs(useAuthStore())
+
+	const { data: currentOrganization, pending: currentOrganizationPending } = useLazyApi('/api/organization/{organizationId}', {
 		method: 'GET',
 		path: {
 			organizationId: currentSelectedOrganizationId,
 		},
-		watch: [isLoggedIn],
-		// watch: [currentSelectedOrganizationId],
-		// immediate: currentSelectedOrganizationId.value > 0,
-		// onResponseError: (err) => {
-		// 	localStorage.removeItem('currentOrganizationId')
-		// 	if (err.response.status === 404) {
-		// 		localStorage.removeItem('currentOrganizationId')
-		// 	}
-		// },
+		watch: [isLoggedIn, currentSelectedOrganizationId],
+		enabled: computed(() => currentSelectedOrganizationId.value > 0),
+		key: CacheKeys.ORGANIZATION,
 	})
 
 	const organizationPermissions = computed(() => currentOrganization.value?.permissions)
 
-	const { data: userOrganizations, refresh: refreshUserOrganizations, pending: userOrganizationsPending } = useLazyApi('/userorganization', {
+	const { data: userOrganizations, refresh: refreshUserOrganizations, pending: userOrganizationsPending } = useLazyApi('/api/userorganization', {
 		method: 'GET',
 		watch: [isLoggedIn],
 	})
@@ -53,7 +46,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 
 	async function createNewOrganization(newOrg: Schema<'CreateOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
 		try {
-			const response = await $api('/organization', {
+			const response = await $api('/api/organization', {
 				method: 'POST',
 				body: newOrg,
 			})
@@ -70,7 +63,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 
 	async function editOrganization(editOrganization: Schema<'EditOrganizationRequest'>): Promise<ApiFormResponse<Schema<'GetOrganizationResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationId}', {
+			const response = await $api('/api/organization/{organizationId}', {
 				method: 'PUT',
 				path: {
 					organizationId: editOrganization.id,
@@ -92,7 +85,7 @@ export const useOrganizationStore = defineStore('organization', () => {
 			throw new Error('Could not find organization ID')
 		}
 
-		await $api('/organization/{organizationId}', {
+		await $api('/api/organization/{organizationId}', {
 			method: 'DELETE',
 			path: {
 				organizationId: organization.id,

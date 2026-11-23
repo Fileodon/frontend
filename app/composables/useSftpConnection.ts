@@ -6,7 +6,7 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 
 	const currentDir = ref<string>(initialDir)
 
-	const { data: connection, refresh: refreshConnection } = useLazyApi('/organization/{organizationid}/sftpconnection/{sftpconnectionid}/detailed', {
+	const { data: connection, refresh: refreshConnection } = useLazyApi('/api/organization/{organizationid}/sftpconnection/{sftpconnectionid}/detailed', {
 		method: 'get',
 		path: {
 			sftpconnectionid: sftpConnectionId,
@@ -15,7 +15,7 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 		watch: [orgId],
 	})
 
-	const { data: list, error: listErrors, status: listStatus, refresh: refreshList, pending: listPending } = useLazyApi('/organization/{organizationid}/sftpaction/{sftpconnectionid}/list',
+	const { data: list, error: listErrors, status: listStatus, refresh: refreshList, pending: listPending } = useLazyApi('/api/organization/{organizationid}/sftpaction/{sftpconnectionid}/list',
 		{
 			method: 'get',
 			path: {
@@ -40,7 +40,7 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 
 	async function updateConnection(form: Schema<'SFTPConnectionUpdateRequest'>): Promise<ApiFormResponse<Schema<'SFTPConnectionUpdateResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpconnection/{sftpconnectionid}', {
+			const response = await $api('/api/organization/{organizationid}/sftpconnection/{sftpconnectionid}', {
 				method: 'PATCH',
 				path: {
 					organizationid: orgId.value,
@@ -60,7 +60,7 @@ export default function useSftpConnection(sftpConnectionId: Schema<'BaseSFTPConn
 
 	async function removeConnection(): Promise<ApiFormResponse<Schema<'SFTPConnectionDeleteResponse'>>> {
 		try {
-			const response = await $api('/organization/{organizationid}/sftpconnection/{sftpconnectionid}', {
+			const response = await $api('/api/organization/{organizationid}/sftpconnection/{sftpconnectionid}', {
 				method: 'DELETE',
 				path: {
 					organizationid: orgId.value,

@@ -8,7 +8,7 @@ export default defineNuxtPlugin((nuxtApp) => {
 		await nextTick()
 		context.options.headers.set('Authorization', `Bearer ${authStore.accessJWT}`)
 	})
-	nuxtApp.hook('openFetch:onResponseError', async (context) => {
+	nuxtApp.hook('openFetch:onResponseError:api', async (context) => {
 		const authStore = useAuthStore()
 		const toastStore = useToastStore()
 

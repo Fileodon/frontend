@@ -6,7 +6,7 @@ export default function useSftpFile(sftpConnectionId: Schema<'BaseSFTPConnection
 
 	const fileName = ref('')
 
-	const { data: content, refresh: refreshFile } = useLazyApi('/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
+	const { data: content, refresh: refreshFile } = useLazyApi('/api/organization/{organizationid}/sftpaction/{sftpconnectionid}/download', {
 		method: 'GET',
 		responseType: 'text',
 		path: {

@@ -8,7 +8,7 @@
 		/>
 		<section
 			id="stats"
-			class="w-full h-fit flex flex-row mb-4"
+			class="stat-section"
 		>
 			<div />
 			<div class="stats">
