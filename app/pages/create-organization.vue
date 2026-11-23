@@ -9,7 +9,7 @@
 			id="organization-form"
 			title="New organization"
 			subtitle="creating a new organization"
-			submit-btn-text="Submit edit"
+			submit-btn-text="Submit create"
 			:pending="pending"
 			:errors="formErrors"
 			@submit="createOrganization"
