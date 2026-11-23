@@ -407,12 +407,11 @@ async function showCreateDirectoryModal() {
 }
 
 const uploadFilesDebounce = useDebounceFn(async () => {
-	pending.value = true
 	if (!fileInput.value?.files || fileInput.value?.files.length <= 0) {
 		alert('you havent chosen anything is this a bug?')
-		pending.value = false
 		return
 	}
+	pending.value = true
 	const files: File[] = []
 	for (let i = 0; i < fileInput.value?.files.length; i++) {
 		if (!fileInput.value?.files?.item(i)) continue
